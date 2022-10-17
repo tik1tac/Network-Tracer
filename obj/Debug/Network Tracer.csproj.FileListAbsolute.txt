@@ -1,0 +1,113 @@
+C:\Users\user\source\repos\Network Tracer\bin\Debug\Network Tracer.exe.config
+C:\Users\user\source\repos\Network Tracer\bin\Debug\Network Tracer.exe
+C:\Users\user\source\repos\Network Tracer\bin\Debug\Network Tracer.pdb
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer.csproj.AssemblyReference.cache
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer.csproj.SuggestedBindingRedirects.cache
+C:\Users\user\source\repos\Network Tracer\obj\Debug\App.g.cs
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer_MarkupCompile.cache
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer_MarkupCompile.lref
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer.g.resources
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network_Tracer.Properties.Resources.resources
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer.csproj.GenerateResource.cache
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer.csproj.CoreCompileInputs.cache
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer.exe
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer.pdb
+C:\Users\user\source\repos\Network Tracer\bin\Debug\CommonServiceLocator.dll
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.dll
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Extras.dll
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Platform.dll
+C:\Users\user\source\repos\Network Tracer\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.pdb
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.xml
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Extras.pdb
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Extras.xml
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Platform.pdb
+C:\Users\user\source\repos\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Platform.xml
+C:\Users\user\source\repos\Network Tracer\obj\Debug\Network Tracer.csproj.CopyComplete
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\MainWindow.g.cs
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\MainWindow.baml
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\PEG.g.cs
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\PEG.baml
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\SE.g.cs
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\VZG.g.cs
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\SE.baml
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\VZG.baml
+C:\Users\user\source\repos\Network Tracer\obj\Debug\App.baml
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\LineConnect.g.cs
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\InputElements.g.cs
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\LineConnect.baml
+C:\Users\user\source\repos\Network Tracer\obj\Debug\View\InputElements.baml
+C:\Users\user\source\repos\Network Tracer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\user\Desktop\Network Tracer\bin\Debug\Network Tracer.exe.config
+C:\Users\user\Desktop\Network Tracer\bin\Debug\Network Tracer.exe
+C:\Users\user\Desktop\Network Tracer\bin\Debug\Network Tracer.pdb
+C:\Users\user\Desktop\Network Tracer\bin\Debug\CommonServiceLocator.dll
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.dll
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Extras.dll
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Platform.dll
+C:\Users\user\Desktop\Network Tracer\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.pdb
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.xml
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Extras.pdb
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Extras.xml
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Platform.pdb
+C:\Users\user\Desktop\Network Tracer\bin\Debug\GalaSoft.MvvmLight.Platform.xml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer.csproj.SuggestedBindingRedirects.cache
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\InputElements.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\LineConnect.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\MainWindow.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\PEG.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\SE.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\VZG.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\App.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer_MarkupCompile.cache
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer_MarkupCompile.lref
+C:\Users\user\Desktop\Network Tracer\obj\Debug\App.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\InputElements.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\LineConnect.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\MainWindow.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\PEG.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\SE.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\VZG.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer.g.resources
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network_Tracer.Properties.Resources.resources
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer.csproj.GenerateResource.cache
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer.csproj.CopyComplete
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer.exe
+C:\Users\user\Desktop\Network Tracer\obj\Debug\Network Tracer.pdb
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.csproj.SuggestedBindingRedirects.cache
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\InputElements.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\LineConnect.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\MainWindow.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\PEG.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\SE.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\VZG.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\App.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer_MarkupCompile.cache
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer_MarkupCompile.lref
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.exe
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.pdb
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Network Tracer.exe.config
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Network Tracer.exe
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Network Tracer.pdb
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\CommonServiceLocator.dll
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\InputElements.baml
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\LineConnect.baml
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\MainWindow.baml
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\PEG.baml
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\SE.baml
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\VZG.baml
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.g.resources
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network_Tracer.Properties.Resources.resources
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.csproj.GenerateResource.cache
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.csproj.CopyComplete
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\App.baml
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Microsoft.Expression.Interactions.dll
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Microsoft.Expression.Interactions.xml

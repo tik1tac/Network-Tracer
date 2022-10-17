@@ -1,0 +1,134 @@
+﻿<Window x:Class="Network_Tracer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:view="clr-namespace:Network_Tracer.View"
+        Title="MainWindow" Height="750" Width="1500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="510*"/>
+            <RowDefinition Height="199*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="3">
+            <MenuItem Header="Файл" Height="26">
+                <MenuItem Header="Новая схема" Click="CreateNewScheme_Click"></MenuItem>
+                <MenuItem Header="Открыть" Click="OpenScheme_Click" ></MenuItem>
+                <MenuItem Header="Сохранить" Click="SaveScheme_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Схема" Height="26">
+                <MenuItem Header="Карта"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Справка" Height="26">
+                <MenuItem Header="РУководство пользования"></MenuItem>
+                <MenuItem Header="Авторы"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Выход" Height="26" >
+            </MenuItem>
+        </Menu>
+
+
+        <!--<i:Interaction.Triggers>
+            <i:EventTrigger EventName="MouseLeftButtownDown">
+                <i:InvokeCommandAction Command="{Binding OnMouseLeftButtownDown}"
+                                               CommandParameter="{Binding Path=e}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>-->
+        <StackPanel Background="Transparent" Grid.ColumnSpan="3" Grid.Row="1">
+            <Canvas  x:Name="CanvasField" AllowDrop="True"/>
+        </StackPanel>
+
+
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" Background="AliceBlue" >
+            <Expander  IsExpanded="True" Header="Элементы"  ExpandDirection="Right" Width="478" >
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="Connection" Height="70" Style="{StaticResource ToolStyle}" BorderThickness="1" Click="Connection_Click" BorderBrush="Transparent">
+                        <StackPanel>
+                            <Line X1="1" X2="2" Y1="0" Y2="5"  StrokeThickness="2" Stroke="Black" Stretch="Fill" Height="32" Width="93" VerticalAlignment="Top"></Line>
+                            <TextBlock FontSize="18">Соединение</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"></ColumnDefinition>
+                            <ColumnDefinition Width="150"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="VZGButton" BorderBrush="Transparent" Click="VZGButton_Click" Style="{StaticResource ToolStyle}" Grid.Row="0" >
+                            <view:VZG></view:VZG>
+                        </Button>
+                        <Button x:Name="PEGButton" BorderBrush="Transparent" Grid.Row="2" Style="{StaticResource ToolStyle}"  Click="PEGButton_Click" Grid.Column="2"   >
+                            <view:PEG Weight="50" ></view:PEG>
+                        </Button>
+                        <Button x:Name="SEButton" BorderBrush="Transparent" Grid.Row="2" Click="SEButton_Click" Style="{StaticResource ToolStyle}"  Grid.Column="0" >
+                            <view:SE></view:SE>
+                        </Button>
+                        <Button x:Name="CursorButton" BorderBrush="Transparent" Grid.Row="0" Style="{StaticResource ToolStyle}" Click="CursorButton_Click"   Grid.Column="2"  >
+                            <StackPanel>
+                                <Image Height="30" Width="30" Source="pack://application:,,,/Resources/cursor.png"></Image>
+                                <TextBlock Name="LabelBlock" Margin="0,0,0,0" TextAlignment="Center" > Указатель</TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+            <Expander x:Name="DeviceExpander"  IsExpanded="True" Header="Характеристика" ExpandDirection="Right" Visibility="Visible">
+                <StackPanel Orientation="Horizontal" >
+                    <Grid Margin="0,30,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Название:" HorizontalAlignment="Left"></Label>
+                        <TextBlock x:Name="NameDevice"  Width="130" HorizontalAlignment="Right" ></TextBlock>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Город:" HorizontalAlignment="Left"></Label>
+                        <TextBox Grid.Row="1" Grid.Column="0" x:Name="CityDevice" Width="150" HorizontalAlignment="Right" TextChanged="CityDevice_TextChanged" ></TextBox>
+                        <Button Grid.Row="2" Grid.Column="0"  VerticalAlignment="Top" Height="20" Click="DeviceDelete_Click">Удалить</Button>
+                    </Grid>
+                </StackPanel>
+
+            </Expander>
+            <Expander x:Name="LineExpender" IsExpanded="True" Header="Линия" Visibility="Visible" ExpandDirection="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Grid Margin="0,30,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Width="80" HorizontalAlignment="Left">Устройство1:</Label>
+                        <TextBlock Grid.Row="0" Width="120" Grid.Column="0" x:Name="Device1" HorizontalAlignment="Right" Height="30"></TextBlock>
+
+                        <Label Grid.Row="1" Width="80" HorizontalAlignment="Left">Устройство2:</Label>
+                        <TextBlock Grid.Row="1" Width="120" Grid.Column="0" x:Name="Device2" HorizontalAlignment="Right" Height="30"></TextBlock>
+                        <Button Grid.Row="2" Grid.Column="0" Height="20" VerticalAlignment="Top" Click="LineDelete_Click">Удалить</Button>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+            <Expander IsExpanded="True" Header="Что-то еще" Visibility="Collapsed" ExpandDirection="Right">
+
+            </Expander>
+        </StackPanel>
+
+
+    </Grid>
+</Window>
