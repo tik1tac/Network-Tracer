@@ -117,5 +117,10 @@ namespace Network_Tracer.View
             }
 
         }
+
+        public override void SetPort( Device D2 )
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

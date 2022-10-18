@@ -35,6 +35,8 @@ namespace Network_Tracer.Model.Graph
 
         public abstract int GetPort( LineConnect line );
 
+        public abstract void SetPort( Device D2 );
+
         public Device( Canvas canvas ) => this.canvas = canvas;
 
         public abstract bool RemoveLine( bool deep, LineConnect line = null );
@@ -46,19 +48,14 @@ namespace Network_Tracer.Model.Graph
             graph.Add(ListLine, ArrayNodes);
             return graph;
         }
-
-        protected override void OnMouseMove( MouseEventArgs e )
+        static int count = 1;
+        protected override void OnMouseLeftButtonDown( MouseButtonEventArgs e )
         {
-            base.OnMouseMove(e);
-
-            if ( e.LeftButton == MouseButtonState.Pressed )
+            base.OnMouseLeftButtonDown(e);
+            Point p = e.GetPosition(Window);
+            if ( Window.SelectedTool == Tools.Connection )
             {
-                Point p = e.GetPosition(Window);
-                DataObject data = new DataObject();
-                data.SetData("Device", this);
-
-                // Creation of a new wire
-                if ( Window.SelectedTool == Tools.Connection )
+                if ( count == 1 )
                 {
                     Device.NewLine = new LineConnect(canvas)
                     {
@@ -68,50 +65,86 @@ namespace Network_Tracer.Model.Graph
                         Y2 = p.Y,
                         D1 = this
                     };
-
                     if ( this.AddLine(Device.NewLine) )
                     {
                         Canvas.SetZIndex(Device.NewLine, -1);
                         canvas.Children.Add(Device.NewLine);
-                        DragDrop.DoDragDrop(this, data, DragDropEffects.Link);
                     }
                     else
                     {
                         Device.NewLine.Remove(null, null);
+                        MessageBox.Show("Нет свободных портов");
                         Device.NewLine = null;
                     }
                 }
-                else
+                if ( count == 2 )
                 {
-                    // Otherwise move the object
-                    DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
+                    if ( Device.NewLine != null && Device.NewLine.D1 != this )
+                    {
+                        if ( this.AddLine(Device.NewLine) )
+                        {
+                            Device.NewLine.X2 = Canvas.GetLeft(this) + ( this.Width / 2 );
+                            Device.NewLine.Y2 = Canvas.GetTop(this) + ( this.Height / 2 );
+                            Device.NewLine.D2 = this;
+                            Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
+                            Device.NewLine.D2.UpdateLocation();
+                            count = 1;
+                        }
+                        else
+                        {
+                            Device.NewLine.Remove(null, null);
+                        }
+                        //SetPort(NewLine.D2);
+                        Device.NewLine = null;
+
+
+                    }
                 }
+                if ( Device.NewLine != null )
+                {
+                    count++;
+                }
+
+            }
+        }
+        protected override void OnMouseMove( MouseEventArgs e )
+        {
+            base.OnMouseMove(e);
+
+            if ( e.LeftButton == MouseButtonState.Pressed )
+            {
+                Point p = e.GetPosition(Window);
+                DataObject data = new DataObject();
+                data.SetData("Device", this);
+                // Otherwise move the object
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
                 e.Handled = true;
             }
         }
 
-        protected override void OnDrop( DragEventArgs e )
-        {
-            base.OnDrop(e);
+        //protected override void OnDrop( DragEventArgs e )
+        //{
+        //    base.OnDrop(e);
 
-            if ( Device.NewLine != null && Device.NewLine.D1 != this )
-            {
-                if ( this.AddLine(Device.NewLine) )
-                {
-                    Device.NewLine.X2 = Canvas.GetLeft(this) + ( this.Width / 2 );
-                    Device.NewLine.Y2 = Canvas.GetTop(this) + ( this.Height / 2 );
-                    Device.NewLine.D2 = this;
-                    Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
-                    Device.NewLine.D2.UpdateLocation();
-                }
-                else
-                {
-                    Device.NewLine.Remove(null, null);
-                }
+        //    if ( Device.NewLine != null && Device.NewLine.D1 != this )
+        //    {
+        //        if ( this.AddLine(Device.NewLine) )
+        //        {
+        //            Device.NewLine.X2 = Canvas.GetLeft(this) + ( this.Width / 2 );
+        //            Device.NewLine.Y2 = Canvas.GetTop(this) + ( this.Height / 2 );
+        //            Device.NewLine.D2 = this;
+        //            Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
+        //            Device.NewLine.D2.UpdateLocation();
+        //        }
+        //        else
+        //        {
+        //            Device.NewLine.Remove(null, null);
+        //        }
+        //        //SetPort(NewLine.D2);
+        //        Device.NewLine = null;
 
-                Device.NewLine = null;
-            }
-        }
+        //    }
+        //}
         public Device CalculateGraph()
         {
 

@@ -3,7 +3,10 @@ using Network_Tracer.Model.Graph.AbstractGraph;
 using Network_Tracer.View;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,6 +24,7 @@ namespace Network_Tracer
             InitializeComponent();
             this.Closing += OnWindowClosing;
             Device.Window = this;
+            SelectedTool = Tools.Cursor;
         }
         LineConnect SelectedLine;
         Device SelectedDevice;
@@ -82,6 +86,96 @@ namespace Network_Tracer
                 }
             }
         }
+        #region
+        public int Mode = 1;
+
+        public int Delay = 0;
+        public int Speed = 2000;
+
+        private readonly List<LineConnect> _lines = new List<LineConnect>();
+        private System.Threading.Thread _animation;
+
+        private void Animate( object sender = null, RoutedEventArgs e = null )
+        {
+
+            StopAnimation();
+            CanvasField.IsEnabled = false;
+
+            LineConnect.CompleteAnimationCallback callback = delegate ( LineConnect l )
+            {
+
+                Task.Run(delegate ()
+                {
+                    _animation = System.Threading.Thread.CurrentThread; //берём поток нащей функии чтобы потом в любой момент убить его
+                    foreach ( LineConnect line in _lines )
+                    {
+                        if ( _animation == null ) return;
+                        System.Threading.Thread.Sleep(Delay); //задержка
+                        App.Current.Dispatcher.Invoke(delegate ()
+                        {
+                            line.SetSpeed(new TimeSpan(0, 0, 0, 0, Speed)); //установка скорости
+                            line.BeginAnimation(); //старт анимации
+                        });
+
+                    }
+                });
+            };
+
+            _lines.Last().CompleteAnimationEvent += callback; //подписиваемся на событие
+
+            foreach ( LineConnect line in _lines )
+            {
+                line.Line.X1 = line.Line.X2 = line.Line.Y1 = line.Line.Y2 = 0; //скрываем линии
+            }
+            callback(null);
+
+        }
+
+        private void StopAnimation( object sender = null, RoutedEventArgs e = null )
+        {
+
+            _animation?.Abort(); //убиваем поток если он есть
+            _animation = null;
+
+            foreach ( LineConnect line in _lines ) //убираем функции с события и останавливаем анимации
+            {
+                line.StopAnimation();
+                line.RemoveAllHandles_CompleteAnimationEvent();
+            }
+            CanvasField.IsEnabled = true;
+        }
+
+        private void SetLinePosition()
+        {
+            if ( Device.NewLine == null ) return;
+            Device.NewLine.X2 = Mouse.GetPosition(this).X - CanvasField.Margin.Left;
+            Device.NewLine.Y2 = Mouse.GetPosition(this).Y - CanvasField.Margin.Top;
+        }
+
+        private void Canvas_MouseMove( object sender, MouseEventArgs e )
+        {
+            SetLinePosition(); //обновляем линию
+        }
+
+        //private void Canvas_PreviewMouseLeftButtonDown( object sender, MouseButtonEventArgs e )
+        //{
+        //    if ( Device.NewLine != null )
+        //    {
+        //X1 = (Line == null ) ? Mouse.GetPosition(this).X - CanvasField.Margin.Left : Line.X2,
+        //        Y1 = (Line == null ) ? Mouse.GetPosition(this).Y - CanvasField.Margin.Top : Line.Y2,
+        //    }
+        //    Line = new LineConnect(CanvasField)
+        //    {
+        //        X2 = Mouse.GetPosition(this).X - CanvasField.Margin.Left,
+        //        Y2 = Mouse.GetPosition(this).Y - CanvasField.Margin.Top
+        //    };
+        //    Line.Line.StrokeThickness = 2; //шырина линии
+
+        //    _lines.Add(Line);
+        //    CanvasField.Children.Add(Line);
+
+        //}
+        #endregion
         protected override void OnMouseLeftButtonDown( MouseButtonEventArgs e )
         {
             base.OnMouseLeftButtonDown(e);
@@ -118,54 +212,54 @@ namespace Network_Tracer
             }
         }
 
-        protected override void OnMouseLeftButtonUp( MouseButtonEventArgs e )
-        {
-            base.OnMouseLeftButtonUp(e);
+        //protected override void OnMouseLeftButtonUp( MouseButtonEventArgs e )
+        //{
+        //    base.OnMouseLeftButtonUp(e);
 
-            if ( Device.NewLine != null )
-            {
-                Device.NewLine.Remove(null, null);
-                Device.NewLine = null;
-            }
-        }
+        //    if ( Device.NewLine != null )
+        //    {
+        //        Device.NewLine.Remove(null, null);
+        //        Device.NewLine = null;
+        //    }
+        //}
 
-        protected override void OnDragOver( DragEventArgs e )
-        {
-            base.OnDragOver(e);
+        //protected override void OnDragOver( DragEventArgs e )
+        //{
+        //    base.OnDragOver(e);
 
-            if ( e.Data.GetDataPresent("Device") )
-            {
-                Device obj = (Device)e.Data.GetData("Device");
-                Point p = e.GetPosition(this);
+        //    if ( e.Data.GetDataPresent("Device") )
+        //    {
+        //        Device obj = (Device)e.Data.GetData("Device");
+        //        Point p = e.GetPosition(this);
 
-                // Creation of a new wire
-                if ( Device.NewLine != null )
-                {
-                    Device.NewLine.X2 = p.X;
+        //        // Creation of a new wire
+        //        if ( Device.NewLine != null )
+        //        {
+        //            Device.NewLine.X2 = p.X;
 
-                    // Menubar height
-                    Device.NewLine.Y2 = p.Y - 20;
-                }
-                else
-                {
-                    // Drag & drop of an object
-                    Canvas.SetLeft(obj, p.X - ( obj.Width / 2 ));
-                    Canvas.SetTop(obj, p.Y - ( obj.Height / 2 ));
-                    obj.UpdateLocation();
-                }
-            }
-        }
+        //            // Menubar height
+        //            Device.NewLine.Y2 = p.Y - 20;
+        //        }
+        //        else
+        //        {
+        //            // Drag & drop of an object
+        //            Canvas.SetLeft(obj, p.X - ( obj.Width / 2 ));
+        //            Canvas.SetTop(obj, p.Y - ( obj.Height / 2 ));
+        //            obj.UpdateLocation();
+        //        }
+        //    }
+        //}
 
-        protected override void OnDrop( DragEventArgs e )
-        {
-            base.OnDrop(e);
+        //protected override void OnDrop( DragEventArgs e )
+        //{
+        //    base.OnDrop(e);
 
-            if ( Device.NewLine != null )
-            {
-                Device.NewLine.Remove(null, null);
-                Device.NewLine = null;
-            }
-        }
+        //    if ( Device.NewLine != null )
+        //    {
+        //        Device.NewLine.Remove(null, null);
+        //        Device.NewLine = null;
+        //    }
+        //}
 
         private void VZGButton_Click( object sender, RoutedEventArgs e )
         {

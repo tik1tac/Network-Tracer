@@ -108,6 +108,8 @@ C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.csproj.G
 C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.csproj.CoreCompileInputs.cache
 C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\Network Tracer.csproj.CopyComplete
 C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\App.baml
-C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Microsoft.Expression.Interactions.dll
-C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\System.Windows.Interactivity.dll
-C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Microsoft.Expression.Interactions.xml
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\Ports.baml
+C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\Ports.g.cs
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.dll
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.pdb
+C:\Users\user\Desktop\12 каф\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.xml

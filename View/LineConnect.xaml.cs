@@ -1,9 +1,11 @@
 ﻿using Network_Tracer.Model.Graph;
 
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace Network_Tracer.View
 {
@@ -18,46 +20,209 @@ namespace Network_Tracer.View
             InitializeComponent();
             this.canvas = canvas;
         }
+        static LineConnect()
+        {
+            X1P = DependencyProperty.Register("X1", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, X1_PC));
+            X2P = DependencyProperty.Register("X2", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, X2_PC));
+            Y1P = DependencyProperty.Register("Y1", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, Y1_PC));
+            Y2P = DependencyProperty.Register("Y2", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, Y2_PC));
+        }
+        #region Property
+
         public double X1
         {
-            get => Line.X1;
-            set
-            {
-                Line.X1 = value;
-                Highlight.X1 = value;
-            }
+            get { return (double)GetValue(X1P); }
+            set { SetValue(X1P, value); }
         }
-        public double Y1
-        {
-            get => Line.Y1;
-            set
-            {
-                Line.Y1 = value;
-                Highlight.Y1 = value;
-            }
-        }
+
         public double X2
         {
-            get => Line.X2;
-            set
-            {
-                Highlight.X2 = value; 
-                Line.X2 = value;
-            }
+            get { return (double)GetValue(X2P); }
+            set { SetValue(X2P, value); }
         }
+
+        public double Y1
+        {
+            get { return (double)GetValue(Y1P); }
+            set { SetValue(Y1P, value); }
+        }
+
         public double Y2
         {
-            get => Line.Y2;
-            set
+            get { return (double)GetValue(Y2P); }
+            set { SetValue(Y2P, value); }
+        }
+
+        #endregion
+
+        #region DependencyProperty
+
+        public static readonly DependencyProperty X1P;
+        public static readonly DependencyProperty X2P;
+        public static readonly DependencyProperty Y1P;
+        public static readonly DependencyProperty Y2P;
+
+        #endregion
+
+        #region Change calback functions
+
+        public static void X1_PC( DependencyObject obj, DependencyPropertyChangedEventArgs e )
+        {
+            LineConnect c = obj as LineConnect;
+            double nv = (double)e.NewValue;
+            c.X1 = c.Line.X1 = nv;
+            c.ChangeAnimationValue();
+        }
+
+        public static void X2_PC( DependencyObject obj, DependencyPropertyChangedEventArgs e )
+        {
+            LineConnect c = obj as LineConnect;
+            double nv = (double)e.NewValue;
+            c.X2 = c.Line.X2 = nv;
+            c.ChangeAnimationValue();
+        }
+
+        public static void Y1_PC( DependencyObject obj, DependencyPropertyChangedEventArgs e )
+        {
+            LineConnect c = obj as LineConnect;
+            double nv = (double)e.NewValue;
+            c.Y1 = c.Line.Y1 = nv;
+            c.ChangeAnimationValue();
+        }
+
+        public static void Y2_PC( DependencyObject obj, DependencyPropertyChangedEventArgs e )
+        {
+            LineConnect c = obj as LineConnect;
+            double nv = (double)e.NewValue;
+            c.Y2 = c.Line.Y2 = nv;
+            c.ChangeAnimationValue();
+        }
+
+        #endregion
+
+        #region Delegates structure
+
+        public delegate void CompleteAnimationCallback( LineConnect lineControl );
+
+        #endregion
+
+        #region Class variables
+        //спикок функций(CompleteAnimationCallback) подписанных на событие CompleteAnimationEvent 
+        private readonly List<CompleteAnimationCallback> _listHandles = new List<CompleteAnimationCallback>();
+
+        public event CompleteAnimationCallback CompleteAnimationEvent
+        {
+            add
             {
-                Highlight.Y2 = value;
-                Line.Y2 = value;
+                _listHandles.Add(value);
+            }
+
+            remove
+            {
+                _listHandles.Remove(value);
             }
         }
+        public TimeSpan SpeedAnimation { get; private set; }
+
+        #endregion
+
+        private void ChangeAnimationValue()
+        {
+            TimelineCollection collection = a.Storyboard.Children;//берём колекцию колекций кадров
+            //устанавливаем значения
+            ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[0].Value = ( collection[1] as DoubleAnimationUsingKeyFrames ).KeyFrames[0].Value = ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].Value = X1;
+            ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[0].Value = ( collection[3] as DoubleAnimationUsingKeyFrames ).KeyFrames[0].Value = ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].Value = Y1;
+
+            ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[2].Value = X2;
+            ( collection[1] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].Value = X2;
+            ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[2].Value = Y2;
+            ( collection[3] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].Value = Y2;
+        }
+
+        public void BeginAnimation()
+        {
+            a.Storyboard.Begin();
+        }
+
+        public void StopAnimation()
+        {
+            a.Storyboard.Stop();
+
+            //возвращаем значения
+            Line.X1 = X1;
+            Line.X2 = X2;
+            Line.Y1 = Y1;
+            Line.Y2 = Y2;
+        }
+
+        public void RemoveAllHandles_CompleteAnimationEvent()
+        {
+            for ( int i = 0 ; i < _listHandles.Count ; i++ )
+            {
+                CompleteAnimationEvent -= _listHandles[i];
+                //_listHandles.Remove(_listHandles[i]);
+            }
+        }
+
+        public void SetSpeed( TimeSpan time )
+        {
+            StopAnimation();
+
+            TimelineCollection collection = a.Storyboard.Children;//берём колекцию колекций кадров
+            //устанавливаем значения
+            ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].KeyTime = ( collection[1] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].KeyTime = ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].KeyTime = ( collection[3] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].KeyTime = new TimeSpan(0, 0, 0, 0, (int)Math.Round(time.TotalMilliseconds / 2));
+            ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[2].KeyTime = ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[2].KeyTime = time;
+            SpeedAnimation = time;
+        }
+
+        private void CompleteAnimation( object sender, EventArgs e )
+        {
+            //CompleteAnimationEvent?.Invoke(this);
+            foreach ( CompleteAnimationCallback callback in _listHandles )
+            {
+                callback(this);//вызываем функции
+            }
+        }
+        //public double X1
+        //{
+        //    get => Line.X1;
+        //    set
+        //    {
+        //        Line.X1 = value;
+        //        Highlight.X1 = value;
+        //    }
+        //}
+        //public double Y1
+        //{
+        //    get => Line.Y1;
+        //    set
+        //    {
+        //        Line.Y1 = value;
+        //        Highlight.Y1 = value;
+        //    }
+        //}
+        //public double X2
+        //{
+        //    get => Line.X2;
+        //    set
+        //    {
+        //        Highlight.X2 = value; 
+        //        Line.X2 = value;
+        //    }
+        //}
+        //public double Y2
+        //{
+        //    get => Line.Y2;
+        //    set
+        //    {
+        //        Highlight.Y2 = value;
+        //        Line.Y2 = value;
+        //    }
+        //}
 
         public Brush ColorConnection { get => Line.Stroke; set => Line.Stroke = value; }
 
-        public int Cost { get => Cost; set => Cost = value; }
+        //public int Cost { get => Cost; set => Cost = value; }
 
         public Device D1 { get; set; }
         public Device D2 { get; set; }
@@ -154,6 +319,11 @@ namespace Network_Tracer.View
             //geometryGroup.Children.Add(arrowPart2Geometry);
 
             return this;
+        }
+
+        private void UserControl_Loaded( object sender, RoutedEventArgs e )
+        {
+            a.Storyboard.Completed += CompleteAnimation; //подписываемся на событие оканчании анимации
         }
     }
 }

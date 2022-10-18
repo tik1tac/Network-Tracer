@@ -39,7 +39,7 @@
             </i:EventTrigger>
         </i:Interaction.Triggers>-->
         <StackPanel Background="Transparent" Grid.ColumnSpan="3" Grid.Row="1">
-            <Canvas  x:Name="CanvasField" AllowDrop="True"/>
+            <Canvas  x:Name="CanvasField" AllowDrop="True" MouseMove="Canvas_MouseMove"/>
         </StackPanel>
 
 

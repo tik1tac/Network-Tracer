@@ -112,5 +112,15 @@ namespace Network_Tracer.View
             }
             return true;
         }
+
+        public override int GetPort( LineConnect line )
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void SetPort( Device D2 )
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
