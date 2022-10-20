@@ -44,14 +44,8 @@
 
 
         <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" Background="AliceBlue" >
-            <Expander  IsExpanded="True" Header="Элементы"  ExpandDirection="Right" Width="478" >
+            <Expander  IsExpanded="True" Header="Элементы"  ExpandDirection="Right"  >
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="Connection" Height="70" Style="{StaticResource ToolStyle}" BorderThickness="1" Click="Connection_Click" BorderBrush="Transparent">
-                        <StackPanel>
-                            <Line X1="1" X2="2" Y1="0" Y2="5"  StrokeThickness="2" Stroke="Black" Stretch="Fill" Height="32" Width="93" VerticalAlignment="Top"></Line>
-                            <TextBlock FontSize="18">Соединение</TextBlock>
-                        </StackPanel>
-                    </Button>
                     <Grid >
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
@@ -60,26 +54,47 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="150"></ColumnDefinition>
                             <ColumnDefinition Width="150"></ColumnDefinition>
+                            <ColumnDefinition Width="150"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="VZGButton" BorderBrush="Transparent" Click="VZGButton_Click" Style="{StaticResource ToolStyle}" Grid.Row="0" >
                             <view:VZG></view:VZG>
                         </Button>
-                        <Button x:Name="PEGButton" BorderBrush="Transparent" Grid.Row="2" Style="{StaticResource ToolStyle}"  Click="PEGButton_Click" Grid.Column="2"   >
+                        <Button x:Name="PEGButton" BorderBrush="Transparent" Grid.Row="2" Style="{StaticResource ToolStyle}"  Click="PEGButton_Click" Grid.Column="1"   >
                             <view:PEG Weight="50" ></view:PEG>
                         </Button>
                         <Button x:Name="SEButton" BorderBrush="Transparent" Grid.Row="2" Click="SEButton_Click" Style="{StaticResource ToolStyle}"  Grid.Column="0" >
                             <view:SE></view:SE>
                         </Button>
-                        <Button x:Name="CursorButton" BorderBrush="Transparent" Grid.Row="0" Style="{StaticResource ToolStyle}" Click="CursorButton_Click"   Grid.Column="2"  >
+                        <Button x:Name="CursorButton" BorderBrush="Transparent" Grid.Row="0" Style="{StaticResource ToolStyle}" Click="CursorButton_Click" Grid.Column="1"  >
                             <StackPanel>
                                 <Image Height="30" Width="30" Source="pack://application:,,,/Resources/cursor.png"></Image>
                                 <TextBlock Name="LabelBlock" Margin="0,0,0,0" TextAlignment="Center" > Указатель</TextBlock>
                             </StackPanel>
                         </Button>
+                        <Button Grid.Column="2" x:Name="Connection" Height="70" Style="{StaticResource ToolStyle}" Click="Connection_Click" BorderBrush="Transparent">
+                            <StackPanel>
+                                <Line X1="1" X2="2" Y1="0" Y2="5"  StrokeThickness="2" Stroke="Black" Stretch="Fill" Height="32" Width="93" VerticalAlignment="Top"></Line>
+                                <TextBlock FontSize="18">Соединение</TextBlock>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="PEGSpare" BorderBrush="Transparent" Grid.Row="1" Click="SEButton_Click" Style="{StaticResource ToolStyle}"  Grid.Column="2" >
+                            <view:PEGSpare></view:PEGSpare>
+                        </Button>
                     </Grid>
                 </StackPanel>
             </Expander>
-            <Expander x:Name="DeviceExpander"  IsExpanded="True" Header="Характеристика" ExpandDirection="Right" Visibility="Visible">
+            <Expander IsExpanded="True" Header="Выбрать источник" Visibility="Visible" ExpandDirection="Right">
+                <StackPanel Width="100">
+                    <ComboBox x:Name="SourceBox" Width="100" VerticalAlignment="Top" Text="Выберите" IsEditable="True" Margin="0,30,0,0">
+                        <TextBlock>ПЭГ</TextBlock>
+                        <TextBlock>ПЭГ рез.</TextBlock>
+                        <TextBlock>ВЗГ</TextBlock>
+                        <TextBlock>ГСЭ</TextBlock>
+                    </ComboBox>
+                    <Button VerticalAlignment="Bottom" Height="20" Margin="0,100,0,0">Показать</Button>
+                </StackPanel>
+            </Expander>
+            <Expander x:Name="DeviceExpander"  IsExpanded="True" Header="Характеристика" ExpandDirection="Right" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" >
                     <Grid Margin="0,30,0,0">
                         <Grid.RowDefinitions>
@@ -89,7 +104,7 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"></ColumnDefinition>
-                            <ColumnDefinition Width="200"></ColumnDefinition>
+                            <ColumnDefinition Width="0"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
                         <Label Content="Название:" HorizontalAlignment="Left"></Label>
@@ -100,9 +115,8 @@
                         <Button Grid.Row="2" Grid.Column="0"  VerticalAlignment="Top" Height="20" Click="DeviceDelete_Click">Удалить</Button>
                     </Grid>
                 </StackPanel>
-
             </Expander>
-            <Expander x:Name="LineExpender" IsExpanded="True" Header="Линия" Visibility="Visible" ExpandDirection="Right">
+            <Expander x:Name="LineExpender" IsExpanded="True" Header="Линия" Visibility="Collapsed" ExpandDirection="Right">
                 <StackPanel Orientation="Horizontal">
                     <Grid Margin="0,30,0,0">
                         <Grid.RowDefinitions>
@@ -112,7 +126,7 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"></ColumnDefinition>
-                            <ColumnDefinition Width="200"></ColumnDefinition>
+                            <ColumnDefinition Width="0"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
                         <Label Width="80" HorizontalAlignment="Left">Устройство1:</Label>
@@ -124,9 +138,7 @@
                     </Grid>
                 </StackPanel>
             </Expander>
-            <Expander IsExpanded="True" Header="Что-то еще" Visibility="Collapsed" ExpandDirection="Right">
 
-            </Expander>
         </StackPanel>
 
 

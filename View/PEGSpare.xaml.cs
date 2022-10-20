@@ -1,21 +1,33 @@
 ﻿using Network_Tracer.Model;
 using Network_Tracer.Model.Graph;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace Network_Tracer.View
 {
     /// <summary>
-    /// Логика взаимодействия для PEG.xaml
+    /// Логика взаимодействия для PEGSpare.xaml
     /// </summary>
-    public partial class PEG : Nodes
+    public partial class PEGSpare : Nodes
     {
-
-        public PEG() : this(null)
+        public PEGSpare() : this(null)
         {
 
         }
-        public PEG( Canvas canvas ) : base(canvas)
+        public PEGSpare( Canvas canvas ) : base(canvas)
         {
             InitializeComponent();
             Weight = 10;
@@ -41,7 +53,7 @@ namespace Network_Tracer.View
         //Количество свободных портов у узла
         public override int FreePorts { get => base.FreePorts; set => base.FreePorts = value; }
 
-        public bool SetPort(LineConnect line)
+        public bool SetPort( LineConnect line )
         {
             return false;
         }
@@ -56,7 +68,7 @@ namespace Network_Tracer.View
             set
             {
                 base.LabelName = value;
-                NamePEG1.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+                NamePEGSpare.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
             }
         }
         public override string city
@@ -82,7 +94,7 @@ namespace Network_Tracer.View
             if ( Line == null )
             {
                 Line = line;
-                Lines.Add( line );
+                Lines.Add(line);
                 return true;
             }
 

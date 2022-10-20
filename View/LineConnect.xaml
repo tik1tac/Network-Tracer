@@ -45,9 +45,9 @@
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
             </DoubleAnimationUsingKeyFrames>
-
         </Storyboard>
     </UserControl.Resources>
+    
     <Grid Name="WireCanvas">
         <Grid.ContextMenu>
             <ContextMenu StaysOpen="True" >
@@ -55,8 +55,7 @@
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
-        <!--<Line Name="Highlight" Stroke="Transparent" StrokeThickness="30"></Line>-->
-        <Line Name="Line" StrokeThickness="2" Stroke="Red" X2="40" Y2="44">
+        <Line Name="Line" StrokeThickness="2" Stroke="Black" X2="40" Y2="44">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Loaded">
                     <i:ControlStoryboardAction x:Name="a" ControlStoryboardOption="Stop" Storyboard="{StaticResource Animation}"/>
@@ -68,7 +67,7 @@
         <Border Name="WireBorder" Width="48" Height="48" Visibility="Hidden" Background="WhiteSmoke" BorderBrush="LightBlue" BorderThickness="3" CornerRadius="30">
             <Label Name="WireLabel" Foreground="DarkSlateGray" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
         </Border>
-        <!--<Canvas.Triggers>
+        <Grid.Triggers>
             <EventTrigger RoutedEvent="Canvas.Loaded">
                 <BeginStoryboard>
                     <Storyboard>
@@ -84,6 +83,6 @@
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
-        </Canvas.Triggers>-->
+        </Grid.Triggers>
     </Grid>
 </UserControl>

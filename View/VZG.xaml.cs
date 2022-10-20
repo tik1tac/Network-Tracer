@@ -25,6 +25,7 @@ namespace Network_Tracer.View
             FreePorts = NumberPorts;
             this.Ports = NumberPorts;
             Number = 2;
+            Lines = new System.Collections.Generic.List<LineConnect>();
         }
         private Canvas canvas { get; set; }
         private LineConnect[] ports;
@@ -75,6 +76,7 @@ namespace Network_Tracer.View
                 if ( this.ports[i] == null )
                 {
                     this.ports[i] = line;
+                    Lines.Add(line);
                     return true;
                 }
             }
@@ -114,13 +116,13 @@ namespace Network_Tracer.View
             }
             return true;
         }
-        public override void SetPort( Device D2 )
-        {
-            throw new System.NotImplementedException();
-        }
-        public override int GetPort( LineConnect line )
-        {
-            throw new System.NotImplementedException();
-        }
+        //public override void SetPort( Device D2 )
+        //{
+        //    throw new System.NotImplementedException();
+        //}
+        //public override int GetPort( LineConnect line )
+        //{
+        //    throw new System.NotImplementedException();
+        //}
     }
 }

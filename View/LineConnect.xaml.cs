@@ -1,4 +1,5 @@
 ﻿using Network_Tracer.Model.Graph;
+using Network_Tracer.Model.Graph.AbstractGraph;
 
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Network_Tracer.View
             InitializeComponent();
             this.canvas = canvas;
         }
+        #region Анимация
         static LineConnect()
         {
             X1P = DependencyProperty.Register("X1", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, X1_PC));
@@ -183,46 +185,11 @@ namespace Network_Tracer.View
                 callback(this);//вызываем функции
             }
         }
-        //public double X1
-        //{
-        //    get => Line.X1;
-        //    set
-        //    {
-        //        Line.X1 = value;
-        //        Highlight.X1 = value;
-        //    }
-        //}
-        //public double Y1
-        //{
-        //    get => Line.Y1;
-        //    set
-        //    {
-        //        Line.Y1 = value;
-        //        Highlight.Y1 = value;
-        //    }
-        //}
-        //public double X2
-        //{
-        //    get => Line.X2;
-        //    set
-        //    {
-        //        Highlight.X2 = value; 
-        //        Line.X2 = value;
-        //    }
-        //}
-        //public double Y2
-        //{
-        //    get => Line.Y2;
-        //    set
-        //    {
-        //        Highlight.Y2 = value;
-        //        Line.Y2 = value;
-        //    }
-        //}
+        #endregion
 
         public Brush ColorConnection { get => Line.Stroke; set => Line.Stroke = value; }
 
-        //public int Cost { get => Cost; set => Cost = value; }
+        public int Cost { get; private set; }
 
         public Device D1 { get; set; }
         public Device D2 { get; set; }
@@ -231,6 +198,23 @@ namespace Network_Tracer.View
         public NamePorts Port2 { get => Port2; set => Port2 = value; }
 
         Canvas canvas { get; set; }
+
+        public void SetCost( Device D )
+        {
+            var TypeD = D.GetType();
+            if ( TypeD == typeof(PEG) )
+            {
+                Cost = 10;
+            }
+            if ( TypeD == typeof(VZG) )
+            {
+                Cost = 5;
+            }
+            if ( TypeD == typeof(SE) )
+            {
+                Cost = 2;
+            }
+        }
 
         public void UpdateLocation( Device device, double x, double y )
         {

@@ -1,9 +1,9 @@
 ﻿namespace Network_Tracer
 {
-    public enum NameNodes
+    public enum Source
     {
         Peg,
         Vzg,
-        Se
+        PegSpare
     }
 }

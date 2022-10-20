@@ -1,5 +1,6 @@
 ﻿using Network_Tracer.View;
 
+using System.Collections;
 using System.Windows.Controls;
 
 namespace Network_Tracer.Model.Graph

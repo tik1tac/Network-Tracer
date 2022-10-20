@@ -11,11 +11,9 @@ namespace Network_Tracer.Model.Graph
     public abstract class Device : UserControl
     {
 
-        public static List<LineConnect> ListLine = new List<LineConnect>();
+        public static ArrayList D2 = new ArrayList();
 
-        public static ArrayList ArrayNodes = new ArrayList();
-
-        public static Dictionary<List<LineConnect>, ArrayList> graph = new Dictionary<List<LineConnect>, ArrayList>();
+        public virtual List<LineConnect> Lines { get; set; }
 
         public virtual string LabelName { get; set; }
 
@@ -33,9 +31,9 @@ namespace Network_Tracer.Model.Graph
 
         public Canvas canvas { get; set; }
 
-        public abstract int GetPort( LineConnect line );
+        //public abstract int GetPort( LineConnect line );
 
-        public abstract void SetPort( Device D2 );
+        //public abstract void SetPort( Device D2 );
 
         public Device( Canvas canvas ) => this.canvas = canvas;
 
@@ -43,11 +41,6 @@ namespace Network_Tracer.Model.Graph
 
         public abstract void Remove( object sender, RoutedEventArgs e );
 
-        public static Dictionary<List<LineConnect>, ArrayList> GetGraph()
-        {
-            graph.Add(ListLine, ArrayNodes);
-            return graph;
-        }
         static int count = 1;
         protected override void OnMouseLeftButtonDown( MouseButtonEventArgs e )
         {
@@ -86,9 +79,12 @@ namespace Network_Tracer.Model.Graph
                             Device.NewLine.X2 = Canvas.GetLeft(this) + ( this.Width / 2 );
                             Device.NewLine.Y2 = Canvas.GetTop(this) + ( this.Height / 2 );
                             Device.NewLine.D2 = this;
+                            D2.Add(Device.NewLine.D2);
+                            Device.NewLine.SetCost(Device.NewLine.D1);
                             Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
                             Device.NewLine.D2.UpdateLocation();
                             count = 1;
+                            Window.SelectedTool = Tools.Cursor;
                         }
                         else
                         {
@@ -96,8 +92,6 @@ namespace Network_Tracer.Model.Graph
                         }
                         //SetPort(NewLine.D2);
                         Device.NewLine = null;
-
-
                     }
                 }
                 if ( Device.NewLine != null )
@@ -116,39 +110,9 @@ namespace Network_Tracer.Model.Graph
                 Point p = e.GetPosition(Window);
                 DataObject data = new DataObject();
                 data.SetData("Device", this);
-                // Otherwise move the object
                 DragDrop.DoDragDrop(this, data, DragDropEffects.Move);
                 e.Handled = true;
             }
-        }
-
-        //protected override void OnDrop( DragEventArgs e )
-        //{
-        //    base.OnDrop(e);
-
-        //    if ( Device.NewLine != null && Device.NewLine.D1 != this )
-        //    {
-        //        if ( this.AddLine(Device.NewLine) )
-        //        {
-        //            Device.NewLine.X2 = Canvas.GetLeft(this) + ( this.Width / 2 );
-        //            Device.NewLine.Y2 = Canvas.GetTop(this) + ( this.Height / 2 );
-        //            Device.NewLine.D2 = this;
-        //            Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
-        //            Device.NewLine.D2.UpdateLocation();
-        //        }
-        //        else
-        //        {
-        //            Device.NewLine.Remove(null, null);
-        //        }
-        //        //SetPort(NewLine.D2);
-        //        Device.NewLine = null;
-
-        //    }
-        //}
-        public Device CalculateGraph()
-        {
-
-            return null;
         }
     }
 }

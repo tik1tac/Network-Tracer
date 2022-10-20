@@ -6,6 +6,7 @@
         Connection,
         PEG,
         SE,
-        Cursor
+        Cursor,
+        PEGSpare
     }
 }

@@ -26,6 +26,7 @@ namespace Network_Tracer
             Device.Window = this;
             SelectedTool = Tools.Cursor;
         }
+        #region Элементы на канвасе
         LineConnect SelectedLine;
         Device SelectedDevice;
         public Tools SelectedTool
@@ -60,33 +61,37 @@ namespace Network_Tracer
                 switch ( value )
                 {
                     case Tools.VZG:
-                        this.Connection.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = 0.4;
+                        this.Connection.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
                         this.VZGButton.Opacity = 1.0;
                         break;
 
                     case Tools.Connection:
-                        this.SEButton.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = 0.4;
+                        this.SEButton.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
                         this.Connection.Opacity = 1.0;
                         break;
 
                     case Tools.PEG:
-                        this.Connection.Opacity = this.VZGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = 0.4;
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
                         this.PEGButton.Opacity = 1.0;
                         break;
 
                     case Tools.SE:
-                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = 0.4;
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
                         this.SEButton.Opacity = 1.0;
+                        break;
+                    case Tools.PEGSpare:
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = SEButton.Opacity = 0.4;
+                        this.PEGSpare.Opacity = 1.0;
                         break;
 
                     default:
-                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = 0.4;
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = this.PEGSpare.Opacity = 0.4;
                         this.CursorButton.Opacity = 1.0;
                         break;
                 }
             }
         }
-        #region
+        #region Анимация
         public int Mode = 1;
 
         public int Delay = 0;
@@ -145,37 +150,14 @@ namespace Network_Tracer
             CanvasField.IsEnabled = true;
         }
 
-        private void SetLinePosition()
+        private void Canvas_MouseMove( object sender, MouseEventArgs e )
         {
             if ( Device.NewLine == null ) return;
             Device.NewLine.X2 = Mouse.GetPosition(this).X - CanvasField.Margin.Left;
             Device.NewLine.Y2 = Mouse.GetPosition(this).Y - CanvasField.Margin.Top;
         }
-
-        private void Canvas_MouseMove( object sender, MouseEventArgs e )
-        {
-            SetLinePosition(); //обновляем линию
-        }
-
-        //private void Canvas_PreviewMouseLeftButtonDown( object sender, MouseButtonEventArgs e )
-        //{
-        //    if ( Device.NewLine != null )
-        //    {
-        //X1 = (Line == null ) ? Mouse.GetPosition(this).X - CanvasField.Margin.Left : Line.X2,
-        //        Y1 = (Line == null ) ? Mouse.GetPosition(this).Y - CanvasField.Margin.Top : Line.Y2,
-        //    }
-        //    Line = new LineConnect(CanvasField)
-        //    {
-        //        X2 = Mouse.GetPosition(this).X - CanvasField.Margin.Left,
-        //        Y2 = Mouse.GetPosition(this).Y - CanvasField.Margin.Top
-        //    };
-        //    Line.Line.StrokeThickness = 2; //шырина линии
-
-        //    _lines.Add(Line);
-        //    CanvasField.Children.Add(Line);
-
-        //}
         #endregion
+
         protected override void OnMouseLeftButtonDown( MouseButtonEventArgs e )
         {
             base.OnMouseLeftButtonDown(e);
@@ -184,7 +166,7 @@ namespace Network_Tracer
             switch ( this.SelectedTool )
             {
                 case Tools.PEG:
-                    PEG peg = new PEG(CanvasField);
+                    PEG peg = cn.CreatePeg(CanvasField);
                     Canvas.SetLeft(peg, p.X - ( peg.Width / 2 ));
                     Canvas.SetTop(peg, p.Y - ( peg.Height / 2 ));
                     peg.MouseLeftButtonDown += this.OnPEGLeftButtonDown;
@@ -211,56 +193,36 @@ namespace Network_Tracer
                     break;
             }
         }
+        #region Drag&Drop
+        protected override void OnMouseLeftButtonUp( MouseButtonEventArgs e )
+        {
+            base.OnMouseLeftButtonUp(e);
 
-        //protected override void OnMouseLeftButtonUp( MouseButtonEventArgs e )
-        //{
-        //    base.OnMouseLeftButtonUp(e);
+        }
 
-        //    if ( Device.NewLine != null )
-        //    {
-        //        Device.NewLine.Remove(null, null);
-        //        Device.NewLine = null;
-        //    }
-        //}
+        protected override void OnDragOver( DragEventArgs e )
+        {
+            base.OnDragOver(e);
 
-        //protected override void OnDragOver( DragEventArgs e )
-        //{
-        //    base.OnDragOver(e);
+            if ( e.Data.GetDataPresent("Device") )
+            {
+                Device obj = (Device)e.Data.GetData("Device");
+                Point p = e.GetPosition(this);
 
-        //    if ( e.Data.GetDataPresent("Device") )
-        //    {
-        //        Device obj = (Device)e.Data.GetData("Device");
-        //        Point p = e.GetPosition(this);
 
-        //        // Creation of a new wire
-        //        if ( Device.NewLine != null )
-        //        {
-        //            Device.NewLine.X2 = p.X;
+                // Drag & drop of an object
+                Canvas.SetLeft(obj, p.X - ( obj.Width / 2 ));
+                Canvas.SetTop(obj, p.Y - ( obj.Height / 2 ));
+                obj.UpdateLocation();
+            }
+        }
 
-        //            // Menubar height
-        //            Device.NewLine.Y2 = p.Y - 20;
-        //        }
-        //        else
-        //        {
-        //            // Drag & drop of an object
-        //            Canvas.SetLeft(obj, p.X - ( obj.Width / 2 ));
-        //            Canvas.SetTop(obj, p.Y - ( obj.Height / 2 ));
-        //            obj.UpdateLocation();
-        //        }
-        //    }
-        //}
+        protected override void OnDrop( DragEventArgs e )
+        {
+            base.OnDrop(e);
 
-        //protected override void OnDrop( DragEventArgs e )
-        //{
-        //    base.OnDrop(e);
-
-        //    if ( Device.NewLine != null )
-        //    {
-        //        Device.NewLine.Remove(null, null);
-        //        Device.NewLine = null;
-        //    }
-        //}
-
+        }
+        #endregion
         private void VZGButton_Click( object sender, RoutedEventArgs e )
         {
 
@@ -320,6 +282,7 @@ namespace Network_Tracer
             DeviceExpander.Visibility = Visibility.Collapsed;
             LineExpender.Visibility = Visibility.Visible;
         }
+        #endregion
         public void OnWindowClosing( object sender, CancelEventArgs e )
         {
             if ( !this.CloseScheme() )
