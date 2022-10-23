@@ -29,6 +29,8 @@ namespace Network_Tracer
         #region Элементы на канвасе
         LineConnect SelectedLine;
         Device SelectedDevice;
+        PEG pegcount = null;
+        PEGSpare pegsparecount = null;
         public Tools SelectedTool
         {
             get
@@ -52,6 +54,11 @@ namespace Network_Tracer
                 {
                     return Tools.SE;
                 }
+                if ( this.PEGSpare.Opacity > 0.9 )
+                {
+                    return Tools.PEGSpare;
+                }
+
 
                 return Tools.Cursor;
             }
@@ -171,6 +178,8 @@ namespace Network_Tracer
                     Canvas.SetTop(peg, p.Y - ( peg.Height / 2 ));
                     peg.MouseLeftButtonDown += this.OnPEGLeftButtonDown;
                     CanvasField.Children.Add(peg);
+                    SelectedTool = Tools.Cursor;
+                    Device.pegcount = peg;
                     break;
 
                 case Tools.VZG:
@@ -179,6 +188,7 @@ namespace Network_Tracer
                     Canvas.SetTop(vzg, p.Y - ( vzg.Height / 2 ));
                     vzg.MouseLeftButtonDown += this.OnVZGLeftButtonDown;
                     CanvasField.Children.Add(vzg);
+                    SelectedTool = Tools.Cursor;
                     break;
 
                 case Tools.SE:
@@ -187,6 +197,17 @@ namespace Network_Tracer
                     Canvas.SetTop(se, p.Y - ( se.Height / 2 ));
                     se.MouseLeftButtonDown += this.OnSELeftButtonDown;
                     CanvasField.Children.Add(se);
+                    SelectedTool = Tools.Cursor;
+                    break;
+
+                case Tools.PEGSpare:
+                    PEGSpare pegspare = cn.CreatePegSpare(CanvasField);
+                    Canvas.SetLeft(pegspare, p.X - ( pegspare.Width / 2 ));
+                    Canvas.SetTop(pegspare, p.Y - ( pegspare.Height / 2 ));
+                    pegspare.MouseLeftButtonDown += this.OnPEGSpareLeftButtonDown;
+                    CanvasField.Children.Add(pegspare);
+                    SelectedTool = Tools.Cursor;
+                    Device.pegsparecount = pegspare;
                     break;
 
                 case Tools.Connection:
@@ -225,17 +246,25 @@ namespace Network_Tracer
         #endregion
         private void VZGButton_Click( object sender, RoutedEventArgs e )
         {
-
             this.SelectedTool = Tools.VZG;
         }
 
         private void PEGButton_Click( object sender, RoutedEventArgs e )
         {
-            this.SelectedTool = Tools.PEG;
+            if ( Device.pegcount == null )
+            {
+                SelectedTool = Tools.Cursor;
+                this.SelectedTool = Tools.PEG;
+            }
+            else
+            {
+                MessageBox.Show("Основной ПЭГ уже создан");
+            }
         }
 
         private void SEButton_Click( object sender, RoutedEventArgs e )
         {
+            SelectedTool = Tools.Cursor;
             this.SelectedTool = Tools.SE;
         }
 
@@ -246,14 +275,36 @@ namespace Network_Tracer
 
         private void Connection_Click( object sender, RoutedEventArgs e )
         {
+            SelectedTool = Tools.Cursor;
             this.SelectedTool = Tools.Connection;
+        }
+
+        private void PEGSpare_Click( object sender, RoutedEventArgs e )
+        {
+            if ( Device.pegsparecount == null )
+            {
+                SelectedTool = Tools.Cursor;
+                this.SelectedTool = Tools.PEGSpare;
+            }
+            else
+            {
+                MessageBox.Show("Резервный ПЭГ уже создан");
+            }
         }
 
         public void OnPEGLeftButtonDown( object sender, RoutedEventArgs e )
         {
             PEG peg = (PEG)sender;
             this.SelectedDevice = peg;
-            NameDevice.Text = peg.LabelName;
+            NameDevice.Text = "Основной ПЭГ";
+            LineExpender.Visibility = Visibility.Collapsed;
+            DeviceExpander.Visibility = Visibility.Visible;
+        }
+        public void OnPEGSpareLeftButtonDown( object sender, RoutedEventArgs e )
+        {
+            PEGSpare pegspare = (PEGSpare)sender;
+            this.SelectedDevice = pegspare;
+            NameDevice.Text = "Резервный ПЭГ";
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
         }
@@ -306,6 +357,32 @@ namespace Network_Tracer
             }
 
             return true;
+        }
+
+        private void Show_Click( object sender, RoutedEventArgs e )
+        {
+            switch ( (SourceBox.SelectedItem as ComboBoxItem).Content.ToString())
+            {
+                case "ПЭГ":
+                    LineChangeColor.PaintingLine(Source.Peg);
+                    break;
+                case "ВЗГ":
+                    LineChangeColor.PaintingLine(Source.Vzg);
+                    break;
+                case "ПЭГ рез.":
+                    LineChangeColor.PaintingLine(Source.PegSpare);
+                    break;
+                case "ГСЭ":
+                    LineChangeColor.PaintingLine(Source.GSE);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        private void Clear_Click( object sender, RoutedEventArgs e )
+        {
+
         }
 
         private void CityDevice_TextChanged( object sender, TextChangedEventArgs e )

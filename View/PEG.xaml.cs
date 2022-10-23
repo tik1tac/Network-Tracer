@@ -41,24 +41,24 @@ namespace Network_Tracer.View
         //Количество свободных портов у узла
         public override int FreePorts { get => base.FreePorts; set => base.FreePorts = value; }
 
-        public bool SetPort(LineConnect line)
+        public bool SetPort( LineConnect line )
         {
             return false;
         }
 
-        public override string LabelName
-        {
-            get
-            {
-                return base.LabelName;
-            }
+        //public override string LabelName
+        //{
+        //    get
+        //    {
+        //        return base.LabelName;
+        //    }
 
-            set
-            {
-                base.LabelName = value;
-                NamePEG1.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
-            }
-        }
+        //    set
+        //    {
+        //        base.LabelName = value;
+        //        NamePEG1.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+        //    }
+        //}
         public override string city
         {
             get => base.city;
@@ -82,7 +82,7 @@ namespace Network_Tracer.View
             if ( Line == null )
             {
                 Line = line;
-                Lines.Add( line );
+                Lines.Add(line);
                 return true;
             }
 
@@ -91,7 +91,11 @@ namespace Network_Tracer.View
         public override void Remove( object sender, System.Windows.RoutedEventArgs e )
         {
             this.RemoveLine(true);
-
+            pegcount = null;
+            if ( D2.Contains(this) )
+            {
+                D2.Remove(this);
+            }
             this.canvas.Children.Remove(this);
         }
         public override bool RemoveLine( bool deep, LineConnect line = null )

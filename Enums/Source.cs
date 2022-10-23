@@ -4,6 +4,7 @@
     {
         Peg,
         Vzg,
-        PegSpare
+        PegSpare,
+        GSE
     }
 }

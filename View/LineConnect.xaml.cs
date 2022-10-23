@@ -214,6 +214,10 @@ namespace Network_Tracer.View
             {
                 Cost = 2;
             }
+            if ( TypeD == typeof(PEGSpare) )
+            {
+                Cost = 7;
+            }
         }
 
         public void UpdateLocation( Device device, double x, double y )

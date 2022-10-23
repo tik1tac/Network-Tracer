@@ -7,7 +7,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="25*"/>
             <RowDefinition Height="510*"/>
-            <RowDefinition Height="199*"/>
+            <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -43,7 +43,7 @@
         </StackPanel>
 
 
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" Background="AliceBlue" >
+        <StackPanel x:Name="ElementPanel" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" Background="AliceBlue" >
             <Expander  IsExpanded="True" Header="Элементы"  ExpandDirection="Right"  >
                 <StackPanel Orientation="Horizontal">
                     <Grid >
@@ -77,23 +77,26 @@
                                 <TextBlock FontSize="18">Соединение</TextBlock>
                             </StackPanel>
                         </Button>
-                        <Button x:Name="PEGSpare" BorderBrush="Transparent" Grid.Row="1" Click="SEButton_Click" Style="{StaticResource ToolStyle}"  Grid.Column="2" >
+                        <Button x:Name="PEGSpare" BorderBrush="Transparent" Grid.Row="1" Click="PEGSpare_Click" Style="{StaticResource ToolStyle}"  Grid.Column="2" >
                             <view:PEGSpare></view:PEGSpare>
                         </Button>
                     </Grid>
                 </StackPanel>
             </Expander>
+            
             <Expander IsExpanded="True" Header="Выбрать источник" Visibility="Visible" ExpandDirection="Right">
                 <StackPanel Width="100">
-                    <ComboBox x:Name="SourceBox" Width="100" VerticalAlignment="Top" Text="Выберите" IsEditable="True" Margin="0,30,0,0">
-                        <TextBlock>ПЭГ</TextBlock>
-                        <TextBlock>ПЭГ рез.</TextBlock>
-                        <TextBlock>ВЗГ</TextBlock>
-                        <TextBlock>ГСЭ</TextBlock>
+                    <ComboBox x:Name="SourceBox"  Width="100" VerticalAlignment="Top" Text="Выберите" IsEditable="True" Margin="0,30,0,0">
+                        <ComboBoxItem>ПЭГ</ComboBoxItem>
+                        <ComboBoxItem>ПЭГ рез.</ComboBoxItem>
+                        <ComboBoxItem>ВЗГ</ComboBoxItem>
+                        <ComboBoxItem>ГСЭ</ComboBoxItem>
                     </ComboBox>
-                    <Button VerticalAlignment="Bottom" Height="20" Margin="0,100,0,0">Показать</Button>
+                    <Button VerticalAlignment="Bottom" Height="20" Click="Show_Click" Margin="0,80,0,0">Показать</Button>
+                    <Button VerticalAlignment="Bottom" Height="20" Click="Clear_Click" Margin="0,10,0,0">Очистить</Button>
                 </StackPanel>
             </Expander>
+            
             <Expander x:Name="DeviceExpander"  IsExpanded="True" Header="Характеристика" ExpandDirection="Right" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" >
                     <Grid Margin="0,30,0,0">

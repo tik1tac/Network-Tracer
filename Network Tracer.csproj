@@ -79,7 +79,7 @@
     <Compile Include="Model\Graph\LineChangeColor.cs" />
     <Compile Include="Model\Graph\Nodes.cs" />
     <Compile Include="Model\Scheme.cs" />
-    <Compile Include="Enums\NameNodes.cs" />
+    <Compile Include="Enums\Source.cs" />
     <Compile Include="Enums\NamePorts.cs" />
     <Compile Include="Enums\NumberPorts.cs" />
     <Compile Include="Enums\StatePort.cs" />

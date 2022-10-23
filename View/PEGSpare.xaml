@@ -3,7 +3,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             Width="100" Height="100">
+             Width="100" Height="70">
     <Grid>
         <StackPanel>
             <StackPanel.ContextMenu>
@@ -12,9 +12,9 @@
                     </MenuItem>
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <TextBlock Name = "NamePEGSpare" FontSize="16" TextAlignment="Center" Text="{Binding LabelName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type src:Device}}, Mode=TwoWay}"  Height="20"  >
+            <!--<TextBlock Name = "NamePEGSpare" FontSize="16" TextAlignment="Center" Text="{Binding LabelName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type src:Device}}, Mode=TwoWay}"  Height="20"  >
                 ПЭГ
-            </TextBlock>
+            </TextBlock>-->
             <Grid>
                 <Rectangle Name = "PEGX" Fill="Silver" RadiusX="15" RadiusY="15" Height="50" Width="100" >
                 </Rectangle>

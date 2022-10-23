@@ -96,6 +96,10 @@ namespace Network_Tracer.View
         public override void Remove( object sender, System.Windows.RoutedEventArgs e )
         {
             this.RemoveLine(true);
+            if ( D2.Contains(this) )
+            {
+                D2.Remove(this);
+            }
 
             this.canvas.Children.Remove(this);
         }

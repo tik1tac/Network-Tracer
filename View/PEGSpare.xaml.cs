@@ -58,19 +58,19 @@ namespace Network_Tracer.View
             return false;
         }
 
-        public override string LabelName
-        {
-            get
-            {
-                return base.LabelName;
-            }
+        //public override string LabelName
+        //{
+        //    get
+        //    {
+        //        return base.LabelName;
+        //    }
 
-            set
-            {
-                base.LabelName = value;
-                NamePEGSpare.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
-            }
-        }
+        //    set
+        //    {
+        //        base.LabelName = value;
+        //        NamePEGSpare.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+        //    }
+        //}
         public override string city
         {
             get => base.city;
@@ -103,6 +103,11 @@ namespace Network_Tracer.View
         public override void Remove( object sender, System.Windows.RoutedEventArgs e )
         {
             this.RemoveLine(true);
+            pegsparecount = null;
+            if ( D2.Contains(this) )
+            {
+                D2.Remove(this);
+            }
 
             this.canvas.Children.Remove(this);
         }
