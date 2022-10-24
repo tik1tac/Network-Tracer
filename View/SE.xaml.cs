@@ -25,6 +25,7 @@ namespace Network_Tracer.View
             FreePorts = NumberPorts;
             this.Ports = NumberPorts;
             Number = 3;
+            PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
         }
         private LineConnect[] ports;
@@ -32,11 +33,8 @@ namespace Network_Tracer.View
         //Количество портов у девайса
         public override int NumberPorts { get => base.NumberPorts; set => base.NumberPorts = value; }
 
-        //Количество свободных портов у узла
-        public override int FreePorts { get => base.FreePorts; set => base.FreePorts = value; }
-        public override int Weight { get => base.Weight; set => base.Weight = value; }
-        public override double X { get => base.X; set => base.X = value; }
-        public override double Y { get => base.Y; set => base.Y = value; }
+        public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
+
         public override int Number { get => base.Number; set => base.Number = value; }
         public int Ports
         {

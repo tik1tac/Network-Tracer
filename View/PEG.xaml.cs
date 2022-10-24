@@ -24,17 +24,15 @@ namespace Network_Tracer.View
             FreePorts = NumberPorts;
             Number = 1;
             this.LabelName = Scheme.GenerateName(Properties.Resources.PEGLabelName);
+            PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
         }
         private Canvas canvas { get; set; }
-        public override int Weight { get => base.Weight; set => base.Weight = value; }
-        //Количество портов у девайса
-        public override int NumberPorts { get => base.NumberPorts; set => base.NumberPorts = value; }
+
+        public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
 
         public override int Number { get => base.Number; set => base.Number = value; }
 
-        public override double X { get => base.X; set => base.X = value; }
-        public override double Y { get => base.Y; set => base.Y = value; }
 
         private LineConnect Line { get; set; }
 

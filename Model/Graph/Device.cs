@@ -15,6 +15,8 @@ namespace Network_Tracer.Model.Graph
 
         public virtual List<LineConnect> Lines { get; set; }
 
+        public static List<LineConnect> lineConnects = new List<LineConnect>();
+
         public virtual string LabelName { get; set; }
 
         public virtual string city { get; set; }
@@ -26,6 +28,8 @@ namespace Network_Tracer.Model.Graph
         public abstract bool AddLine( LineConnect line );
 
         public virtual int Number { get; set; }
+
+        public virtual bool PowerSuuply { get; set; }
 
         public static MainWindow Window { get; set; }
 
@@ -57,6 +61,7 @@ namespace Network_Tracer.Model.Graph
                 {
                     if ( count == 1 )
                     {
+
                         Device.NewLine = new LineConnect(canvas)
                         {
                             X1 = Canvas.GetLeft(this) + ( this.Width / 2 ),
@@ -91,6 +96,7 @@ namespace Network_Tracer.Model.Graph
                                     D2.Add(Device.NewLine.D2);
                                 }
                                 Device.NewLine.SetCost(Device.NewLine.D1);
+                                lineConnects.Add(Device.NewLine);
                                 Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
                                 Device.NewLine.D2.UpdateLocation();
                                 count = 1;

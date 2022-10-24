@@ -17,52 +17,51 @@ namespace Network_Tracer.View
     {
         public LineConnect( Canvas canvas )
         {
-
             InitializeComponent();
             this.canvas = canvas;
         }
         #region Анимация
         static LineConnect()
         {
-            X1P = DependencyProperty.Register("X1", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, X1_PC));
-            X2P = DependencyProperty.Register("X2", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, X2_PC));
-            Y1P = DependencyProperty.Register("Y1", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, Y1_PC));
-            Y2P = DependencyProperty.Register("Y2", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, Y2_PC));
+            X1Line = DependencyProperty.Register("X1", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, X1_PC));
+            X2Line = DependencyProperty.Register("X2", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, X2_PC));
+            Y1Line = DependencyProperty.Register("Y1", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, Y1_PC));
+            Y2Line = DependencyProperty.Register("Y2", typeof(double), typeof(LineConnect), new PropertyMetadata(0.1, Y2_PC));
         }
         #region Property
 
         public double X1
         {
-            get { return (double)GetValue(X1P); }
-            set { SetValue(X1P, value); }
+            get { return (double)GetValue(X1Line); }
+            set { SetValue(X1Line, value); }
         }
 
         public double X2
         {
-            get { return (double)GetValue(X2P); }
-            set { SetValue(X2P, value); }
+            get { return (double)GetValue(X2Line); }
+            set { SetValue(X2Line, value); }
         }
 
         public double Y1
         {
-            get { return (double)GetValue(Y1P); }
-            set { SetValue(Y1P, value); }
+            get { return (double)GetValue(Y1Line); }
+            set { SetValue(Y1Line, value); }
         }
 
         public double Y2
         {
-            get { return (double)GetValue(Y2P); }
-            set { SetValue(Y2P, value); }
+            get { return (double)GetValue(Y2Line); }
+            set { SetValue(Y2Line, value); }
         }
 
         #endregion
 
         #region DependencyProperty
 
-        public static readonly DependencyProperty X1P;
-        public static readonly DependencyProperty X2P;
-        public static readonly DependencyProperty Y1P;
-        public static readonly DependencyProperty Y2P;
+        public static readonly DependencyProperty X1Line;
+        public static readonly DependencyProperty X2Line;
+        public static readonly DependencyProperty Y1Line;
+        public static readonly DependencyProperty Y2Line;
 
         #endregion
 
@@ -73,6 +72,7 @@ namespace Network_Tracer.View
             LineConnect c = obj as LineConnect;
             double nv = (double)e.NewValue;
             c.X1 = c.Line.X1 = nv;
+
             c.ChangeAnimationValue();
         }
 
@@ -81,6 +81,10 @@ namespace Network_Tracer.View
             LineConnect c = obj as LineConnect;
             double nv = (double)e.NewValue;
             c.X2 = c.Line.X2 = nv;
+            //c.ArrowRight.X1 = nv;
+            //c.ArrowLeft.X1 = nv;
+            //c.ArrowRight.X2 = nv - 10;
+            //c.ArrowLeft.X2 = nv - 20;
             c.ChangeAnimationValue();
         }
 
@@ -97,8 +101,15 @@ namespace Network_Tracer.View
             LineConnect c = obj as LineConnect;
             double nv = (double)e.NewValue;
             c.Y2 = c.Line.Y2 = nv;
+            //c.ArrowRight.Y1 = nv;
+            //c.ArrowLeft.Y1 = nv;
+            //c.ArrowRight.Y2 = nv - 20;
+            //c.ArrowLeft.Y2 = nv - 13;
             c.ChangeAnimationValue();
         }
+
+
+
 
         #endregion
 
@@ -254,59 +265,6 @@ namespace Network_Tracer.View
             {
                 this.canvas.Children.Remove(this);
             }
-        }
-        public LineConnect ArrowLine( LineConnect lineConnect )
-        {
-            // координаты центра отрезка
-            double X3 = ( this.X1 + this.X2 ) / 2;
-            double Y3 = ( this.Y1 + this.Y2 ) / 2;
-
-            // длина отрезка
-            double d = Math.Sqrt(Math.Pow(this.X2 - this.X1, 2) + Math.Pow(this.Y2 - this.Y1, 2));
-
-            // координаты вектора
-            double X = this.X2 - this.X1;
-            double Y = this.Y2 - this.Y1;
-
-            // координаты точки, удалённой от центра к началу отрезка на 10px
-            double X4 = X3 - ( X / d ) * 10;
-            double Y4 = Y3 - ( Y / d ) * 10;
-
-            // из уравнения прямой { (x - x1)/(x1 - x2) = (y - y1)/(y1 - y2) } получаем вектор перпендикуляра
-            // (x - x1)/(x1 - x2) = (y - y1)/(y1 - y2) =>
-            // (x - x1)*(y1 - y2) = (y - y1)*(x1 - x2) =>
-            // (x - x1)*(y1 - y2) - (y - y1)*(x1 - x2) = 0 =>
-            // полученные множители x и y => координаты вектора перпендикуляра
-            double Xp = this.Y2 - this.Y1;
-            double Yp = this.X1 - this.X2;
-
-            // координаты перпендикуляров, удалённой от точки X4;Y4 на 5px в разные стороны
-            double X5 = X4 + ( Xp / d ) * 5;
-            double Y5 = Y4 + ( Yp / d ) * 5;
-            double X6 = X4 - ( Xp / d ) * 5;
-            double Y6 = Y4 - ( Yp / d ) * 5;
-
-            ArrowRight.X1 = X3;
-            ArrowRight.Y1 = Y3;
-            ArrowLeft.X1 = X3;
-            ArrowLeft.Y1 = Y3;
-
-            ArrowRight.X2 = X6;
-            ArrowRight.Y2 = Y6;
-            ArrowLeft.X2 = X5;
-            ArrowLeft.Y2 = Y5;
-
-            //GeometryGroup geometryGroup = new GeometryGroup();
-
-            //LineGeometry lineGeometry = new LineGeometry(new Point(this.X1, this.Y1), new Point(this.X2, this.Y2));
-            //LineGeometry arrowPart1Geometry = new LineGeometry(new Point(X3, Y3), new Point(X5, Y5));
-            //LineGeometry arrowPart2Geometry = new LineGeometry(new Point(X3, Y3), new Point(X6, Y6));
-
-            //geometryGroup.Children.Add(lineGeometry);
-            //geometryGroup.Children.Add(arrowPart1Geometry);
-            //geometryGroup.Children.Add(arrowPart2Geometry);
-
-            return this;
         }
 
         private void UserControl_Loaded( object sender, RoutedEventArgs e )

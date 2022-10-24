@@ -15,11 +15,12 @@ namespace Network_Tracer.Model.Graph
         {
             int MaxCost = 0;
             LinesChageColor = new List<LineConnect>();
-            foreach ( Device D2 in Device.D2 )
-            {
-                MaxCost = D2.Lines.Max(cost => cost.Cost);
-                LinesChageColor.Add(D2.Lines.Where(s => s.Cost == MaxCost).First());
-            }
+            //Device.lineConnects
+            //foreach ( Device D2 in Device.D2 )
+            //{
+            //    MaxCost = D2.Lines.Max(cost => cost.Cost);
+            //    LinesChageColor.Add(D2.Lines.Where(s => s.Cost == MaxCost).First());
+            //}
         }
         public static async void PaintingLine( Source source )
         {

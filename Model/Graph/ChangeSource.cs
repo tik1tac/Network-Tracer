@@ -11,6 +11,10 @@ namespace Network_Tracer.Model.Graph
         {
             switch ( source )
             {
+                case Source.Peg:
+                    LinesInput.Remove(LinesInput.Where(c => c.Cost == 7).First());
+                    return LinesInput;
+                    
                 case Source.Vzg:
                     LinesInput.Remove(LinesInput.Where(c => c.Cost == 10).First());
                     LinesInput.Remove(LinesInput.Where(c => c.Cost == 5).First());

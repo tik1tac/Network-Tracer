@@ -55,6 +55,7 @@
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
+        
         <Line Name="Line" StrokeThickness="2" Stroke="Black" X2="40" Y2="44">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Loaded">
@@ -62,8 +63,10 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Line>
-        <Line Name="ArrowRight" Stroke="Black" StrokeThickness="2"/>
-        <Line Name="ArrowLeft" Stroke="Black" StrokeThickness="2"/>
+        <Line Name="ArrowRight" Stroke="Black"  StrokeThickness="2"/>
+        <!--X1="40" Y1="44" X2="30" Y2="24"-->
+        <!--X1="40" Y1="44" X2="20" Y2="31"-->
+        <Line Name="ArrowLeft" Stroke="Black"  StrokeThickness="2"/>
         <Border Name="WireBorder" Width="48" Height="48" Visibility="Hidden" Background="WhiteSmoke" BorderBrush="LightBlue" BorderThickness="3" CornerRadius="30">
             <Label Name="WireLabel" Foreground="DarkSlateGray" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
         </Border>
