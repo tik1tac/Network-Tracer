@@ -7,10 +7,9 @@ namespace Network_Tracer.Model.Graph
 {
     public abstract class Nodes : Device
     {
-        public Nodes( Canvas canvas ) : base(canvas)
+        public Nodes(Canvas canvas) : base(canvas)
         {
         }
-
 
         public virtual int Weight { get; set; }
 

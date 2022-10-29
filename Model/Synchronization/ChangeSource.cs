@@ -32,8 +32,6 @@ namespace Network_Tracer.Model.Graph
                 default:
                     return LinesInput;
             }
-
-            return LinesInput;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Network_Tracer.Model;
 using Network_Tracer.Model.Graph;
 
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace Network_Tracer.View
@@ -24,13 +25,18 @@ namespace Network_Tracer.View
             NumberPorts = (int)CountPorts.infinity;
             FreePorts = NumberPorts;
             this.Ports = NumberPorts;
-            Number = 2;
+            Number = 3;
             PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
+            _neighbours = new List<Device>();
         }
+        public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
         private Canvas canvas { get; set; }
         private LineConnect[] ports;
-
+        public override void AddNEighbours(Device D)
+        {
+            _neighbours.Add(D);
+        }
         public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
 
 
@@ -90,11 +96,11 @@ namespace Network_Tracer.View
         public override void Remove( object sender, System.Windows.RoutedEventArgs e )
         {
             this.RemoveLine(true);
-            if ( D2.Contains(this) )
+            if ( Vertex.Contains(this) )
             {
-                D2.Remove(this);
+                Vertex.Remove(this);
             }
-
+            Device._countdevicesoncanvas--;
             this.canvas.Children.Remove(this);
         }
 

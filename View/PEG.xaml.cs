@@ -1,6 +1,7 @@
 ﻿using Network_Tracer.Model;
 using Network_Tracer.Model.Graph;
 
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace Network_Tracer.View
@@ -26,6 +27,13 @@ namespace Network_Tracer.View
             this.LabelName = Scheme.GenerateName(Properties.Resources.PEGLabelName);
             PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
+            _neighbours = new System.Collections.Generic.List<Device>();
+        }
+        public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
+
+        public override void AddNEighbours(Device D)
+        {
+            _neighbours.Add(D);
         }
         private Canvas canvas { get; set; }
 
@@ -90,10 +98,11 @@ namespace Network_Tracer.View
         {
             this.RemoveLine(true);
             pegcount = null;
-            if ( D2.Contains(this) )
+            if ( Vertex.Contains(this) )
             {
-                D2.Remove(this);
+                Vertex.Remove(this);
             }
+            Device._countdevicesoncanvas--;
             this.canvas.Children.Remove(this);
         }
         public override bool RemoveLine( bool deep, LineConnect line = null )
@@ -121,7 +130,6 @@ namespace Network_Tracer.View
             }
 
         }
-
         //public override void SetPort( Device D2 )
         //{
         //    throw new System.NotImplementedException();

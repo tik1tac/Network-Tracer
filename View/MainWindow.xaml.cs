@@ -25,6 +25,7 @@ namespace Network_Tracer
             this.Closing += OnWindowClosing;
             Device.Window = this;
             SelectedTool = Tools.Cursor;
+            Device._countdevicesoncanvas = 0;
         }
         #region Элементы на канвасе
         LineConnect SelectedLine;
@@ -35,26 +36,26 @@ namespace Network_Tracer
         {
             get
             {
-                if ( this.Connection.Opacity > 0.9 )
+                if (this.Connection.Opacity > 0.9)
                 {
                     return Tools.Connection;
                 }
 
-                if ( this.VZGButton.Opacity > 0.9 )
+                if (this.VZGButton.Opacity > 0.9)
                 {
                     return Tools.VZG;
                 }
 
-                if ( this.PEGButton.Opacity > 0.9 )
+                if (this.PEGButton.Opacity > 0.9)
                 {
                     return Tools.PEG;
                 }
 
-                if ( this.SEButton.Opacity > 0.9 )
+                if (this.SEButton.Opacity > 0.9)
                 {
                     return Tools.SE;
                 }
-                if ( this.PEGSpare.Opacity > 0.9 )
+                if (this.PEGSpare.Opacity > 0.9)
                 {
                     return Tools.PEGSpare;
                 }
@@ -65,7 +66,7 @@ namespace Network_Tracer
 
             set
             {
-                switch ( value )
+                switch (value)
                 {
                     case Tools.VZG:
                         this.Connection.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
@@ -107,21 +108,21 @@ namespace Network_Tracer
         private readonly List<LineConnect> _lines = new List<LineConnect>();
         private System.Threading.Thread _animation;
 
-        private void Animate( object sender = null, RoutedEventArgs e = null )
+        private void Animate(object sender = null, RoutedEventArgs e = null)
         {
 
             StopAnimation();
             CanvasField.IsEnabled = false;
 
-            LineConnect.CompleteAnimationCallback callback = delegate ( LineConnect l )
+            LineConnect.CompleteAnimationCallback callback = delegate (LineConnect l)
             {
 
                 Task.Run(delegate ()
                 {
                     _animation = System.Threading.Thread.CurrentThread; //берём поток нащей функии чтобы потом в любой момент убить его
-                    foreach ( LineConnect line in _lines )
+                    foreach (LineConnect line in _lines)
                     {
-                        if ( _animation == null ) return;
+                        if (_animation == null) return;
                         System.Threading.Thread.Sleep(Delay); //задержка
                         App.Current.Dispatcher.Invoke(delegate ()
                         {
@@ -135,7 +136,7 @@ namespace Network_Tracer
 
             _lines.Last().CompleteAnimationEvent += callback; //подписиваемся на событие
 
-            foreach ( LineConnect line in _lines )
+            foreach (LineConnect line in _lines)
             {
                 line.Line.X1 = line.Line.X2 = line.Line.Y1 = line.Line.Y2 = 0; //скрываем линии
             }
@@ -143,13 +144,13 @@ namespace Network_Tracer
 
         }
 
-        private void StopAnimation( object sender = null, RoutedEventArgs e = null )
+        private void StopAnimation(object sender = null, RoutedEventArgs e = null)
         {
 
             _animation?.Abort(); //убиваем поток если он есть
             _animation = null;
 
-            foreach ( LineConnect line in _lines ) //убираем функции с события и останавливаем анимации
+            foreach (LineConnect line in _lines) //убираем функции с события и останавливаем анимации
             {
                 line.StopAnimation();
                 line.RemoveAllHandles_CompleteAnimationEvent();
@@ -157,57 +158,61 @@ namespace Network_Tracer
             CanvasField.IsEnabled = true;
         }
 
-        private void Canvas_MouseMove( object sender, MouseEventArgs e )
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if ( Device.NewLine == null ) return;
+            if (Device.NewLine == null) return;
             Device.NewLine.X2 = Mouse.GetPosition(this).X - CanvasField.Margin.Left;
             Device.NewLine.Y2 = Mouse.GetPosition(this).Y - CanvasField.Margin.Top;
         }
         #endregion
 
-        protected override void OnMouseLeftButtonDown( MouseButtonEventArgs e )
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             CreatorNodes cn = new FactoryNodes();
             Point p = e.GetPosition(this);
-            switch ( this.SelectedTool )
+            switch (this.SelectedTool)
             {
                 case Tools.PEG:
                     PEG peg = cn.CreatePeg(CanvasField);
-                    Canvas.SetLeft(peg, p.X - ( peg.Width / 2 ));
-                    Canvas.SetTop(peg, p.Y - ( peg.Height / 2 ));
+                    Canvas.SetLeft(peg, p.X - (peg.Width / 2));
+                    Canvas.SetTop(peg, p.Y - (peg.Height / 2));
                     peg.MouseLeftButtonDown += this.OnPEGLeftButtonDown;
                     CanvasField.Children.Add(peg);
                     SelectedTool = Tools.Cursor;
                     Device.pegcount = peg;
+                    Device._countdevicesoncanvas++;
                     break;
 
                 case Tools.VZG:
                     VZG vzg = cn.CreateVZG(CanvasField);
-                    Canvas.SetLeft(vzg, p.X - ( vzg.Width / 2 ));
-                    Canvas.SetTop(vzg, p.Y - ( vzg.Height / 2 ));
+                    Canvas.SetLeft(vzg, p.X - (vzg.Width / 2));
+                    Canvas.SetTop(vzg, p.Y - (vzg.Height / 2));
                     vzg.MouseLeftButtonDown += this.OnVZGLeftButtonDown;
                     CanvasField.Children.Add(vzg);
                     SelectedTool = Tools.Cursor;
+                    Device._countdevicesoncanvas++;
                     break;
 
                 case Tools.SE:
                     SE se = new SE(CanvasField);
-                    Canvas.SetLeft(se, p.X - ( se.Width / 2 ));
-                    Canvas.SetTop(se, p.Y - ( se.Height / 2 ));
+                    Canvas.SetLeft(se, p.X - (se.Width / 2));
+                    Canvas.SetTop(se, p.Y - (se.Height / 2));
                     se.MouseLeftButtonDown += this.OnSELeftButtonDown;
                     CanvasField.Children.Add(se);
                     SelectedTool = Tools.Cursor;
+                    Device._countdevicesoncanvas++;
                     break;
 
                 case Tools.PEGSpare:
                     PEGSpare pegspare = cn.CreatePegSpare(CanvasField);
-                    Canvas.SetLeft(pegspare, p.X - ( pegspare.Width / 2 ));
-                    Canvas.SetTop(pegspare, p.Y - ( pegspare.Height / 2 ));
+                    Canvas.SetLeft(pegspare, p.X - (pegspare.Width / 2));
+                    Canvas.SetTop(pegspare, p.Y - (pegspare.Height / 2));
                     pegspare.MouseLeftButtonDown += this.OnPEGSpareLeftButtonDown;
                     CanvasField.Children.Add(pegspare);
                     SelectedTool = Tools.Cursor;
                     Device.pegsparecount = pegspare;
+                    Device._countdevicesoncanvas++;
                     break;
 
                 case Tools.Connection:
@@ -215,43 +220,43 @@ namespace Network_Tracer
             }
         }
         #region Drag&Drop
-        protected override void OnMouseLeftButtonUp( MouseButtonEventArgs e )
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
 
         }
 
-        protected override void OnDragOver( DragEventArgs e )
+        protected override void OnDragOver(DragEventArgs e)
         {
             base.OnDragOver(e);
 
-            if ( e.Data.GetDataPresent("Device") )
+            if (e.Data.GetDataPresent("Device"))
             {
                 Device obj = (Device)e.Data.GetData("Device");
                 Point p = e.GetPosition(this);
 
 
                 // Drag & drop of an object
-                Canvas.SetLeft(obj, p.X - ( obj.Width / 2 ));
-                Canvas.SetTop(obj, p.Y - ( obj.Height / 2 ));
+                Canvas.SetLeft(obj, p.X - (obj.Width / 2));
+                Canvas.SetTop(obj, p.Y - (obj.Height / 2));
                 obj.UpdateLocation();
             }
         }
 
-        protected override void OnDrop( DragEventArgs e )
+        protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
 
         }
         #endregion
-        private void VZGButton_Click( object sender, RoutedEventArgs e )
+        private void VZGButton_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedTool = Tools.VZG;
         }
 
-        private void PEGButton_Click( object sender, RoutedEventArgs e )
+        private void PEGButton_Click(object sender, RoutedEventArgs e)
         {
-            if ( Device.pegcount == null )
+            if (Device.pegcount == null)
             {
                 SelectedTool = Tools.Cursor;
                 this.SelectedTool = Tools.PEG;
@@ -262,26 +267,26 @@ namespace Network_Tracer
             }
         }
 
-        private void SEButton_Click( object sender, RoutedEventArgs e )
+        private void SEButton_Click(object sender, RoutedEventArgs e)
         {
             SelectedTool = Tools.Cursor;
             this.SelectedTool = Tools.SE;
         }
 
-        private void CursorButton_Click( object sender, RoutedEventArgs e )
+        private void CursorButton_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedTool = Tools.Cursor;
         }
 
-        private void Connection_Click( object sender, RoutedEventArgs e )
+        private void Connection_Click(object sender, RoutedEventArgs e)
         {
             SelectedTool = Tools.Cursor;
             this.SelectedTool = Tools.Connection;
         }
 
-        private void PEGSpare_Click( object sender, RoutedEventArgs e )
+        private void PEGSpare_Click(object sender, RoutedEventArgs e)
         {
-            if ( Device.pegsparecount == null )
+            if (Device.pegsparecount == null)
             {
                 SelectedTool = Tools.Cursor;
                 this.SelectedTool = Tools.PEGSpare;
@@ -292,7 +297,7 @@ namespace Network_Tracer
             }
         }
 
-        public void OnPEGLeftButtonDown( object sender, RoutedEventArgs e )
+        public void OnPEGLeftButtonDown(object sender, RoutedEventArgs e)
         {
             PEG peg = (PEG)sender;
             this.SelectedDevice = peg;
@@ -300,7 +305,7 @@ namespace Network_Tracer
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
         }
-        public void OnPEGSpareLeftButtonDown( object sender, RoutedEventArgs e )
+        public void OnPEGSpareLeftButtonDown(object sender, RoutedEventArgs e)
         {
             PEGSpare pegspare = (PEGSpare)sender;
             this.SelectedDevice = pegspare;
@@ -308,7 +313,7 @@ namespace Network_Tracer
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
         }
-        public void OnVZGLeftButtonDown( object sender, RoutedEventArgs e )
+        public void OnVZGLeftButtonDown(object sender, RoutedEventArgs e)
         {
             VZG vzg = (VZG)sender;
             this.SelectedDevice = vzg;
@@ -316,7 +321,7 @@ namespace Network_Tracer
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
         }
-        public void OnSELeftButtonDown( object sender, RoutedEventArgs e )
+        public void OnSELeftButtonDown(object sender, RoutedEventArgs e)
         {
             SE se = (SE)sender;
             this.SelectedDevice = se;
@@ -324,7 +329,7 @@ namespace Network_Tracer
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
         }
-        public void OnLineLeftButtonDown( object sender, MouseButtonEventArgs e )
+        public void OnLineLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             LineConnect line = (LineConnect)sender;
             this.SelectedLine = line;
@@ -334,16 +339,16 @@ namespace Network_Tracer
             LineExpender.Visibility = Visibility.Visible;
         }
         #endregion
-        public void OnWindowClosing( object sender, CancelEventArgs e )
+        public void OnWindowClosing(object sender, CancelEventArgs e)
         {
-            if ( !this.CloseScheme() )
+            if (!this.CloseScheme())
             {
                 e.Cancel = true;
             }
         }
         private bool CloseScheme()
         {
-            switch ( MessageBox.Show("Схема была изменена", "Схема была изменена", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) )
+            switch (MessageBox.Show("Схема была изменена", "Схема была изменена", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel))
             {
                 case MessageBoxResult.Cancel:
                     return false;
@@ -359,9 +364,9 @@ namespace Network_Tracer
             return true;
         }
 
-        private void Show_Click( object sender, RoutedEventArgs e )
+        private void Show_Click(object sender, RoutedEventArgs e)
         {
-            switch ( (SourceBox.SelectedItem as ComboBoxItem).Content.ToString())
+            switch ((SourceBox.SelectedItem as ComboBoxItem).Content.ToString())
             {
                 case "ПЭГ":
                     LineChangeColor.PaintingLine(Source.Peg);
@@ -380,37 +385,37 @@ namespace Network_Tracer
             }
 
         }
-        private void Clear_Click( object sender, RoutedEventArgs e )
+        private void Clear_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void CityDevice_TextChanged( object sender, TextChangedEventArgs e )
+        private void CityDevice_TextChanged(object sender, TextChangedEventArgs e)
         {
             SelectedDevice.city = CityDevice.Text;
         }
 
-        private void DeviceDelete_Click( object sender, RoutedEventArgs e )
+        private void DeviceDelete_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedDevice.Remove(null, null);
         }
 
-        private void LineDelete_Click( object sender, RoutedEventArgs e )
+        private void LineDelete_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedLine.Remove(null, null);
         }
 
-        private void CreateNewScheme_Click( object sender, RoutedEventArgs e )
+        private void CreateNewScheme_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void OpenScheme_Click( object sender, RoutedEventArgs e )
+        private void OpenScheme_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void SaveScheme_Click( object sender, RoutedEventArgs e )
+        private void SaveScheme_Click(object sender, RoutedEventArgs e)
         {
 
         }

@@ -34,10 +34,16 @@ namespace Network_Tracer.View
             this.canvas = canvas;
             NumberPorts = (int)CountPorts.one;
             FreePorts = NumberPorts;
-            Number = 1;
+            Number = 2;
             this.LabelName = Scheme.GenerateName(Properties.Resources.PEGLabelName);
             PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
+            _neighbours = new List<Device>();
+        }
+        public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
+        public override void AddNEighbours(Device D)
+        {
+            _neighbours.Add(D);
         }
         private Canvas canvas { get; set; }
 
@@ -78,6 +84,7 @@ namespace Network_Tracer.View
                 CITY.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
             }
         }
+
         //public override int GetPort( LineConnect line )
         //{
         //    if ( Line == line )
@@ -102,11 +109,11 @@ namespace Network_Tracer.View
         {
             this.RemoveLine(true);
             pegsparecount = null;
-            if ( D2.Contains(this) )
+            if ( Vertex.Contains(this) )
             {
-                D2.Remove(this);
+                Vertex.Remove(this);
             }
-
+            Device._countdevicesoncanvas--;
             this.canvas.Children.Remove(this);
         }
         public override bool RemoveLine( bool deep, LineConnect line = null )

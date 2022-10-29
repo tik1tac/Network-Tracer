@@ -10,14 +10,17 @@ namespace Network_Tracer.Model.Graph
 {
     public abstract class Device : UserControl
     {
+        public Device(Canvas canvas) => this.canvas = canvas;
 
-        public static ArrayList D2 = new ArrayList();
+        public static List<Device> Vertex = new List<Device>();
 
         public virtual List<LineConnect> Lines { get; set; }
 
-        public static List<LineConnect> lineConnects = new List<LineConnect>();
+        public virtual List<Device> _neighbours { get; set; }
 
         public virtual string LabelName { get; set; }
+
+        //public abstract string PowerEnergized { get; set; }
 
         public virtual string city { get; set; }
 
@@ -25,7 +28,7 @@ namespace Network_Tracer.Model.Graph
 
         public static PEGSpare pegsparecount { get; set; }
 
-        public abstract bool AddLine( LineConnect line );
+        public Canvas canvas { get; set; }
 
         public virtual int Number { get; set; }
 
@@ -36,41 +39,45 @@ namespace Network_Tracer.Model.Graph
         public static LineConnect NewLine { get; set; }
 
         public abstract void UpdateLocation();
+        public abstract bool AddLine(LineConnect line);
 
-        public Canvas canvas { get; set; }
+        public abstract void AddNEighbours(Device D);
 
         //public abstract int GetPort( LineConnect line );
 
         //public abstract void SetPort( Device D2 );
 
-        public Device( Canvas canvas ) => this.canvas = canvas;
 
-        public abstract bool RemoveLine( bool deep, LineConnect line = null );
+        public abstract bool RemoveLine(bool deep, LineConnect line = null);
 
-        public abstract void Remove( object sender, RoutedEventArgs e );
+        public abstract void Remove(object sender, RoutedEventArgs e);
 
+        public static int _countdevicesoncanvas { get; set; }
 
-        static int count = 1;
-        protected override void OnMouseLeftButtonDown( MouseButtonEventArgs e )
+        static int _count = 1;
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             Point p = e.GetPosition(Window);
             try
             {
-                if ( Window.SelectedTool == Tools.Connection )
+                if (Window.SelectedTool == Tools.Connection)
                 {
-                    if ( count == 1 )
+                    if (_count == 1)
                     {
-
                         Device.NewLine = new LineConnect(canvas)
                         {
-                            X1 = Canvas.GetLeft(this) + ( this.Width / 2 ),
-                            Y1 = Canvas.GetTop(this) + ( Height / 2 ),
+                            X1 = Canvas.GetLeft(this) + (this.Width / 2),
+                            Y1 = Canvas.GetTop(this) + (Height / 2),
                             X2 = p.X,
                             Y2 = p.Y,
                             D1 = this
                         };
-                        if ( this.AddLine(Device.NewLine) )
+                        if (!Vertex.Contains(Device.NewLine.D1))
+                        {
+                            Vertex.Add(Device.NewLine.D1);
+                        }
+                        if (this.AddLine(Device.NewLine))
                         {
                             Canvas.SetZIndex(Device.NewLine, -1);
                             canvas.Children.Add(Device.NewLine);
@@ -82,24 +89,26 @@ namespace Network_Tracer.Model.Graph
                             Device.NewLine = null;
                         }
                     }
-                    if ( count == 2 )
+                    if (_count == 2)
                     {
-                        if ( Device.NewLine != null && Device.NewLine.D1 != this )
+                        if (Device.NewLine != null && Device.NewLine.D1 != this)
                         {
-                            if ( this.AddLine(Device.NewLine) )
+                            if (this.AddLine(Device.NewLine))
                             {
-                                Device.NewLine.X2 = Canvas.GetLeft(this) + ( this.Width / 2 );
-                                Device.NewLine.Y2 = Canvas.GetTop(this) + ( this.Height / 2 );
+                                Device.NewLine.X2 = Canvas.GetLeft(this) + (this.Width / 2);
+                                Device.NewLine.Y2 = Canvas.GetTop(this) + (this.Height / 2);
                                 Device.NewLine.D2 = this;
-                                if ( !D2.Contains(Device.NewLine.D2) )
-                                {
-                                    D2.Add(Device.NewLine.D2);
-                                }
                                 Device.NewLine.SetCost(Device.NewLine.D1);
-                                lineConnects.Add(Device.NewLine);
+                                if (!Vertex.Contains(Device.NewLine.D2))
+                                {
+                                    Vertex.Add(Device.NewLine.D2);
+                                }
+                                Device.NewLine.D1.AddNEighbours(Device.NewLine.D2);
+                                Device.NewLine.D2.AddNEighbours(Device.NewLine.D1);
+                                Device.NewLine.SetCost(Device.NewLine.D1);
                                 Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
                                 Device.NewLine.D2.UpdateLocation();
-                                count = 1;
+                                _count = 1;
                             }
                             else
                             {
@@ -109,23 +118,23 @@ namespace Network_Tracer.Model.Graph
                             Device.NewLine = null;
                         }
                     }
-                    if ( Device.NewLine != null )
+                    if (Device.NewLine != null)
                     {
-                        count++;
+                        _count++;
                     }
                 }
             }
-            catch ( System.Exception )
+            catch (System.Exception)
             {
                 Window.SelectedTool = Tools.Cursor;
             }
 
         }
-        protected override void OnMouseMove( MouseEventArgs e )
+        protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
 
-            if ( e.LeftButton == MouseButtonState.Pressed & Window.SelectedTool != Tools.Connection )
+            if (e.LeftButton == MouseButtonState.Pressed & Window.SelectedTool != Tools.Connection)
             {
                 Point p = e.GetPosition(Window);
                 DataObject data = new DataObject();

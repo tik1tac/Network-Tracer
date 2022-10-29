@@ -75,8 +75,8 @@
     <Compile Include="Model\AbstractGraph\FabricaOfLine\CreatorLine.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfLine\FactoryLine.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfNodes\FactoryNodes.cs" />
-    <Compile Include="Model\Graph\ChangeSource.cs" />
-    <Compile Include="Model\Graph\LineChangeColor.cs" />
+    <Compile Include="Model\Synchronization\ChangeSource.cs" />
+    <Compile Include="Model\Synchronization\LineChangeColor.cs" />
     <Compile Include="Model\Graph\Nodes.cs" />
     <Compile Include="Model\Scheme.cs" />
     <Compile Include="Enums\Source.cs" />

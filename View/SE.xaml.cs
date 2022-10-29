@@ -1,6 +1,7 @@
 ﻿using Network_Tracer.Model;
 using Network_Tracer.Model.Graph;
 
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace Network_Tracer.View
@@ -15,7 +16,7 @@ namespace Network_Tracer.View
         {
 
         }
-        public SE( Canvas canvas ) : base(canvas)
+        public SE(Canvas canvas) : base(canvas)
         {
             InitializeComponent();
             Weight = 2;
@@ -24,12 +25,19 @@ namespace Network_Tracer.View
             NumberPorts = (int)CountPorts.infinity;
             FreePorts = NumberPorts;
             this.Ports = NumberPorts;
-            Number = 3;
+            Number = 4;
             PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
+            _neighbours = new List<Device>();
+        }
+        public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
+        public override void AddNEighbours(Device D)
+        {
+            _neighbours.Add(D);
         }
         private LineConnect[] ports;
         private Canvas canvas { get; set; }
+
         //Количество портов у девайса
         public override int NumberPorts { get => base.NumberPorts; set => base.NumberPorts = value; }
 
@@ -64,11 +72,11 @@ namespace Network_Tracer.View
             }
         }
 
-        public override bool AddLine( LineConnect line )
+        public override bool AddLine(LineConnect line)
         {
-            for ( int i = 0 ; i < this.ports.Length ; ++i )
+            for (int i = 0; i < this.ports.Length; ++i)
             {
-                if ( this.ports[i] == null )
+                if (this.ports[i] == null)
                 {
                     this.ports[i] = line;
                     Lines.Add(line);
@@ -79,34 +87,35 @@ namespace Network_Tracer.View
             return false;
         }
 
+
         public override void UpdateLocation()
         {
-            for ( int i = 0 ; i < this.ports.Length ; ++i )
+            for (int i = 0; i < this.ports.Length; ++i)
             {
-                if ( this.ports[i] != null )
+                if (this.ports[i] != null)
                 {
-                    this.ports[i].UpdateLocation(this, Canvas.GetLeft(this) + ( this.Width / 2 ), Canvas.GetTop(this) + ( this.Height / 2 ));
+                    this.ports[i].UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
                 }
             }
         }
-        public override void Remove( object sender, System.Windows.RoutedEventArgs e )
+        public override void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
             this.RemoveLine(true);
-            if ( D2.Contains(this) )
+            if (Vertex.Contains(this))
             {
-                D2.Remove(this);
+                Vertex.Remove(this);
             }
-
+            Device._countdevicesoncanvas--;
             this.canvas.Children.Remove(this);
         }
 
-        public override bool RemoveLine( bool deep, LineConnect line = null )
+        public override bool RemoveLine(bool deep, LineConnect line = null)
         {
-            for ( int i = 0 ; i < this.Ports ; ++i )
+            for (int i = 0; i < this.Ports; ++i)
             {
-                if ( this.ports[i] != null && ( line == null || this.ports[i] == line ) )
+                if (this.ports[i] != null && (line == null || this.ports[i] == line))
                 {
-                    if ( deep )
+                    if (deep)
                     {
                         this.ports[i].Remove(this);
                     }

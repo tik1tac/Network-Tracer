@@ -208,6 +208,7 @@ namespace Network_Tracer.View
         public NamePorts Port1 { get => Port1; set => Port1 = value; }
         public NamePorts Port2 { get => Port2; set => Port2 = value; }
 
+
         Canvas canvas { get; set; }
 
         public void SetCost( Device D )
