@@ -47,6 +47,7 @@ namespace Network_Tracer.View
         }
         private Canvas canvas { get; set; }
 
+        public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
         public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
 
         public override int Number { get => base.Number; set => base.Number = value; }

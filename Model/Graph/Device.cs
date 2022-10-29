@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,6 +19,8 @@ namespace Network_Tracer.Model.Graph
 
         public virtual List<Device> _neighbours { get; set; }
 
+        public static List<LineConnect> _lines = new List<LineConnect>();
+
         public virtual string LabelName { get; set; }
 
         //public abstract string PowerEnergized { get; set; }
@@ -33,6 +36,8 @@ namespace Network_Tracer.Model.Graph
         public virtual int Number { get; set; }
 
         public virtual bool PowerSuuply { get; set; }
+
+        public virtual bool ISVisited { get; set; }
 
         public static MainWindow Window { get; set; }
 
@@ -77,6 +82,7 @@ namespace Network_Tracer.Model.Graph
                         {
                             Vertex.Add(Device.NewLine.D1);
                         }
+                        _lines.Add(Device.NewLine);
                         if (this.AddLine(Device.NewLine))
                         {
                             Canvas.SetZIndex(Device.NewLine, -1);
@@ -105,7 +111,6 @@ namespace Network_Tracer.Model.Graph
                                 }
                                 Device.NewLine.D1.AddNEighbours(Device.NewLine.D2);
                                 Device.NewLine.D2.AddNEighbours(Device.NewLine.D1);
-                                Device.NewLine.SetCost(Device.NewLine.D1);
                                 Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
                                 Device.NewLine.D2.UpdateLocation();
                                 _count = 1;
@@ -143,5 +148,8 @@ namespace Network_Tracer.Model.Graph
                 e.Handled = true;
             }
         }
+
+        public static LineConnect GetLineBetween(Device D1, Device D2) => _lines.Where(n => (n.D1.LabelName == D1.LabelName & n.D2.LabelName == D2.LabelName) 
+        && (n.D1.LabelName == D2.LabelName & n.D2.LabelName == D1.LabelName)).First();
     }
 }

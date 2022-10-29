@@ -39,7 +39,7 @@ namespace Network_Tracer.View
         }
         public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
 
-
+        public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
         public override int Number { get => base.Number; set => base.Number = value; }
 
         public int Ports

@@ -41,6 +41,7 @@ namespace Network_Tracer.View
         //Количество портов у девайса
         public override int NumberPorts { get => base.NumberPorts; set => base.NumberPorts = value; }
 
+        public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
         public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
 
         public override int Number { get => base.Number; set => base.Number = value; }

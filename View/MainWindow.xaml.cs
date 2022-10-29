@@ -369,7 +369,7 @@ namespace Network_Tracer
             switch ((SourceBox.SelectedItem as ComboBoxItem).Content.ToString())
             {
                 case "ПЭГ":
-                    LineChangeColor.PaintingLine(Source.Peg);
+                    LineChangeColor.CalculationMax(Source.Peg);
                     break;
                 case "ВЗГ":
                     LineChangeColor.PaintingLine(Source.Vzg);

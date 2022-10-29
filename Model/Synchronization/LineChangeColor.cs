@@ -14,15 +14,66 @@ namespace Network_Tracer.Model.Graph
         static List<Device> State;
         static Device StartState;
 
-        private static void CalculationMax(Source source)
+        static private List<Device> Neighbo;
+
+        public static void CalculationMax(Source source)
         {
             int MaxCost = 0;
             LinesChageColor = new List<LineConnect>();
+            Neighbo = new List<Device>();
             State = new List<Device>();
             switch (source)
             {
                 case Source.Peg:
+                    //ПЭГ
+                    StartState = Device.Vertex.Where(vert => vert.Number == 1).First();
+                    StartState.Lines[0].ColorConnection = Brushes.Red;
+                    StartState.PowerSuuply = true;
+                    State.Add(StartState);
+                    State.Add(StartState.Lines[0].D2);
+                    int count = Device._countdevicesoncanvas;
+                    count -= 2;
+                    int i = 1;
+                    //Для всего графа
+                    while (true)
+                    {
+                        State[i].ISVisited = true;
+                        State[i].PowerSuuply = true;
+                        if (count == 0)
+                        {
+                            break;
+                        }
+                        for (int iter = 0; iter < State[i]._neighbours.Count; iter++)
+                        {
+                            if (!State[i]._neighbours[iter].PowerSuuply)
+                            {
+                                var line = Device.GetLineBetween(State[i], State[i]._neighbours[iter]);
+                                line.ColorConnection = Brushes.Red;
+                                State[i]._neighbours[iter].PowerSuuply = true;
+                                count--;
+                            }
+                        }
+                        if (count == 0)
+                        {
+                            break;
+                        }
+                        Neighbo.Clear();
+                        for (int iter = 0; iter < State[i].Lines.Count; iter++)
+                        {
+                            if (State[i]._neighbours[iter]._neighbours.Count > 1 & State[i]._neighbours[iter] != State[i - 1]
+                                & State[i]._neighbours[iter].ISVisited == false)
+                            {
+                                Neighbo.Add(State[i]._neighbours[iter]);
+                            }
+                        }
+                        if (count == 0)
+                        {
+                            break;
+                        }
+                        i++;
 
+                        State.Add(Neighbo.First());
+                    }
                     break;
                 case Source.Vzg:
                     break;
@@ -33,30 +84,7 @@ namespace Network_Tracer.Model.Graph
                 default:
                     break;
             }
-            //ПЭГ
-            StartState = Device.Vertex.Where(vert => vert.Number == 1).First();
-            StartState.Lines[0].ColorConnection = Brushes.Red;
-            State.Add(StartState.Lines[0].D2);
-            Device._countdevicesoncanvas--;
-            //Для всего графа
-            for (int i = 0; i != Device._countdevicesoncanvas; i++)
-            {
-                for (int iter = 0; iter < State[i].Lines.Count; iter++)
-                {
-                    State[i].Lines[iter].ColorConnection = Brushes.Red;
-                }
-                for (int neigh = 0; neigh < State[i]._neighbours.Count; neigh++)
-                {
-                    //State[i]._neighbours[neigh]
-                }
-                State[i].Lines.First();
-            }
-            //Device.lineConnects
-            //foreach ( Device D2 in Device.D2 )
-            //{
-            //    MaxCost = D2.Lines.Max(cost => cost.Cost);
-            //    LinesChageColor.Add(D2.Lines.Where(s => s.Cost == MaxCost).First());
-            //}
+
         }
         public static async void PaintingLine(Source source)
         {
