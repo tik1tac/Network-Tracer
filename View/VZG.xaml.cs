@@ -3,6 +3,7 @@ using Network_Tracer.Model.Graph;
 
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Network_Tracer.View
 {
@@ -16,7 +17,7 @@ namespace Network_Tracer.View
         {
 
         }
-        public VZG( Canvas canvas ) : base(canvas)
+        public VZG(Canvas canvas) : base(canvas)
         {
             InitializeComponent();
             Weight = 5;
@@ -42,6 +43,7 @@ namespace Network_Tracer.View
         public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
         public override int Number { get => base.Number; set => base.Number = value; }
 
+        public override Brush RectBorder { get => VZGX.Fill; set => VZGX.Fill = value; }
         public int Ports
         {
             get => ports.Length;
@@ -69,11 +71,11 @@ namespace Network_Tracer.View
                 CITY.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
             }
         }
-        public override bool AddLine( LineConnect line )
+        public override bool AddLine(LineConnect line)
         {
-            for ( int i = 0 ; i < this.ports.Length ; ++i )
+            for (int i = 0; i < this.ports.Length; ++i)
             {
-                if ( this.ports[i] == null )
+                if (this.ports[i] == null)
                 {
                     this.ports[i] = line;
                     Lines.Add(line);
@@ -85,32 +87,36 @@ namespace Network_Tracer.View
         }
         public override void UpdateLocation()
         {
-            for ( int i = 0 ; i < this.ports.Length ; ++i )
+            for (int i = 0; i < this.ports.Length; ++i)
             {
-                if ( this.ports[i] != null )
+                if (this.ports[i] != null)
                 {
-                    this.ports[i].UpdateLocation(this, Canvas.GetLeft(this) + ( this.Width / 2 ), Canvas.GetTop(this) + ( this.Height / 2 ));
+                    this.ports[i].UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
                 }
             }
         }
-        public override void Remove( object sender, System.Windows.RoutedEventArgs e )
+        public override void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
             this.RemoveLine(true);
-            if ( Vertex.Contains(this) )
+            if (Vertex.Contains(this))
             {
                 Vertex.Remove(this);
+            }
+            for (int i = 0; i < _neighbours.Count; i++)
+            {
+                _neighbours[i]._neighbours.Remove(this);
             }
             Device._countdevicesoncanvas--;
             this.canvas.Children.Remove(this);
         }
 
-        public override bool RemoveLine( bool deep, LineConnect line = null )
+        public override bool RemoveLine(bool deep, LineConnect line = null)
         {
-            for ( int i = 0 ; i < this.Ports ; ++i )
+            for (int i = 0; i < this.Ports; ++i)
             {
-                if ( this.ports[i] != null && ( line == null || this.ports[i] == line ) )
+                if (this.ports[i] != null && (line == null || this.ports[i] == line))
                 {
-                    if ( deep )
+                    if (deep)
                     {
                         this.ports[i].Remove(this);
                     }

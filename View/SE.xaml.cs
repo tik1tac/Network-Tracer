@@ -3,6 +3,7 @@ using Network_Tracer.Model.Graph;
 
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Network_Tracer.View
 {
@@ -41,6 +42,7 @@ namespace Network_Tracer.View
         //Количество портов у девайса
         public override int NumberPorts { get => base.NumberPorts; set => base.NumberPorts = value; }
 
+        public override Brush RectBorder { get => SeX.Fill; set => SeX.Fill = value; }
         public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
         public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
 
@@ -105,6 +107,10 @@ namespace Network_Tracer.View
             if (Vertex.Contains(this))
             {
                 Vertex.Remove(this);
+            }
+            for (int i = 0; i < _neighbours.Count; i++)
+            {
+                _neighbours[i]._neighbours.Remove(this);
             }
             Device._countdevicesoncanvas--;
             this.canvas.Children.Remove(this);

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 
 namespace Network_Tracer.View
 {
@@ -15,7 +16,7 @@ namespace Network_Tracer.View
     /// </summary>
     public partial class LineConnect : UserControl
     {
-        public LineConnect( Canvas canvas )
+        public LineConnect(Canvas canvas)
         {
             InitializeComponent();
             this.canvas = canvas;
@@ -67,7 +68,7 @@ namespace Network_Tracer.View
 
         #region Change calback functions
 
-        public static void X1_PC( DependencyObject obj, DependencyPropertyChangedEventArgs e )
+        public static void X1_PC(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             LineConnect c = obj as LineConnect;
             double nv = (double)e.NewValue;
@@ -76,7 +77,7 @@ namespace Network_Tracer.View
             c.ChangeAnimationValue();
         }
 
-        public static void X2_PC( DependencyObject obj, DependencyPropertyChangedEventArgs e )
+        public static void X2_PC(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             LineConnect c = obj as LineConnect;
             double nv = (double)e.NewValue;
@@ -88,7 +89,7 @@ namespace Network_Tracer.View
             c.ChangeAnimationValue();
         }
 
-        public static void Y1_PC( DependencyObject obj, DependencyPropertyChangedEventArgs e )
+        public static void Y1_PC(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             LineConnect c = obj as LineConnect;
             double nv = (double)e.NewValue;
@@ -96,7 +97,7 @@ namespace Network_Tracer.View
             c.ChangeAnimationValue();
         }
 
-        public static void Y2_PC( DependencyObject obj, DependencyPropertyChangedEventArgs e )
+        public static void Y2_PC(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             LineConnect c = obj as LineConnect;
             double nv = (double)e.NewValue;
@@ -115,7 +116,7 @@ namespace Network_Tracer.View
 
         #region Delegates structure
 
-        public delegate void CompleteAnimationCallback( LineConnect lineControl );
+        public delegate void CompleteAnimationCallback(LineConnect lineControl);
 
         #endregion
 
@@ -143,13 +144,13 @@ namespace Network_Tracer.View
         {
             TimelineCollection collection = a.Storyboard.Children;//берём колекцию колекций кадров
             //устанавливаем значения
-            ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[0].Value = ( collection[1] as DoubleAnimationUsingKeyFrames ).KeyFrames[0].Value = ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].Value = X1;
-            ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[0].Value = ( collection[3] as DoubleAnimationUsingKeyFrames ).KeyFrames[0].Value = ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].Value = Y1;
+            (collection[0] as DoubleAnimationUsingKeyFrames).KeyFrames[0].Value = (collection[1] as DoubleAnimationUsingKeyFrames).KeyFrames[0].Value = (collection[0] as DoubleAnimationUsingKeyFrames).KeyFrames[1].Value = X1;
+            (collection[2] as DoubleAnimationUsingKeyFrames).KeyFrames[0].Value = (collection[3] as DoubleAnimationUsingKeyFrames).KeyFrames[0].Value = (collection[2] as DoubleAnimationUsingKeyFrames).KeyFrames[1].Value = Y1;
 
-            ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[2].Value = X2;
-            ( collection[1] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].Value = X2;
-            ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[2].Value = Y2;
-            ( collection[3] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].Value = Y2;
+            (collection[0] as DoubleAnimationUsingKeyFrames).KeyFrames[2].Value = X2;
+            (collection[1] as DoubleAnimationUsingKeyFrames).KeyFrames[1].Value = X2;
+            (collection[2] as DoubleAnimationUsingKeyFrames).KeyFrames[2].Value = Y2;
+            (collection[3] as DoubleAnimationUsingKeyFrames).KeyFrames[1].Value = Y2;
         }
 
         public void BeginAnimation()
@@ -170,28 +171,28 @@ namespace Network_Tracer.View
 
         public void RemoveAllHandles_CompleteAnimationEvent()
         {
-            for ( int i = 0 ; i < _listHandles.Count ; i++ )
+            for (int i = 0; i < _listHandles.Count; i++)
             {
                 CompleteAnimationEvent -= _listHandles[i];
                 //_listHandles.Remove(_listHandles[i]);
             }
         }
 
-        public void SetSpeed( TimeSpan time )
+        public void SetSpeed(TimeSpan time)
         {
             StopAnimation();
 
             TimelineCollection collection = a.Storyboard.Children;//берём колекцию колекций кадров
             //устанавливаем значения
-            ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].KeyTime = ( collection[1] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].KeyTime = ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].KeyTime = ( collection[3] as DoubleAnimationUsingKeyFrames ).KeyFrames[1].KeyTime = new TimeSpan(0, 0, 0, 0, (int)Math.Round(time.TotalMilliseconds / 2));
-            ( collection[0] as DoubleAnimationUsingKeyFrames ).KeyFrames[2].KeyTime = ( collection[2] as DoubleAnimationUsingKeyFrames ).KeyFrames[2].KeyTime = time;
+            (collection[0] as DoubleAnimationUsingKeyFrames).KeyFrames[1].KeyTime = (collection[1] as DoubleAnimationUsingKeyFrames).KeyFrames[1].KeyTime = (collection[2] as DoubleAnimationUsingKeyFrames).KeyFrames[1].KeyTime = (collection[3] as DoubleAnimationUsingKeyFrames).KeyFrames[1].KeyTime = new TimeSpan(0, 0, 0, 0, (int)Math.Round(time.TotalMilliseconds / 2));
+            (collection[0] as DoubleAnimationUsingKeyFrames).KeyFrames[2].KeyTime = (collection[2] as DoubleAnimationUsingKeyFrames).KeyFrames[2].KeyTime = time;
             SpeedAnimation = time;
         }
 
-        private void CompleteAnimation( object sender, EventArgs e )
+        private void CompleteAnimation(object sender, EventArgs e)
         {
             //CompleteAnimationEvent?.Invoke(this);
-            foreach ( CompleteAnimationCallback callback in _listHandles )
+            foreach (CompleteAnimationCallback callback in _listHandles)
             {
                 callback(this);//вызываем функции
             }
@@ -200,6 +201,7 @@ namespace Network_Tracer.View
 
         public Brush ColorConnection { get => Line.Stroke; set => Line.Stroke = value; }
 
+        public bool IsArrow { get; set; }
         public int Cost { get; private set; }
 
         public Device D1 { get; set; }
@@ -211,64 +213,117 @@ namespace Network_Tracer.View
 
         Canvas canvas { get; set; }
 
-        public void SetCost( Device D )
+        public void SetCost(Device D)
         {
             var TypeD = D.GetType();
-            if ( TypeD == typeof(PEG) )
+            if (TypeD == typeof(PEG))
             {
                 Cost = 10;
             }
-            if ( TypeD == typeof(VZG) )
+            if (TypeD == typeof(VZG))
             {
                 Cost = 5;
             }
-            if ( TypeD == typeof(SE) )
+            if (TypeD == typeof(SE))
             {
                 Cost = 2;
             }
-            if ( TypeD == typeof(PEGSpare) )
+            if (TypeD == typeof(PEGSpare))
             {
                 Cost = 7;
             }
         }
 
-        public void UpdateLocation( Device device, double x, double y )
+        public void UpdateLocation(Device device, double x, double y)
         {
-            if ( this.D1 == device )
+            if (this.D1 == device)
             {
                 this.X1 = (int)x;
                 this.Y1 = (int)y;
             }
-            else if ( this.D2 == device )
+            else if (this.D2 == device)
             {
                 this.X2 = (int)x;
                 this.Y2 = (int)y;
             }
 
-            Canvas.SetTop(this.WireBorder, ( this.Y1 + this.Y2 - this.WireBorder.Height ) / 2);
-            Canvas.SetLeft(this.WireBorder, ( this.X1 + this.X2 - this.WireBorder.Width ) / 2);
+            Canvas.SetTop(this.WireBorder, (this.Y1 + this.Y2 - this.WireBorder.Height) / 2);
+            Canvas.SetLeft(this.WireBorder, (this.X1 + this.X2 - this.WireBorder.Width) / 2);
         }
 
-        public void Remove( object sender = null, RoutedEventArgs e = null )
+        public void Remove(object sender = null, RoutedEventArgs e = null)
         {
 
-            if ( this.D1 != null && this.D1 != sender )
+            if (this.D1 != null && this.D1 != sender)
             {
                 this.D1.RemoveLine(false, this);
             }
 
-            if ( this.D2 != null && this.D2 != sender )
+            if (this.D2 != null && this.D2 != sender)
             {
                 this.D2.RemoveLine(false, this);
             }
 
-            if ( this.canvas != null )
+            if (this.canvas != null)
             {
                 this.canvas.Children.Remove(this);
             }
         }
+        public void Arrow(Device dev)
+        {
+            double X3 = (this.X1 + this.X2) / 2;
+            double Y3 = (this.Y1 + this.Y2) / 2;
 
-        private void UserControl_Loaded( object sender, RoutedEventArgs e )
+            // длина отрезка
+            double d = Math.Sqrt(Math.Pow(this.X2 - this.X1, 2) + Math.Pow(this.Y2 - this.Y1, 2));
+
+            // координаты вектора
+            double X = this.X2 - this.X1;
+            double Y = this.Y2 - this.Y1;
+
+            //центр
+            double midX = (this.X1 + this.X2) / 2;
+            double midY = (this.Y1 + this.Y2) / 2;
+            double X4;
+            double Y4;
+            // координаты точки, удалённой от центра к началу отрезка на 10px
+            if (dev.LabelName == this.D1.LabelName)
+            {
+                X4 = X3 - (X / d) * 10;
+                Y4 = Y3 - (Y / d) * 10;
+            }
+            else
+            {
+                X4 = X3 + (X / d) * 10;
+                Y4 = Y3 + (Y / d) * 10;
+
+            }
+
+            // из уравнения прямой { (x - x1)/(x1 - x2) = (y - y1)/(y1 - y2) } получаем вектор перпендикуляра
+            // (x - x1)/(x1 - x2) = (y - y1)/(y1 - y2) =>
+            // (x - x1)*(y1 - y2) = (y - y1)*(x1 - x2) =>
+            // (x - x1)*(y1 - y2) - (y - y1)*(x1 - x2) = 0 =>
+            // полученные множители x и y => координаты вектора перпендикуляра
+            double Xp = this.Y2 - this.Y1;
+            double Yp = this.X1 - this.X2;
+
+            // координаты перпендикуляров, удалённой от точки X4;Y4 на 5px в разные стороны
+            double X5 = X4 + (Xp / d) * 5;
+            double Y5 = Y4 + (Yp / d) * 5;
+            double X6 = X4 - (Xp / d) * 5;
+            double Y6 = Y4 - (Yp / d) * 5;
+
+            ArrowRight.X1 = midX;
+            ArrowRight.Y1 = midY;
+            ArrowLeft.X1 = midX;
+            ArrowLeft.Y1 = midY;
+
+            ArrowRight.X2 = X5;
+            ArrowRight.Y2 = Y5;
+            ArrowLeft.X2 = X6;
+            ArrowLeft.Y2 = Y6;
+        }
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             a.Storyboard.Completed += CompleteAnimation; //подписываемся на событие оканчании анимации
         }

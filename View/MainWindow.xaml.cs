@@ -223,30 +223,28 @@ namespace Network_Tracer
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
-
         }
 
         protected override void OnDragOver(DragEventArgs e)
         {
             base.OnDragOver(e);
-
-            if (e.Data.GetDataPresent("Device"))
+            if (!LineChangeColor.IsEnergy)
             {
-                Device obj = (Device)e.Data.GetData("Device");
-                Point p = e.GetPosition(this);
-
-
-                // Drag & drop of an object
-                Canvas.SetLeft(obj, p.X - (obj.Width / 2));
-                Canvas.SetTop(obj, p.Y - (obj.Height / 2));
-                obj.UpdateLocation();
+                if (e.Data.GetDataPresent("Device"))
+                {
+                    Device obj = (Device)e.Data.GetData("Device");
+                    Point p = e.GetPosition(this);
+                    // Drag & drop of an object
+                    Canvas.SetLeft(obj, p.X - (obj.Width / 2));
+                    Canvas.SetTop(obj, p.Y - (obj.Height / 2));
+                    obj.UpdateLocation();
+                }
             }
         }
 
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
-
         }
         #endregion
         private void VZGButton_Click(object sender, RoutedEventArgs e)
@@ -372,13 +370,11 @@ namespace Network_Tracer
                     LineChangeColor.CalculationMax(Source.Peg);
                     break;
                 case "ВЗГ":
-                    LineChangeColor.PaintingLine(Source.Vzg);
                     break;
                 case "ПЭГ рез.":
-                    LineChangeColor.PaintingLine(Source.PegSpare);
+                    LineChangeColor.CalculationMax(Source.PegSpare);
                     break;
                 case "ГСЭ":
-                    LineChangeColor.PaintingLine(Source.GSE);
                     break;
                 default:
                     break;

@@ -3,6 +3,7 @@ using Network_Tracer.Model.Graph;
 
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Network_Tracer.View
 {
@@ -16,7 +17,7 @@ namespace Network_Tracer.View
         {
 
         }
-        public PEG( Canvas canvas ) : base(canvas)
+        public PEG(Canvas canvas) : base(canvas)
         {
             InitializeComponent();
             Weight = 10;
@@ -45,11 +46,11 @@ namespace Network_Tracer.View
 
 
         private LineConnect Line { get; set; }
-
+        public override Brush RectBorder { get => PEGX.Fill; set => PEGX.Fill = value; }
         //Количество свободных портов у узла
         public override int FreePorts { get => base.FreePorts; set => base.FreePorts = value; }
 
-        public bool SetPort( LineConnect line )
+        public bool SetPort(LineConnect line)
         {
             return false;
         }
@@ -85,9 +86,9 @@ namespace Network_Tracer.View
 
         //    return -2;
         //}
-        public override bool AddLine( LineConnect line )
+        public override bool AddLine(LineConnect line)
         {
-            if ( Line == null )
+            if (Line == null)
             {
                 Line = line;
                 Lines.Add(line);
@@ -96,24 +97,28 @@ namespace Network_Tracer.View
 
             return false;
         }
-        public override void Remove( object sender, System.Windows.RoutedEventArgs e )
+        public override void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
             this.RemoveLine(true);
             pegcount = null;
-            if ( Vertex.Contains(this) )
+            if (Vertex.Contains(this))
             {
                 Vertex.Remove(this);
+            }
+            for (int i = 0; i < _neighbours.Count; i++)
+            {
+                _neighbours[i]._neighbours.Remove(this);
             }
             Device._countdevicesoncanvas--;
             this.canvas.Children.Remove(this);
         }
-        public override bool RemoveLine( bool deep, LineConnect line = null )
+        public override bool RemoveLine(bool deep, LineConnect line = null)
         {
-            if ( Line != null )
+            if (Line != null)
             {
-                if ( line == null || line == Line )
+                if (line == null || line == Line)
                 {
-                    if ( deep )
+                    if (deep)
                     {
                         Line.Remove(this);
                     }
@@ -126,9 +131,9 @@ namespace Network_Tracer.View
         }
         public override void UpdateLocation()
         {
-            if ( Line != null )
+            if (Line != null)
             {
-                Line.UpdateLocation(this, Canvas.GetLeft(this) + ( this.Width / 2 ), Canvas.GetTop(this) + ( this.Height / 2 ));
+                Line.UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
             }
 
         }

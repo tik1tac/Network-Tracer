@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Network_Tracer.Model.Graph
 {
@@ -18,6 +19,8 @@ namespace Network_Tracer.Model.Graph
         public virtual List<LineConnect> Lines { get; set; }
 
         public virtual List<Device> _neighbours { get; set; }
+
+        public virtual Brush RectBorder { get; set; }
 
         public static List<LineConnect> _lines = new List<LineConnect>();
 
@@ -148,8 +151,5 @@ namespace Network_Tracer.Model.Graph
                 e.Handled = true;
             }
         }
-
-        public static LineConnect GetLineBetween(Device D1, Device D2) => _lines.Where(n => (n.D1.LabelName == D1.LabelName & n.D2.LabelName == D2.LabelName) 
-        && (n.D1.LabelName == D2.LabelName & n.D2.LabelName == D1.LabelName)).First();
     }
 }

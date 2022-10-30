@@ -16,7 +16,7 @@
                 ПЭГ
             </TextBlock>-->
             <Grid>
-                <Rectangle Name = "PEGX" Fill="Silver" RadiusX="15" RadiusY="15" Height="50" Width="100" >
+                <Rectangle Name = "PEGspX" Fill="Silver" RadiusX="15" RadiusY="15" Height="50" Width="100" >
                 </Rectangle>
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="28" Text="{Binding LabelName}" >ПЭГрез.</TextBlock>
             </Grid>

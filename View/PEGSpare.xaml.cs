@@ -52,6 +52,7 @@ namespace Network_Tracer.View
 
         public override int Number { get => base.Number; set => base.Number = value; }
 
+        public override Brush RectBorder { get => PEGspX.Fill; set => PEGspX.Fill = value; }
 
         private LineConnect Line { get; set; }
 
@@ -113,6 +114,10 @@ namespace Network_Tracer.View
             if ( Vertex.Contains(this) )
             {
                 Vertex.Remove(this);
+            }
+            for (int i = 0; i < _neighbours.Count; i++)
+            {
+                _neighbours[i]._neighbours.Remove(this);
             }
             Device._countdevicesoncanvas--;
             this.canvas.Children.Remove(this);
