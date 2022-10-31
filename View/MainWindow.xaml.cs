@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
+using System.Windows.Media;
 
 namespace Network_Tracer
 {
@@ -26,6 +26,7 @@ namespace Network_Tracer
             Device.Window = this;
             SelectedTool = Tools.Cursor;
             Device._countdevicesoncanvas = 0;
+            this.DataContext = this;
         }
         #region Элементы на канвасе
         LineConnect SelectedLine;
@@ -367,14 +368,19 @@ namespace Network_Tracer
             switch ((SourceBox.SelectedItem as ComboBoxItem).Content.ToString())
             {
                 case "ПЭГ":
-                    LineChangeColor.CalculationMax(Source.Peg);
+                    LineChangeColor.Energize(Source.Peg);
+                    EnergBut.IsEnabled = false;
                     break;
                 case "ВЗГ":
+                    EnergBut.IsEnabled = false;
                     break;
                 case "ПЭГ рез.":
-                    LineChangeColor.CalculationMax(Source.PegSpare);
+                    LineChangeColor.Energize(Source.PegSpare);
+                    EnergBut.IsEnabled = false;
                     break;
                 case "ГСЭ":
+                    LineChangeColor.Energize(Source.GSE);
+                    EnergBut.IsEnabled = false;
                     break;
                 default:
                     break;
@@ -383,7 +389,20 @@ namespace Network_Tracer
         }
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
-
+            EnergBut.IsEnabled = true;
+            LineChangeColor.IsEnergy = false;
+            for (int i = 0; i < Device.Vertex.Count; i++)
+            {
+                Device.Vertex[i].PowerSuuply = false;
+                Device.Vertex[i].ISVisited = false;
+                Device.Vertex[i].RectBorder = Brushes.Silver;
+                for (int l = 0; l < Device.Vertex[i].Lines.Count; l++)
+                {
+                    Device.Vertex[i].Lines[l].IsArrow = false;
+                    Device.Vertex[i].Lines[l].ArrowToLine();
+                    Device.Vertex[i].Lines[l].ColorConnection = Brushes.Black;
+                }
+            }
         }
 
         private void CityDevice_TextChanged(object sender, TextChangedEventArgs e)

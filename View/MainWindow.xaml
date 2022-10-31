@@ -85,15 +85,15 @@
             </Expander>
             
             <Expander IsExpanded="True" Header="Выбрать источник" Visibility="Visible" ExpandDirection="Right">
-                <StackPanel Width="100">
-                    <ComboBox x:Name="SourceBox"  Width="100" VerticalAlignment="Top" Text="Выберите" IsEditable="True" Margin="0,30,0,0">
+                <StackPanel Width="130">
+                    <ComboBox x:Name="SourceBox"  Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Text="Выберите" IsEditable="True" Margin="0,30,0,0">
                         <ComboBoxItem>ПЭГ</ComboBoxItem>
                         <ComboBoxItem>ПЭГ рез.</ComboBoxItem>
                         <ComboBoxItem>ВЗГ</ComboBoxItem>
                         <ComboBoxItem>ГСЭ</ComboBoxItem>
                     </ComboBox>
-                    <Button VerticalAlignment="Bottom" Height="20" Click="Show_Click" Margin="0,80,0,0">Показать</Button>
-                    <Button VerticalAlignment="Bottom" Height="20" Click="Clear_Click" Margin="0,10,0,0">Очистить</Button>
+                    <Button x:Name="EnergBut" VerticalAlignment="Bottom" Height="20" Click="Show_Click" Margin="0,80,0,0">Подключить питание</Button>
+                    <Button VerticalAlignment="Bottom" Height="20" Click="Clear_Click" Margin="0,10,0,0">Отключить питание</Button>
                 </StackPanel>
             </Expander>
             

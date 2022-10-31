@@ -125,8 +125,8 @@ namespace Network_Tracer.View
                     if (deep)
                     {
                         this.ports[i].Remove(this);
+                        this.Lines.Remove(line);
                     }
-
                     this.ports[i] = null;
                 }
             }

@@ -10,18 +10,18 @@ namespace Network_Tracer.Model.Graph
 {
     internal class LineChangeColor
     {
-        private static List<LineConnect> LinesChageColor;
-
         static List<Device> State;
         static Device StartState;
-        static List<Device> RemainingDev;
         static private List<Device> Neighbo;
         public static bool IsEnergy = false;
-        public static void CalculationMax(Source source)
+        public static List<Device> VZGStart;
+        static Device ExcludedDev;
+        static object blocked;
+        public static void Energize(Source source)
         {
             Neighbo = new List<Device>();
             State = new List<Device>();
-            RemainingDev = new List<Device>();
+            VZGStart = new List<Device>();
             if (Device._lines.Count != 0)
             {
                 switch (source)
@@ -29,17 +29,29 @@ namespace Network_Tracer.Model.Graph
                     case Source.Peg:
                         //ПЭГ
                         StartState = Device.Vertex.Where(vert => vert.Number == 1).First();
-                        BrushLineIsSourcePEGorPEGsp();
+                        BrushLineIfSourcePEGorPEGsp(Source.Peg);
                         break;
                     case Source.Vzg:
+                        BrushLineIfSourceGSE();
+                        ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
+                        ExcludedDev.RectBorder = Brushes.Silver;
+                        ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                        ExcludedDev.Lines[0].ArrowToLine();
+                        ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
+                        ExcludedDev.RectBorder = Brushes.Silver;
+                        ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                        ExcludedDev.Lines[0].ArrowToLine();
                         break;
                     case Source.PegSpare:
                         StartState = Device.Vertex.Where(vert => vert.Number == 2).First();
-                        var peg= Device.Vertex.Where(vert => vert.Number == 1).First();
-                        peg._neighbours.Remove(peg);
-                        BrushLineIsSourcePEGorPEGsp();
+                        BrushLineIfSourcePEGorPEGsp(Source.PegSpare);
+                        ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
+                        ExcludedDev.RectBorder = Brushes.Silver;
+                        ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                        ExcludedDev.Lines[0].ArrowToLine();
                         break;
                     case Source.GSE:
+                        BrushLineIfSourceVZG();
                         break;
                     default:
                         break;
@@ -47,25 +59,67 @@ namespace Network_Tracer.Model.Graph
             }
 
         }
-
-        private static void BrushLineIsSourceGSE()
+        private static void BrushLineIfSourceGSE()
         {
-
+            Parallel.For(0, Device._countdevicesoncanvas, (i) =>
+            {
+                if (Device.Vertex[i].GetType()==typeof(VZG))
+                {
+                    lock (blocked)
+                    {
+                        VZGStart.Add(Device.Vertex[i]);
+                    }
+                }
+            });
+            while (true)
+            {
+                
+            }
         }
-        private static void BrushLineIsSourceVZG()
+        private static void BrushLineIfSourceVZG()
         {
-
+            for (int i = 0; i < Device.Vertex.Count; i++)
+            {
+                if (Device.Vertex[i].GetType() != typeof(PEG) & Device.Vertex[i].GetType() != typeof(PEGSpare)
+                    & Device.Vertex[i].GetType() != typeof(VZG))
+                {
+                    Device.Vertex[i].RectBorder = Brushes.Green;
+                }
+            }
         }
-        private static void BrushLineIsSourcePEGorPEGsp()
+        private static void BrushLineIfSourcePEGorPEGsp(Source source)
         {
-            StartState.Lines[0].ColorConnection = Brushes.Red;
+            if (source == Source.Peg)
+            {
+                StartState.Lines[0].ColorConnection = Brushes.Red;
+            }
+            else
+            {
+                StartState.Lines[0].ColorConnection = Brushes.Blue;
+            }
             StartState.PowerSuuply = true;
-            StartState.Lines[0].Arrow(StartState);
+            StartState.Lines[0].LineToArrow(StartState);
             StartState.Lines[0].IsArrow = true;
-            StartState.RectBorder = Brushes.Red;
+            if (source == Source.Peg)
+            {
+                StartState.RectBorder = Brushes.Red;
+            }
+            else
+            {
+                StartState.RectBorder = Brushes.Blue;
+            }
+
             State.Add(StartState);
             State.Add(StartState.Lines[0].D2);
-            State[1].RectBorder = Brushes.Red;
+            if (source == Source.Peg)
+            {
+                State[1].RectBorder = Brushes.Red;
+            }
+            else
+            {
+                State[1].RectBorder = Brushes.Blue;
+            }
+
             int count = Device._countdevicesoncanvas;
             count -= 2;
             int i = 1;
@@ -83,12 +137,22 @@ namespace Network_Tracer.Model.Graph
                 {
                     if (!State[i]._neighbours[iter].PowerSuuply)
                     {
-                        State[i].Lines
-                            .Where(n => n.D2.LabelName == State[i]._neighbours[iter].LabelName || n.D1.LabelName == State[i]._neighbours[iter].LabelName)
-                            .First().ColorConnection = Brushes.Red;
+                        if (source == Source.Peg)
+                        {
+                            State[i].Lines
+    .Where(n => n.D2.LabelName == State[i]._neighbours[iter].LabelName || n.D1.LabelName == State[i]._neighbours[iter].LabelName)
+    .First().ColorConnection = Brushes.Red;
+                            State[i]._neighbours[iter].RectBorder = Brushes.Red;
+                        }
+                        else
+                        {
+                            State[i].Lines
+.Where(n => n.D2.LabelName == State[i]._neighbours[iter].LabelName || n.D1.LabelName == State[i]._neighbours[iter].LabelName)
+.First().ColorConnection = Brushes.Blue;
+                            State[i]._neighbours[iter].RectBorder = Brushes.Blue;
+                        }
                         State[i]._neighbours[iter].PowerSuuply = true;
-                        State[i]._neighbours[iter].RectBorder = Brushes.Red;
-                        State[i].Lines[iter].Arrow(State[i]);
+                        State[i].Lines[iter].LineToArrow(State[i]);
                         State[i].Lines[iter].IsArrow = true;
                         count--;
                     }
@@ -121,13 +185,6 @@ namespace Network_Tracer.Model.Graph
                 {
                     State.Add(Neighbo.First());
                     Neighbo.Remove(Neighbo.First());
-                    if (Neighbo.Count != 0)
-                    {
-                        for (int iter = 0; iter < Neighbo.Count; iter++)
-                        {
-                            RemainingDev.Add(Neighbo[iter]);
-                        }
-                    }
                     i++;
                     i = State.Count - 1;
                 }

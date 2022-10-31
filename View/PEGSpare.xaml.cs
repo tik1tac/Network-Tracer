@@ -131,6 +131,7 @@ namespace Network_Tracer.View
                     if ( deep )
                     {
                         Line.Remove(this);
+                        this.Lines.Remove(line);
                     }
                     Line = null;
                     return true;

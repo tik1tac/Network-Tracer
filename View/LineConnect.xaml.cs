@@ -266,10 +266,11 @@ namespace Network_Tracer.View
 
             if (this.canvas != null)
             {
+                Device._lines.Remove(this);
                 this.canvas.Children.Remove(this);
             }
         }
-        public void Arrow(Device dev)
+        public void LineToArrow(Device dev)
         {
             double X3 = (this.X1 + this.X2) / 2;
             double Y3 = (this.Y1 + this.Y2) / 2;
@@ -299,10 +300,6 @@ namespace Network_Tracer.View
 
             }
 
-            // из уравнения прямой { (x - x1)/(x1 - x2) = (y - y1)/(y1 - y2) } получаем вектор перпендикуляра
-            // (x - x1)/(x1 - x2) = (y - y1)/(y1 - y2) =>
-            // (x - x1)*(y1 - y2) = (y - y1)*(x1 - x2) =>
-            // (x - x1)*(y1 - y2) - (y - y1)*(x1 - x2) = 0 =>
             // полученные множители x и y => координаты вектора перпендикуляра
             double Xp = this.Y2 - this.Y1;
             double Yp = this.X1 - this.X2;
@@ -322,6 +319,18 @@ namespace Network_Tracer.View
             ArrowRight.Y2 = Y5;
             ArrowLeft.X2 = X6;
             ArrowLeft.Y2 = Y6;
+        }
+        public void ArrowToLine()
+        {
+            ArrowRight.X1 = 0;
+            ArrowRight.Y1 = 0;
+            ArrowLeft.X1 = 0;
+            ArrowLeft.Y1 = 0;
+
+            ArrowRight.X2 = 0;
+            ArrowRight.Y2 = 0;
+            ArrowLeft.X2 = 0;
+            ArrowLeft.Y2 = 0;
         }
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {

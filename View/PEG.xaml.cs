@@ -121,6 +121,7 @@ namespace Network_Tracer.View
                     if (deep)
                     {
                         Line.Remove(this);
+                        this.Lines.Remove(line);
                     }
                     Line = null;
                     return true;
@@ -137,9 +138,5 @@ namespace Network_Tracer.View
             }
 
         }
-        //public override void SetPort( Device D2 )
-        //{
-        //    throw new System.NotImplementedException();
-        //}
     }
 }
