@@ -372,6 +372,7 @@ namespace Network_Tracer
                     EnergBut.IsEnabled = false;
                     break;
                 case "ВЗГ":
+                    LineChangeColor.Energize(Source.Vzg);
                     EnergBut.IsEnabled = false;
                     break;
                 case "ПЭГ рез.":

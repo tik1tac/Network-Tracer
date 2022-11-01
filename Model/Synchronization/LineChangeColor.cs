@@ -17,11 +17,14 @@ namespace Network_Tracer.Model.Graph
         public static List<Device> VZGStart;
         static Device ExcludedDev;
         static object blocked;
+        static Dictionary<Device, List<Device>> NeighboursForVZG;
         public static void Energize(Source source)
         {
             Neighbo = new List<Device>();
             State = new List<Device>();
             VZGStart = new List<Device>();
+            NeighboursForVZG = new Dictionary<Device, List<Device>>();
+            blocked = new object();
             if (Device._lines.Count != 0)
             {
                 switch (source)
@@ -32,7 +35,8 @@ namespace Network_Tracer.Model.Graph
                         BrushLineIfSourcePEGorPEGsp(Source.Peg);
                         break;
                     case Source.Vzg:
-                        BrushLineIfSourceGSE();
+
+                        BrushLineIfSourceVZG();
                         ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
                         ExcludedDev.RectBorder = Brushes.Silver;
                         ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
@@ -51,7 +55,7 @@ namespace Network_Tracer.Model.Graph
                         ExcludedDev.Lines[0].ArrowToLine();
                         break;
                     case Source.GSE:
-                        BrushLineIfSourceVZG();
+                        BrushLineIfSourceGSE();
                         break;
                     default:
                         break;
@@ -61,23 +65,6 @@ namespace Network_Tracer.Model.Graph
         }
         private static void BrushLineIfSourceGSE()
         {
-            Parallel.For(0, Device._countdevicesoncanvas, (i) =>
-            {
-                if (Device.Vertex[i].GetType()==typeof(VZG))
-                {
-                    lock (blocked)
-                    {
-                        VZGStart.Add(Device.Vertex[i]);
-                    }
-                }
-            });
-            while (true)
-            {
-                
-            }
-        }
-        private static void BrushLineIfSourceVZG()
-        {
             for (int i = 0; i < Device.Vertex.Count; i++)
             {
                 if (Device.Vertex[i].GetType() != typeof(PEG) & Device.Vertex[i].GetType() != typeof(PEGSpare)
@@ -85,6 +72,47 @@ namespace Network_Tracer.Model.Graph
                 {
                     Device.Vertex[i].RectBorder = Brushes.Green;
                 }
+            }
+        }
+        private static void BrushLineIfSourceVZG()
+        {
+            int count = Device._countdevicesoncanvas;
+            for (int i = 0; i < Device.Vertex.Count; i++)
+            {
+                if (Device.Vertex[i].GetType() == typeof(VZG))
+                {
+
+                    VZGStart.Add(Device.Vertex[i]);
+                    State = new List<Device>();
+                    NeighboursForVZG.Add(Device.Vertex[i], State);
+
+                }
+            }
+            count -= VZGStart.Count;
+            for (int i = 0; i < count; i++)
+            {
+                VZGStart[(int)i].ISVisited = true;
+                VZGStart[(int)i].PowerSuuply = true;
+
+                for (int iter = 0; iter < VZGStart.Count; iter++)
+                {
+                    lock (blocked)
+                    {
+                        for (int n = 0; n < NeighboursForVZG[VZGStart[(int)i]].Count; n++)
+                        {
+                            if (!NeighboursForVZG[VZGStart[(int)i]][iter]._neighbours[n].PowerSuuply)
+                            {
+                                NeighboursForVZG[VZGStart[(int)i]][iter]._neighbours[n].PowerSuuply = true;
+                                VZGStart[(int)i].Lines
+                                .Where(u => u.D2.LabelName == VZGStart[(int)i].LabelName || u.D1.LabelName == VZGStart[(int)i].LabelName)
+                                .First().ColorConnection = Brushes.Yellow;
+                                VZGStart[(int)i].Lines[n].LineToArrow(VZGStart[(int)i]);
+                                count--;
+                            }
+                        }
+                    }
+                }
+
             }
         }
         private static void BrushLineIfSourcePEGorPEGsp(Source source)
