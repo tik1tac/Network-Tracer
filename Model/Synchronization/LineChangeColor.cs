@@ -17,13 +17,15 @@ namespace Network_Tracer.Model.Graph
         public static List<Device> VZGStart;
         static Device ExcludedDev;
         static object blocked;
-        static Dictionary<Device, List<Device>> NeighboursForVZG;
+        private List<Device> RemaningDev;
+        static bool IsVZG = false;
+        private static List<Device> Neighbo2;
+
         public static void Energize(Source source)
         {
             Neighbo = new List<Device>();
             State = new List<Device>();
             VZGStart = new List<Device>();
-            NeighboursForVZG = new Dictionary<Device, List<Device>>();
             blocked = new object();
             if (Device._lines.Count != 0)
             {
@@ -35,16 +37,22 @@ namespace Network_Tracer.Model.Graph
                         BrushLineIfSourcePEGorPEGsp(Source.Peg);
                         break;
                     case Source.Vzg:
-
                         BrushLineIfSourceVZG();
-                        ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
-                        ExcludedDev.RectBorder = Brushes.Silver;
-                        ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                        ExcludedDev.Lines[0].ArrowToLine();
-                        ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
-                        ExcludedDev.RectBorder = Brushes.Silver;
-                        ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                        ExcludedDev.Lines[0].ArrowToLine();
+                        try
+                        {
+                            ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
+                            ExcludedDev.RectBorder = Brushes.Silver;
+                            ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                            ExcludedDev.Lines[0].ArrowToLine();
+                            ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
+                            ExcludedDev.RectBorder = Brushes.Silver;
+                            ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                            ExcludedDev.Lines[0].ArrowToLine();
+                        }
+                        catch (System.Exception)
+                        {
+                        }
+
                         break;
                     case Source.PegSpare:
                         StartState = Device.Vertex.Where(vert => vert.Number == 2).First();
@@ -81,38 +89,84 @@ namespace Network_Tracer.Model.Graph
             {
                 if (Device.Vertex[i].GetType() == typeof(VZG))
                 {
-
                     VZGStart.Add(Device.Vertex[i]);
-                    State = new List<Device>();
-                    NeighboursForVZG.Add(Device.Vertex[i], State);
-
                 }
             }
             count -= VZGStart.Count;
-            for (int i = 0; i < count; i++)
+            while (true)
             {
-                VZGStart[(int)i].ISVisited = true;
-                VZGStart[(int)i].PowerSuuply = true;
-
-                for (int iter = 0; iter < VZGStart.Count; iter++)
+                if (!VZGStart[0].PowerSuuply)
                 {
-                    lock (blocked)
+                    for (int iter = 0; iter < VZGStart.Count; iter++)
                     {
-                        for (int n = 0; n < NeighboursForVZG[VZGStart[(int)i]].Count; n++)
+                        VZGStart[(int)iter].ISVisited = true;
+                        VZGStart[(int)iter].PowerSuuply = true;
+                        for (int n = 0; n < VZGStart[iter].Lines.Count; n++)
                         {
-                            if (!NeighboursForVZG[VZGStart[(int)i]][iter]._neighbours[n].PowerSuuply)
+                            if (!VZGStart[iter]._neighbours[n].PowerSuuply)
                             {
-                                NeighboursForVZG[VZGStart[(int)i]][iter]._neighbours[n].PowerSuuply = true;
-                                VZGStart[(int)i].Lines
-                                .Where(u => u.D2.LabelName == VZGStart[(int)i].LabelName || u.D1.LabelName == VZGStart[(int)i].LabelName)
+                                VZGStart[iter]._neighbours[n].PowerSuuply = true;
+                                VZGStart[(int)iter].Lines
+                                .Where(u => u.D2.LabelName == VZGStart[(int)iter]._neighbours[n].LabelName || u.D1.LabelName == VZGStart[(int)iter]._neighbours[n].LabelName)
                                 .First().ColorConnection = Brushes.Yellow;
-                                VZGStart[(int)i].Lines[n].LineToArrow(VZGStart[(int)i]);
+                                VZGStart[(int)iter].Lines[n].LineToArrow(VZGStart[(int)iter]);
+                                Neighbo.Clear();
+                                for (int iterator = 0; iterator < VZGStart[(int)iter].Lines.Count; iterator++)
+                                {
+                                    if (VZGStart[(int)iter]._neighbours[iterator]._neighbours.Count > 1
+                                        & VZGStart[(int)iter]._neighbours[iterator].ISVisited == false)
+                                    {
+                                        State.Add(VZGStart[(int)iter]._neighbours[iterator]);
+                                    }
+                                }
                                 count--;
                             }
                         }
                     }
                 }
 
+                int st = 0;
+                if (State.Count != 0)
+                {
+                    while (count != 0)
+                    {
+                        for (int i = 0; i < State.Count; i++)
+                        {
+                            if (!State[st]._neighbours[i].PowerSuuply & !State[st]._neighbours[i].ISVisited)
+                            {
+                                State[st]._neighbours[i].PowerSuuply = true;
+                                State[st].Lines
+                                .Where(u => u.D2.LabelName == State[st]._neighbours[i].LabelName || u.D1.LabelName == State[st]._neighbours[i].LabelName)
+                                .First().ColorConnection = Brushes.Yellow;
+                                State[st].Lines[i].LineToArrow(State[st]);
+                            }
+                        }
+                        for (int iterator = 0; iterator < State[st].Lines.Count; iterator++)
+                        {
+                            if (State[st]._neighbours[iterator]._neighbours.Count > 1
+    & State[st]._neighbours[iterator] != State[iterator - 1]
+    & State[st]._neighbours[iterator].ISVisited == false)
+                            {
+                                Neighbo.Add(State[st]._neighbours[iterator]);
+                            }
+                        }
+                        if (Neighbo.Count == 0)
+                        {
+                            Neighbo = new List<Device>();
+                            st++;
+                        }
+                        int pos = 0;
+                        while (State[st].LabelName == Neighbo2[pos].LabelName)
+                        {
+
+                        }
+                        Neighbo2.Add(Neighbo.First());
+                        for (int i = 0; i < Neighbo.Count; i++)
+                        {
+
+                        }
+                    }
+                }
             }
         }
         private static void BrushLineIfSourcePEGorPEGsp(Source source)
