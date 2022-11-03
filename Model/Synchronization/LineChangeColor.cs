@@ -19,7 +19,8 @@ namespace Network_Tracer.Model.Graph
         static object blocked;
         private List<Device> RemaningDev;
         static bool IsVZG = false;
-        private static List<Device> Neighbo2;
+        static bool IsAdd = false;
+        private static List<Device> NextNeighbo;
 
         public static void Energize(Source source)
         {
@@ -27,32 +28,34 @@ namespace Network_Tracer.Model.Graph
             State = new List<Device>();
             VZGStart = new List<Device>();
             blocked = new object();
+            NextNeighbo = new List<Device>();
             if (Device._lines.Count != 0)
             {
                 switch (source)
                 {
                     case Source.Peg:
-                        //ПЭГ
                         StartState = Device.Vertex.Where(vert => vert.Number == 1).First();
                         BrushLineIfSourcePEGorPEGsp(Source.Peg);
                         break;
                     case Source.Vzg:
                         BrushLineIfSourceVZG();
-                        try
+                        if (Device.pegcount != null || Device.pegsparecount != null)
                         {
-                            ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
-                            ExcludedDev.RectBorder = Brushes.Silver;
-                            ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                            ExcludedDev.Lines[0].ArrowToLine();
-                            ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
-                            ExcludedDev.RectBorder = Brushes.Silver;
-                            ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                            ExcludedDev.Lines[0].ArrowToLine();
+                            try
+                            {
+                                ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
+                                ExcludedDev.RectBorder = Brushes.Silver;
+                                ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                                ExcludedDev.Lines[0].ArrowToLine();
+                                ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
+                                ExcludedDev.RectBorder = Brushes.Silver;
+                                ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                                ExcludedDev.Lines[0].ArrowToLine();
+                            }
+                            catch (System.Exception)
+                            {
+                            }
                         }
-                        catch (System.Exception)
-                        {
-                        }
-
                         break;
                     case Source.PegSpare:
                         StartState = Device.Vertex.Where(vert => vert.Number == 2).First();
@@ -85,6 +88,10 @@ namespace Network_Tracer.Model.Graph
         private static void BrushLineIfSourceVZG()
         {
             int count = Device._countdevicesoncanvas;
+            VZGStart.Clear();
+            Neighbo.Clear();
+            NextNeighbo.Clear();
+            State.Clear();
             for (int i = 0; i < Device.Vertex.Count; i++)
             {
                 if (Device.Vertex[i].GetType() == typeof(VZG))
@@ -93,24 +100,28 @@ namespace Network_Tracer.Model.Graph
                 }
             }
             count -= VZGStart.Count;
-            while (true)
+
+            if (!VZGStart[0].PowerSuuply)
             {
-                if (!VZGStart[0].PowerSuuply)
+                for (int iter = 0; iter < VZGStart.Count; iter++)
                 {
-                    for (int iter = 0; iter < VZGStart.Count; iter++)
+                    VZGStart[(int)iter].ISVisited = true;
+                    VZGStart[(int)iter].PowerSuuply = true;
+                    IsAdd = false;
+                    VZGStart[(int)iter].RectBorder = Brushes.Yellow;
+                    for (int n = 0; n < VZGStart[iter].Lines.Count; n++)
                     {
-                        VZGStart[(int)iter].ISVisited = true;
-                        VZGStart[(int)iter].PowerSuuply = true;
-                        for (int n = 0; n < VZGStart[iter].Lines.Count; n++)
+                        if (!VZGStart[iter]._neighbours[n].PowerSuuply)
                         {
-                            if (!VZGStart[iter]._neighbours[n].PowerSuuply)
+                            VZGStart[iter]._neighbours[n].PowerSuuply = true;
+                            VZGStart[(int)iter].Lines
+                            .Where(u => u.D2.LabelName == VZGStart[(int)iter]._neighbours[n].LabelName || u.D1.LabelName == VZGStart[(int)iter]._neighbours[n].LabelName)
+                            .First().ColorConnection = Brushes.Yellow;
+                            VZGStart[(int)iter].Lines[n].LineToArrow(VZGStart[(int)iter]);
+                            VZGStart[(int)iter]._neighbours[n].RectBorder = Brushes.Yellow;
+                            Neighbo.Clear();
+                            if (!IsAdd)
                             {
-                                VZGStart[iter]._neighbours[n].PowerSuuply = true;
-                                VZGStart[(int)iter].Lines
-                                .Where(u => u.D2.LabelName == VZGStart[(int)iter]._neighbours[n].LabelName || u.D1.LabelName == VZGStart[(int)iter]._neighbours[n].LabelName)
-                                .First().ColorConnection = Brushes.Yellow;
-                                VZGStart[(int)iter].Lines[n].LineToArrow(VZGStart[(int)iter]);
-                                Neighbo.Clear();
                                 for (int iterator = 0; iterator < VZGStart[(int)iter].Lines.Count; iterator++)
                                 {
                                     if (VZGStart[(int)iter]._neighbours[iterator]._neighbours.Count > 1
@@ -119,55 +130,127 @@ namespace Network_Tracer.Model.Graph
                                         State.Add(VZGStart[(int)iter]._neighbours[iterator]);
                                     }
                                 }
-                                count--;
                             }
-                        }
-                    }
-                }
-
-                int st = 0;
-                if (State.Count != 0)
-                {
-                    while (count != 0)
-                    {
-                        for (int i = 0; i < State.Count; i++)
-                        {
-                            if (!State[st]._neighbours[i].PowerSuuply & !State[st]._neighbours[i].ISVisited)
-                            {
-                                State[st]._neighbours[i].PowerSuuply = true;
-                                State[st].Lines
-                                .Where(u => u.D2.LabelName == State[st]._neighbours[i].LabelName || u.D1.LabelName == State[st]._neighbours[i].LabelName)
-                                .First().ColorConnection = Brushes.Yellow;
-                                State[st].Lines[i].LineToArrow(State[st]);
-                            }
-                        }
-                        for (int iterator = 0; iterator < State[st].Lines.Count; iterator++)
-                        {
-                            if (State[st]._neighbours[iterator]._neighbours.Count > 1
-    & State[st]._neighbours[iterator] != State[iterator - 1]
-    & State[st]._neighbours[iterator].ISVisited == false)
-                            {
-                                Neighbo.Add(State[st]._neighbours[iterator]);
-                            }
-                        }
-                        if (Neighbo.Count == 0)
-                        {
-                            Neighbo = new List<Device>();
-                            st++;
-                        }
-                        int pos = 0;
-                        while (State[st].LabelName == Neighbo2[pos].LabelName)
-                        {
-
-                        }
-                        Neighbo2.Add(Neighbo.First());
-                        for (int i = 0; i < Neighbo.Count; i++)
-                        {
-
+                            IsAdd = true;
+                            count--;
                         }
                     }
                 }
             }
+
+            int st = 0;
+            if (State.Count != 0)
+            {
+                while (count != 0)
+                {
+                    if (count == 0)
+                    {
+                        IsEnergy = true;
+                        Neighbo.Clear();
+                        break;
+                    }
+                    State[st].RectBorder = Brushes.Yellow;
+                    State[st].ISVisited = true;
+                    State[st].PowerSuuply = true;
+                    for (int i = 0; i < State[st]._neighbours.Count; i++)
+                    {
+                        if (!State[st]._neighbours[i].PowerSuuply & !State[st]._neighbours[i].ISVisited)
+                        {
+                            State[st]._neighbours[i].PowerSuuply = true;
+                            State[st].Lines
+                            .Where(u => u.D2.LabelName == State[st]._neighbours[i].LabelName || u.D1.LabelName == State[st]._neighbours[i].LabelName)
+                            .First().ColorConnection = Brushes.Yellow;
+                            State[st].Lines[i].LineToArrow(State[st]);
+                            State[st]._neighbours[i].RectBorder = Brushes.Yellow;
+                            count--;
+                        }
+                    }
+                    Neighbo.Clear();
+                    for (int iterator = 0; iterator < State[st].Lines.Count; iterator++)
+                    {
+                        if (State[st]._neighbours[iterator]._neighbours.Count > 1
+    & State[st]._neighbours[iterator].GetType() != typeof(VZG)
+    & State[st]._neighbours[iterator].ISVisited == false)
+                        {
+                            Neighbo.Add(State[st]._neighbours[iterator]);
+                        }
+                    }
+                    if (Neighbo.Count == 0)
+                    {
+                        Neighbo.Clear();
+                        st++;
+
+                        continue;
+                    }
+                    int pos = 1;
+                    NextNeighbo.Clear();
+                    NextNeighbo.Add(State[st]);
+                    NextNeighbo.Add(Neighbo.First());
+                    while (true)
+                    {
+                        NextNeighbo[pos].ISVisited = true;
+                        for (int i = 0; i < NextNeighbo[pos]._neighbours.Count; i++)
+                        {
+                            if (!NextNeighbo[pos]._neighbours[i].PowerSuuply)
+                            {
+                                NextNeighbo[pos]._neighbours[i].PowerSuuply = true;
+                                NextNeighbo[pos].Lines
+    .Where(n => n.D2.LabelName == NextNeighbo[pos]._neighbours[i].LabelName || n.D1.LabelName == NextNeighbo[pos]._neighbours[i].LabelName)
+    .First().ColorConnection = Brushes.Yellow;
+                                NextNeighbo[pos]._neighbours[i].RectBorder = Brushes.Yellow;
+
+                                NextNeighbo[pos]._neighbours[i].PowerSuuply = true;
+                                NextNeighbo[pos].Lines[i].LineToArrow(NextNeighbo[pos]);
+                                NextNeighbo[pos].Lines[i].IsArrow = true;
+                                NextNeighbo[pos]._neighbours[i].RectBorder = Brushes.Yellow;
+                                count--;
+                            }
+                        }
+                        int visit = 0;
+                        for (int i = 0; i < State[st]._neighbours.Count; i++)
+                        {
+                            if (!State[st]._neighbours[i].ISVisited)
+                            {
+                                visit++;
+                            }
+                        }
+                        if (count == 0 || (pos == 0 & visit == 0))
+                        {
+                            st++;
+                            Neighbo.Clear();
+                            break;
+                        }
+                        Neighbo.Clear();
+                        for (int i = 0; i < NextNeighbo[pos].Lines.Count; i++)
+                        {
+                            if (NextNeighbo[pos]._neighbours[i]._neighbours.Count > 1
+& NextNeighbo[pos]._neighbours[i].GetType() != typeof(VZG)
+& NextNeighbo[pos]._neighbours[i].ISVisited == false)
+                            {
+                                Neighbo.Add(NextNeighbo[pos]._neighbours[i]);
+                            }
+                        }
+                        if (Neighbo.Count == 0)
+                        {
+                            pos--;
+                        }
+                        else
+                        {
+                            NextNeighbo.Add(Neighbo.First());
+                            pos++;
+                            pos = NextNeighbo.Count - 1;
+                        }
+                    }
+                    if (count == 0)
+                    {
+                        Neighbo.Clear();
+                        IsEnergy = true;
+                        break;
+                    }
+                }
+
+            }
+
         }
         private static void BrushLineIfSourcePEGorPEGsp(Source source)
         {
@@ -210,11 +293,7 @@ namespace Network_Tracer.Model.Graph
             {
                 State[i].ISVisited = true;
                 State[i].PowerSuuply = true;
-                if (count == 0)
-                {
-                    IsEnergy = true;
-                    break;
-                }
+
                 for (int iter = 0; iter < State[i]._neighbours.Count; iter++)
                 {
                     if (!State[i]._neighbours[iter].PowerSuuply)
@@ -247,16 +326,11 @@ namespace Network_Tracer.Model.Graph
                 Neighbo.Clear();
                 for (int iter = 0; iter < State[i].Lines.Count; iter++)
                 {
-                    if (State[i]._neighbours[iter]._neighbours.Count > 1 & State[i]._neighbours[iter] != State[i - 1]
+                    if (State[i]._neighbours[iter]._neighbours.Count > 1
                         & State[i]._neighbours[iter].ISVisited == false)
                     {
                         Neighbo.Add(State[i]._neighbours[iter]);
                     }
-                }
-                if (count == 0)
-                {
-                    IsEnergy = true;
-                    break;
                 }
 
                 if (Neighbo.Count == 0)
@@ -266,7 +340,6 @@ namespace Network_Tracer.Model.Graph
                 else
                 {
                     State.Add(Neighbo.First());
-                    Neighbo.Remove(Neighbo.First());
                     i++;
                     i = State.Count - 1;
                 }
