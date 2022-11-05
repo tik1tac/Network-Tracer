@@ -1,4 +1,5 @@
-﻿using Network_Tracer.Model.Graph;
+﻿using Network_Tracer.Model;
+using Network_Tracer.Model.Graph;
 using Network_Tracer.Model.Graph.AbstractGraph;
 using Network_Tracer.View;
 
@@ -11,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Network_Tracer
 {
@@ -25,8 +27,6 @@ namespace Network_Tracer
             this.Closing += OnWindowClosing;
             Device.Window = this;
             SelectedTool = Tools.Cursor;
-            Device._countdevicesoncanvas = 0;
-            this.DataContext = this;
         }
         #region Элементы на канвасе
         LineConnect SelectedLine;
@@ -60,11 +60,8 @@ namespace Network_Tracer
                 {
                     return Tools.PEGSpare;
                 }
-
-
                 return Tools.Cursor;
             }
-
             set
             {
                 switch (value)
@@ -182,7 +179,7 @@ namespace Network_Tracer
                     CanvasField.Children.Add(peg);
                     SelectedTool = Tools.Cursor;
                     Device.pegcount = peg;
-                    Device._countdevicesoncanvas++;
+                    Device.Vertex.Add(peg);
                     break;
 
                 case Tools.VZG:
@@ -192,7 +189,7 @@ namespace Network_Tracer
                     vzg.MouseLeftButtonDown += this.OnVZGLeftButtonDown;
                     CanvasField.Children.Add(vzg);
                     SelectedTool = Tools.Cursor;
-                    Device._countdevicesoncanvas++;
+                    Device.Vertex.Add(vzg);
                     break;
 
                 case Tools.SE:
@@ -202,7 +199,7 @@ namespace Network_Tracer
                     se.MouseLeftButtonDown += this.OnSELeftButtonDown;
                     CanvasField.Children.Add(se);
                     SelectedTool = Tools.Cursor;
-                    Device._countdevicesoncanvas++;
+                    Device.Vertex.Add(se);
                     break;
 
                 case Tools.PEGSpare:
@@ -213,7 +210,7 @@ namespace Network_Tracer
                     CanvasField.Children.Add(pegspare);
                     SelectedTool = Tools.Cursor;
                     Device.pegsparecount = pegspare;
-                    Device._countdevicesoncanvas++;
+                    Device.Vertex.Add(pegspare);
                     break;
 
                 case Tools.Connection:
@@ -229,7 +226,7 @@ namespace Network_Tracer
         protected override void OnDragOver(DragEventArgs e)
         {
             base.OnDragOver(e);
-            if (!LineChangeColor.IsEnergy)
+            if (!EnergizeSheme.IsEnergy)
             {
                 if (e.Data.GetDataPresent("Device"))
                 {
@@ -365,33 +362,57 @@ namespace Network_Tracer
 
         private void Show_Click(object sender, RoutedEventArgs e)
         {
-            switch ((SourceBox.SelectedItem as ComboBoxItem).Content.ToString())
+            if (SourceBox.SelectedItem != null || Device.Vertex.Count != 0)
             {
-                case "ПЭГ":
-                    LineChangeColor.Energize(Source.Peg);
-                    EnergBut.IsEnabled = false;
-                    break;
-                case "ВЗГ":
-                    LineChangeColor.Energize(Source.Vzg);
-                    EnergBut.IsEnabled = false;
-                    break;
-                case "ПЭГ рез.":
-                    LineChangeColor.Energize(Source.PegSpare);
-                    EnergBut.IsEnabled = false;
-                    break;
-                case "ГСЭ":
-                    LineChangeColor.Energize(Source.GSE);
-                    EnergBut.IsEnabled = false;
-                    break;
-                default:
-                    break;
+                switch ((SourceBox.SelectedItem as ComboBoxItem).Content.ToString())
+                {
+                    case "ПЭГ":
+                        IsEnabledF();
+                        EnergizeSheme.Energize(Source.Peg);
+                        break;
+                    case "ВЗГ":
+                        IsEnabledF();
+                        EnergizeSheme.Energize(Source.Vzg);
+                        break;
+                    case "ПЭГ рез.":
+                        IsEnabledF();
+                        EnergizeSheme.Energize(Source.PegSpare);
+                        break;
+                    case "ГСЭ":
+                        IsEnabledF();
+                        EnergizeSheme.Energize(Source.GSE);
+                        break;
+                    default:
+                        break;
+                }
             }
-
+            else
+            {
+                MessageBox.Show("Выберите источник синхронизации и проверьте схему на правильность");
+            }
+        }
+        public void IsEnabledF()
+        {
+            EnergBut.IsEnabled = false;
+            PEGButton.IsEnabled = false;
+            VZGButton.IsEnabled = false;
+            SEButton.IsEnabled = false;
+            PEGSpare.IsEnabled = false;
+            Connection.IsEnabled = false;
+        }
+        public void IsEnabledT()
+        {
+            EnergBut.IsEnabled = true;
+            PEGButton.IsEnabled = true;
+            VZGButton.IsEnabled = true;
+            SEButton.IsEnabled = true;
+            PEGSpare.IsEnabled = true;
+            Connection.IsEnabled = true;
         }
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
-            EnergBut.IsEnabled = true;
-            LineChangeColor.IsEnergy = false;
+            IsEnabledT();
+            EnergizeSheme.IsEnergy = false;
             for (int i = 0; i < Device.Vertex.Count; i++)
             {
                 Device.Vertex[i].PowerSuuply = false;
@@ -423,7 +444,9 @@ namespace Network_Tracer
 
         private void CreateNewScheme_Click(object sender, RoutedEventArgs e)
         {
-
+            Clear_Click(null, null);
+            CanvasField.Children.Clear();
+            Scheme.NewList();
         }
 
         private void OpenScheme_Click(object sender, RoutedEventArgs e)

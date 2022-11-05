@@ -3,6 +3,7 @@ using Network_Tracer.Model.Graph.AbstractGraph;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -258,12 +259,33 @@ namespace Network_Tracer.View
             {
                 this.D1.RemoveLine(false, this);
             }
-
+            foreach (var item in D1.Port.grid.Children)
+            {
+                if (item is Button)
+                {
+                    if (!(item as Button).IsEnabled & (item as Button).Name == D1.Port.PortLine.Where(n => n.Key == this).First().Value)
+                    {
+                        (item as Button).IsEnabled = true;
+                    }
+                }
+            }
             if (this.D2 != null && this.D2 != sender)
             {
                 this.D2.RemoveLine(false, this);
             }
 
+            foreach (var item in D2.Port.grid.Children)
+            {
+                if (item is Button)
+                {
+                    if (!(item as Button).IsEnabled & (item as Button).Name == D2.Port.PortLine.Where(n => n.Key == this).First().Value)
+                    {
+                        (item as Button).IsEnabled = true;
+                    }
+                }
+            }
+            D1.Port.PortLine.Remove(this);
+            D2.Port.PortLine.Remove(this);
             if (this.canvas != null)
             {
                 Device._lines.Remove(this);

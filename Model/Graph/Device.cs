@@ -21,12 +21,11 @@ namespace Network_Tracer.Model.Graph
         public virtual List<Device> _neighbours { get; set; }
 
         public virtual Brush RectBorder { get; set; }
+        public Port Port { get; set; }
 
         public static List<LineConnect> _lines = new List<LineConnect>();
 
         public virtual string LabelName { get; set; }
-
-        //public abstract string PowerEnergized { get; set; }
 
         public virtual string city { get; set; }
 
@@ -46,26 +45,26 @@ namespace Network_Tracer.Model.Graph
 
         public static LineConnect NewLine { get; set; }
 
+        public virtual NamePorts NamePorts { get; set; }
+
+        public abstract void SetPort();
+
         public abstract void UpdateLocation();
+
         public abstract bool AddLine(LineConnect line);
 
         public abstract void AddNEighbours(Device D);
-
-        //public abstract int GetPort( LineConnect line );
-
-        //public abstract void SetPort( Device D2 );
-
 
         public abstract bool RemoveLine(bool deep, LineConnect line = null);
 
         public abstract void Remove(object sender, RoutedEventArgs e);
 
-        public static int _countdevicesoncanvas { get; set; }
-
         static int _count = 1;
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
+
             Point p = e.GetPosition(Window);
             try
             {
@@ -81,13 +80,10 @@ namespace Network_Tracer.Model.Graph
                             Y2 = p.Y,
                             D1 = this
                         };
-                        if (!Vertex.Contains(Device.NewLine.D1))
-                        {
-                            Vertex.Add(Device.NewLine.D1);
-                        }
                         _lines.Add(Device.NewLine);
                         if (this.AddLine(Device.NewLine))
                         {
+                            SetPort();
                             Canvas.SetZIndex(Device.NewLine, -1);
                             canvas.Children.Add(Device.NewLine);
                         }
@@ -108,21 +104,17 @@ namespace Network_Tracer.Model.Graph
                                 Device.NewLine.Y2 = Canvas.GetTop(this) + (this.Height / 2);
                                 Device.NewLine.D2 = this;
                                 Device.NewLine.SetCost(Device.NewLine.D1);
-                                if (!Vertex.Contains(Device.NewLine.D2))
-                                {
-                                    Vertex.Add(Device.NewLine.D2);
-                                }
                                 Device.NewLine.D1.AddNEighbours(Device.NewLine.D2);
                                 Device.NewLine.D2.AddNEighbours(Device.NewLine.D1);
                                 Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
                                 Device.NewLine.D2.UpdateLocation();
+                                SetPort();
                                 _count = 1;
                             }
                             else
                             {
                                 Device.NewLine.Remove(null, null);
                             }
-                            //SetPort(NewLine.D2);
                             Device.NewLine = null;
                         }
                     }
@@ -151,5 +143,6 @@ namespace Network_Tracer.Model.Graph
                 e.Handled = true;
             }
         }
+
     }
 }

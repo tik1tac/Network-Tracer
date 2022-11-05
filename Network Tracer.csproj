@@ -70,13 +70,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="MainWindowViewModel\MainViewModelGraph.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfNodes\CreatorNodes.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfLine\CreatorLine.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfLine\FactoryLine.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfNodes\FactoryNodes.cs" />
-    <Compile Include="Model\Synchronization\ChangeSource.cs" />
-    <Compile Include="Model\Synchronization\LineChangeColor.cs" />
+    <Compile Include="Model\Synchronization\EnergizeSheme.cs" />
     <Compile Include="Model\Graph\Nodes.cs" />
     <Compile Include="Model\Scheme.cs" />
     <Compile Include="Enums\Source.cs" />
@@ -96,8 +94,8 @@
     <Compile Include="View\PEGSpare.xaml.cs">
       <DependentUpon>PEGSpare.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PortsOut.xaml.cs">
-      <DependentUpon>PortsOut.xaml</DependentUpon>
+    <Compile Include="View\Port.xaml.cs">
+      <DependentUpon>Port.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SE.xaml.cs">
       <DependentUpon>SE.xaml</DependentUpon>
@@ -133,7 +131,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PortsOut.xaml">
+    <Page Include="View\Port.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -174,7 +172,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Energize.png" />
+    <Resource Include="Resources\notEnerg.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\cursor.png" />
   </ItemGroup>

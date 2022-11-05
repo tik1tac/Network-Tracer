@@ -3,6 +3,6 @@
     public enum CountPorts
     {
         one=1,
-        infinity=4
+        eight=8
     }
 }

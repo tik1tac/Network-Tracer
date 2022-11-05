@@ -11,16 +11,13 @@ namespace Network_Tracer.Model.Graph
         {
         }
 
+        public virtual Port port { get; set; }
         public virtual int Weight { get; set; }
 
         public virtual int NumberPorts { get; set; }
         public virtual int FreePorts { get; set; }
 
         public virtual StatePort StatePort { get; set; }
-
-        public virtual double X { get; set; }
-
-        public virtual double Y { get; set; }
 
     }
 }

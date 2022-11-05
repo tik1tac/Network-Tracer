@@ -15,10 +15,7 @@
                     </MenuItem>
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <!--<TextBlock Name = "NamePEG1" FontSize="16" TextAlignment="Center" Text="{Binding LabelName, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type src:Device}}, Mode=TwoWay}"  Height="20"  >-->
-                <!--ПЭГ
-                </TextBlock>-->
-                <Grid>
+            <Grid>
                 <Rectangle Name = "PEGX" Fill="Silver" RadiusX="15" RadiusY="15" Height="50" Width="100">
                 </Rectangle>
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36" Text="{Binding LabelName}" >ПЭГ</TextBlock>

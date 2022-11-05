@@ -83,27 +83,38 @@
                     </Grid>
                 </StackPanel>
             </Expander>
-            
+
             <Expander IsExpanded="True" Header="Выбрать источник" Visibility="Visible" ExpandDirection="Right">
                 <StackPanel Width="130">
-                    <ComboBox x:Name="SourceBox"  Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Text="Выберите" IsEditable="True" Margin="0,30,0,0">
+                    <ComboBox x:Name="SourceBox"  Width="100" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Выберите" IsEditable="True" Margin="0,30,0,0">
                         <ComboBoxItem>ПЭГ</ComboBoxItem>
                         <ComboBoxItem>ПЭГ рез.</ComboBoxItem>
                         <ComboBoxItem>ВЗГ</ComboBoxItem>
                         <ComboBoxItem>ГСЭ</ComboBoxItem>
                     </ComboBox>
-                    <Button x:Name="EnergBut" VerticalAlignment="Bottom" Height="20" Click="Show_Click" Margin="0,80,0,0">Подключить питание</Button>
-                    <Button VerticalAlignment="Bottom" Height="20" Click="Clear_Click" Margin="0,10,0,0">Отключить питание</Button>
+                    <Button x:Name="EnergBut" VerticalAlignment="Bottom"  Height="50" Click="Show_Click" Margin="0,20,0,0">
+                        <StackPanel>
+                            <Image Height="30" Width="30" Source="pack://application:,,,/Resources/Energize.png"></Image>
+                            <TextBlock  Margin="0,0,0,0" TextAlignment="Center" > Подключить питание</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button VerticalAlignment="Bottom" Height="50" Click="Clear_Click" Margin="0,10,0,0">
+                        <StackPanel>
+                            <Image Height="30" Width="30" Source="pack://application:,,,/Resources/notEnerg.png"></Image>
+                            <TextBlock  Margin="0,0,0,0" TextAlignment="Center" > Отключить питание</TextBlock>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </Expander>
-            
+
             <Expander x:Name="DeviceExpander"  IsExpanded="True" Header="Характеристика" ExpandDirection="Right" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" >
                     <Grid Margin="0,30,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"></RowDefinition>
                             <RowDefinition Height="30"></RowDefinition>
-                            <RowDefinition ></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"></ColumnDefinition>
@@ -114,10 +125,12 @@
                         <TextBlock x:Name="NameDevice"  Width="130" HorizontalAlignment="Right" ></TextBlock>
 
                         <Label Grid.Row="1" Grid.Column="0" Content="Город:" HorizontalAlignment="Left"></Label>
-                        <TextBox Grid.Row="1" Grid.Column="0" x:Name="CityDevice" Width="150" HorizontalAlignment="Right" TextChanged="CityDevice_TextChanged" ></TextBox>
-                        <Button Grid.Row="2" Grid.Column="0"  VerticalAlignment="Top" Height="20" Click="DeviceDelete_Click">Удалить</Button>
+                        <TextBox Grid.Row="1" Grid.Column="0" Background="Transparent" BorderBrush="Transparent" x:Name="CityDevice" Width="150" HorizontalAlignment="Right" TextChanged="CityDevice_TextChanged" ></TextBox>
+
+                        <Button Grid.Row="2" Grid.Column="0"  Height="20" Click="DeviceDelete_Click">Удалить элемент</Button>
                     </Grid>
                 </StackPanel>
+
             </Expander>
             <Expander x:Name="LineExpender" IsExpanded="True" Header="Линия" Visibility="Collapsed" ExpandDirection="Right">
                 <StackPanel Orientation="Horizontal">
@@ -125,11 +138,12 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"></RowDefinition>
                             <RowDefinition Height="30"></RowDefinition>
-                            <RowDefinition ></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"></ColumnDefinition>
-                            <ColumnDefinition Width="0"></ColumnDefinition>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
                         <Label Width="80" HorizontalAlignment="Left">Устройство1:</Label>
@@ -137,13 +151,17 @@
 
                         <Label Grid.Row="1" Width="80" HorizontalAlignment="Left">Устройство2:</Label>
                         <TextBlock Grid.Row="1" Width="120" Grid.Column="0" x:Name="Device2" HorizontalAlignment="Right" Height="30"></TextBlock>
-                        <Button Grid.Row="2" Grid.Column="0" Height="20" VerticalAlignment="Top" Click="LineDelete_Click">Удалить</Button>
+
+                        <Label Grid.Row="0" Grid.Column="1" Content="Порт:" HorizontalAlignment="Left"></Label>
+                        <TextBlock Grid.Row="0" Grid.Column="1" x:Name="Port1" Width="150" HorizontalAlignment="Right"  ></TextBlock>
+
+                        <Label Grid.Row="1" Grid.Column="1" Content="Порт:" HorizontalAlignment="Left"></Label>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="Port2" Width="150" HorizontalAlignment="Right"  ></TextBlock>
+
+                        <Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Height="20" VerticalAlignment="Top"  Click="LineDelete_Click">Удалить</Button>
                     </Grid>
                 </StackPanel>
             </Expander>
-
         </StackPanel>
-
-
     </Grid>
 </Window>

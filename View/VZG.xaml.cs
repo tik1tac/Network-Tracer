@@ -1,8 +1,13 @@
 ﻿using Network_Tracer.Model;
 using Network_Tracer.Model.Graph;
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Network_Tracer.View
@@ -23,14 +28,18 @@ namespace Network_Tracer.View
             Weight = 5;
             this.LabelName = Scheme.GenerateName(Properties.Resources.VSGLabelName);
             this.canvas = canvas;
-            NumberPorts = (int)CountPorts.infinity;
+            NumberPorts = (int)CountPorts.eight;
             FreePorts = NumberPorts;
-            this.Ports = NumberPorts;
+            this.PortsN = NumberPorts;
             Number = 3;
             PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
             _neighbours = new List<Device>();
+            NamePorts = new Dictionary<LineConnect, NamePorts>();
+            port = new Port();
         }
+
+        public override Port port { get; set; }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
         private Canvas canvas { get; set; }
         private LineConnect[] ports;
@@ -43,8 +52,10 @@ namespace Network_Tracer.View
         public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
         public override int Number { get => base.Number; set => base.Number = value; }
 
+        public new Dictionary<LineConnect, NamePorts> NamePorts { get; set; }
+
         public override Brush RectBorder { get => VZGX.Fill; set => VZGX.Fill = value; }
-        public int Ports
+        public int PortsN
         {
             get => ports.Length;
             set => ports = new LineConnect[value];
@@ -78,12 +89,32 @@ namespace Network_Tracer.View
                 if (this.ports[i] == null)
                 {
                     this.ports[i] = line;
+                    port.line = ports[i];
                     Lines.Add(line);
                     return true;
                 }
             }
 
             return false;
+        }
+        public async override void SetPort()
+        {
+            port.IsConnected = false;
+            port.ShowDialog();
+            for (int i = 0; i < this.ports.Length; ++i)
+            {
+                if (this.ports[i] != null)
+                {
+                    port.line = ports[i];
+                    if (port.IsConnected & !NamePorts.ContainsKey(ports[i]))
+                    {
+                        NamePorts.Add(ports[i], port.SelectedPorts);
+                        port.IsClose = false;
+                    }
+
+                }
+            }
+            await Task.Delay(0);
         }
         public override void UpdateLocation()
         {
@@ -106,19 +137,34 @@ namespace Network_Tracer.View
             {
                 _neighbours[i]._neighbours.Remove(this);
             }
-            Device._countdevicesoncanvas--;
+            if (Scheme.Labelsname.Contains(this.LabelName))
+            {
+                Scheme.Labelsname.Remove(this.LabelName);
+            }
             this.canvas.Children.Remove(this);
         }
 
         public override bool RemoveLine(bool deep, LineConnect line = null)
         {
-            for (int i = 0; i < this.Ports; ++i)
+            for (int i = 0; i < this.PortsN; ++i)
             {
                 if (this.ports[i] != null && (line == null || this.ports[i] == line))
                 {
                     if (deep)
                     {
                         this.ports[i].Remove(this);
+                        foreach (var item in port.grid.Children)
+                        {
+                            if (item is Button)
+                            {
+                                if (!(item as Button).IsEnabled & (item as Button).Name == port.PortLine.Where(n => n.Key == ports[i]).First().Value)
+                                {
+                                    (item as Button).IsEnabled = true;
+                                }
+                            }
+                        }
+                        NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
+                        port.PortLine.Remove(ports[i]);
                         this.Lines.Remove(line);
                     }
 
@@ -127,13 +173,5 @@ namespace Network_Tracer.View
             }
             return true;
         }
-        //public override void SetPort( Device D2 )
-        //{
-        //    throw new System.NotImplementedException();
-        //}
-        //public override int GetPort( LineConnect line )
-        //{
-        //    throw new System.NotImplementedException();
-        //}
     }
 }

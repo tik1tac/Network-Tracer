@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Network_Tracer.Model.Graph;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +10,7 @@ namespace Network_Tracer.Model
 {
     public class Scheme
     {
-        private static readonly HashSet<string> Labelsname = new HashSet<string>();
+        public static readonly HashSet<string> Labelsname = new HashSet<string>();
 
         public static string GenerateName( string baseword )
         {
@@ -28,6 +30,12 @@ namespace Network_Tracer.Model
             }
             Labelsname.Add(namelabel);
             return namelabel;
+        }
+        public static void NewList()
+        {
+            Device.Vertex.Clear();
+            Scheme.Labelsname.Clear();
+
         }
     }
 }

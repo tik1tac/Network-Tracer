@@ -1,8 +1,12 @@
 ﻿using Network_Tracer.Model;
 using Network_Tracer.Model.Graph;
 
+using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Network_Tracer.View
@@ -29,9 +33,11 @@ namespace Network_Tracer.View
             PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
             _neighbours = new System.Collections.Generic.List<Device>();
+            port = new Port();
         }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
 
+        public override Port port { get; set; }
         public override void AddNEighbours(Device D)
         {
             _neighbours.Add(D);
@@ -44,6 +50,7 @@ namespace Network_Tracer.View
 
         public override int Number { get => base.Number; set => base.Number = value; }
 
+        public override NamePorts NamePorts { get; set; }
 
         private LineConnect Line { get; set; }
         public override Brush RectBorder { get => PEGX.Fill; set => PEGX.Fill = value; }
@@ -55,19 +62,6 @@ namespace Network_Tracer.View
             return false;
         }
 
-        //public override string LabelName
-        //{
-        //    get
-        //    {
-        //        return base.LabelName;
-        //    }
-
-        //    set
-        //    {
-        //        base.LabelName = value;
-        //        NamePEG1.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
-        //    }
-        //}
         public override string city
         {
             get => base.city;
@@ -77,25 +71,27 @@ namespace Network_Tracer.View
                 CITY.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
             }
         }
-        //public override int GetPort( LineConnect line )
-        //{
-        //    if ( Line == line )
-        //    {
-        //        return -1;
-        //    }
-
-        //    return -2;
-        //}
         public override bool AddLine(LineConnect line)
         {
             if (Line == null)
             {
                 Line = line;
+                port.line = line;
                 Lines.Add(line);
                 return true;
             }
-
             return false;
+        }
+        public async override void SetPort()
+        {
+            port.IsConnected = false;
+            port.ShowDialog();
+            if (port.IsConnected)
+            {
+                NamePorts = port.SelectedPorts;
+                port.IsClose = false;
+            }
+            await Task.Delay(0);
         }
         public override void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -109,7 +105,10 @@ namespace Network_Tracer.View
             {
                 _neighbours[i]._neighbours.Remove(this);
             }
-            Device._countdevicesoncanvas--;
+            if (Scheme.Labelsname.Contains(this.LabelName))
+            {
+                Scheme.Labelsname.Remove(this.LabelName);
+            }
             this.canvas.Children.Remove(this);
         }
         public override bool RemoveLine(bool deep, LineConnect line = null)
@@ -121,6 +120,17 @@ namespace Network_Tracer.View
                     if (deep)
                     {
                         Line.Remove(this);
+                        foreach (var item in port.grid.Children)
+                        {
+                            if (item is Button)
+                            {
+                                if (!(item as Button).IsEnabled)
+                                {
+                                    (item as Button).IsEnabled = true;
+                                }
+                            }
+                        }
+                        port.PortLine.Remove(Line);
                         this.Lines.Remove(line);
                     }
                     Line = null;

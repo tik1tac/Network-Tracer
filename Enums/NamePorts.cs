@@ -2,9 +2,13 @@
 {
     public enum NamePorts
     {
-        S4,
-        T4,
-        S16,
-        T3
+        S41,
+        T41,
+        S161,
+        T31,
+        S42,
+        T42,
+        S162,
+        T32
     }
 }

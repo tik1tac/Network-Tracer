@@ -108,7 +108,7 @@ C:\Users\user\Desktop\12 каф\Network Tracer\obj\Debug\View\PEGSpare.baml
 C:\Users\user\Desktop\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.dll
 C:\Users\user\Desktop\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.pdb
 C:\Users\user\Desktop\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.xml
-C:\Users\user\Desktop\Network Tracer\obj\Debug\View\PortsOut.baml
 C:\Users\user\Desktop\Network Tracer\obj\Debug\View\PEGSpare.g.cs
-C:\Users\user\Desktop\Network Tracer\obj\Debug\View\PortsOut.g.cs
 C:\Users\user\Desktop\Network Tracer\obj\Debug\View\PEGSpare.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\Port.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\Port.g.cs
