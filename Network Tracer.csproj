@@ -82,6 +82,10 @@
     <Compile Include="Enums\NumberPorts.cs" />
     <Compile Include="Enums\StatePort.cs" />
     <Compile Include="Enums\Tools.cs" />
+    <Compile Include="View\ArrowInput.cs" />
+    <Compile Include="View\GSE.xaml.cs">
+      <DependentUpon>GSE.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\InputElements.xaml.cs">
       <DependentUpon>InputElements.xaml</DependentUpon>
     </Compile>
@@ -103,6 +107,10 @@
     <Compile Include="View\VZG.xaml.cs">
       <DependentUpon>VZG.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\GSE.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\InputElements.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

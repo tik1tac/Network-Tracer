@@ -38,7 +38,6 @@ namespace Network_Tracer.View
             NamePorts = new Dictionary<LineConnect, NamePorts>();
             port = new Port();
         }
-
         public override Port port { get; set; }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
         private Canvas canvas { get; set; }
@@ -150,20 +149,11 @@ namespace Network_Tracer.View
             {
                 if (this.ports[i] != null && (line == null || this.ports[i] == line))
                 {
+                    DeletePort(i);
+                    NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
                     if (deep)
                     {
                         this.ports[i].Remove(this);
-                        foreach (var item in port.grid.Children)
-                        {
-                            if (item is Button)
-                            {
-                                if (!(item as Button).IsEnabled & (item as Button).Name == port.PortLine.Where(n => n.Key == ports[i]).First().Value)
-                                {
-                                    (item as Button).IsEnabled = true;
-                                }
-                            }
-                        }
-                        NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
                         port.PortLine.Remove(ports[i]);
                         this.Lines.Remove(line);
                     }
@@ -172,6 +162,19 @@ namespace Network_Tracer.View
                 }
             }
             return true;
+        }
+        public override void DeletePort(int i)
+        {
+            foreach (var item in port.grid.Children)
+            {
+                if (item is Button)
+                {
+                    if (!(item as Button).IsEnabled & (item as Button).Name == port.PortLine.Where(n => n.Key == ports[i]).First().Value)
+                    {
+                        (item as Button).IsEnabled = true;
+                    }
+                }
+            }
         }
     }
 }

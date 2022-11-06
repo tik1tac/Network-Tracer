@@ -112,3 +112,5 @@ C:\Users\user\Desktop\Network Tracer\obj\Debug\View\PEGSpare.g.cs
 C:\Users\user\Desktop\Network Tracer\obj\Debug\View\PEGSpare.baml
 C:\Users\user\Desktop\Network Tracer\obj\Debug\View\Port.baml
 C:\Users\user\Desktop\Network Tracer\obj\Debug\View\Port.g.cs
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\GSE.baml
+C:\Users\user\Desktop\Network Tracer\obj\Debug\View\GSE.g.cs

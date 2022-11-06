@@ -1,18 +1,8 @@
 ﻿using Network_Tracer.Model.Graph;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Network_Tracer.View
 {
@@ -26,8 +16,18 @@ namespace Network_Tracer.View
             InitializeComponent();
             WindowStartupLocation = WindowStartupLocation.Manual;
             PortLine = new Dictionary<LineConnect, string>();
+            BlockOpen = new Dictionary<string, StatePort>();
+            BlockOpen.Add("S41", StatePort.Open);
+            BlockOpen.Add("S42", StatePort.Open);
+            BlockOpen.Add("T41", StatePort.Open);
+            BlockOpen.Add("T42", StatePort.Open);
+            BlockOpen.Add("T31", StatePort.Open);
+            BlockOpen.Add("T32", StatePort.Open);
+            BlockOpen.Add("S161", StatePort.Open);
+            BlockOpen.Add("S162", StatePort.Open);
         }
         public Dictionary<LineConnect, string> PortLine;
+        public Dictionary<string, StatePort> BlockOpen;
         public LineConnect line;
         public NamePorts SelectedPorts
         {
@@ -41,7 +41,8 @@ namespace Network_Tracer.View
             SelectedPorts = NamePorts.S41;
             IsConnected = true;
             S41.IsEnabled = false;
-            PortLine.Add(line,"S41");
+            PortLine.Add(line, "S41");
+            BlockOpen["S41"] = StatePort.Blocked;
             this.Hide();
         }
 
@@ -51,6 +52,7 @@ namespace Network_Tracer.View
             IsConnected = true;
             S161.IsEnabled = false;
             PortLine.Add(line, "S161");
+            BlockOpen["S161"] = StatePort.Blocked;
             this.Hide();
         }
 
@@ -60,6 +62,7 @@ namespace Network_Tracer.View
             IsConnected = true;
             T41.IsEnabled = false;
             PortLine.Add(line, "T41");
+            BlockOpen["T41"] = StatePort.Blocked;
             this.Hide();
         }
 
@@ -68,7 +71,8 @@ namespace Network_Tracer.View
             SelectedPorts = NamePorts.T31;
             IsConnected = true;
             T31.IsEnabled = false;
-            PortLine.Add(line,"T31");
+            PortLine.Add(line, "T31");
+            BlockOpen["T31"] = StatePort.Blocked;
             this.Hide();
         }
 
@@ -78,6 +82,7 @@ namespace Network_Tracer.View
             IsConnected = true;
             S42.IsEnabled = false;
             PortLine.Add(line, "S42");
+            BlockOpen["S42"] = StatePort.Blocked;
             this.Hide();
         }
 
@@ -87,6 +92,7 @@ namespace Network_Tracer.View
             IsConnected = true;
             S162.IsEnabled = false;
             PortLine.Add(line, "S162");
+            BlockOpen["S162"] = StatePort.Blocked;
             this.Hide();
         }
 
@@ -96,6 +102,7 @@ namespace Network_Tracer.View
             IsConnected = true;
             T42.IsEnabled = false;
             PortLine.Add(line, "T42");
+            BlockOpen["T42"] = StatePort.Blocked;
             this.Hide();
         }
 
@@ -105,6 +112,7 @@ namespace Network_Tracer.View
             IsConnected = true;
             T32.IsEnabled = false;
             PortLine.Add(line, "S41");
+            BlockOpen["T32"] = StatePort.Blocked;
             this.Hide();
         }
 

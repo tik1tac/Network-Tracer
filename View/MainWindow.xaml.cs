@@ -28,6 +28,7 @@ namespace Network_Tracer
             Device.Window = this;
             SelectedTool = Tools.Cursor;
         }
+
         #region Элементы на канвасе
         LineConnect SelectedLine;
         Device SelectedDevice;
@@ -187,6 +188,7 @@ namespace Network_Tracer
                     Canvas.SetLeft(vzg, p.X - (vzg.Width / 2));
                     Canvas.SetTop(vzg, p.Y - (vzg.Height / 2));
                     vzg.MouseLeftButtonDown += this.OnVZGLeftButtonDown;
+                    vzg.MouseDoubleClick += Vzg_MouseDoubleClick;
                     CanvasField.Children.Add(vzg);
                     SelectedTool = Tools.Cursor;
                     Device.Vertex.Add(vzg);
@@ -197,6 +199,7 @@ namespace Network_Tracer
                     Canvas.SetLeft(se, p.X - (se.Width / 2));
                     Canvas.SetTop(se, p.Y - (se.Height / 2));
                     se.MouseLeftButtonDown += this.OnSELeftButtonDown;
+                    se.MouseDoubleClick += Se_MouseDoubleClick;
                     CanvasField.Children.Add(se);
                     SelectedTool = Tools.Cursor;
                     Device.Vertex.Add(se);
@@ -217,12 +220,52 @@ namespace Network_Tracer
                     break;
             }
         }
-        #region Drag&Drop
-        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+
+        private void Se_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            base.OnMouseLeftButtonUp(e);
+            SelectedDevice.InputElements.Show();
+            for (int i = 0; i < Device.Vertex.Count; i++)
+            {
+                if (Device.Vertex[i] is VZG || Device.Vertex[i] is SE)
+                {
+                    var NamePorts = Device.Vertex[i].port.BlockOpen.Where(n => n.Value == StatePort.Blocked).Select(k => k.Key).ToList();
+                    foreach (var tb in Device.Vertex[i].InputElements.grid.Children)
+                    {
+                        if (tb is TextBlock)
+                        {
+                            for (int naras = 0; naras < NamePorts.Count - 1; naras++)
+                            {
+                                if ((tb as TextBlock).Name == NamePorts[naras])
+                                    (tb as TextBlock).Background = Brushes.Red;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //SelectedDevice.InputElements.XGse = SelectedDevice.InputElements.GSE.PointToScreen(new Point(SelectedDevice.InputElements.GSE.ActualWidth, SelectedDevice.InputElements.GSE.ActualHeight)).X;
+            //SelectedDevice.InputElements.YGse = SelectedDevice.InputElements.GSE.PointToScreen(new Point(SelectedDevice.InputElements.GSE.ActualWidth, SelectedDevice.InputElements.GSE.ActualHeight)).Y;
+            //foreach (var item in SelectedDevice.InputElements.grid.Children)
+            //{
+            //    if (item is TextBlock)
+            //    {
+            //        if ((item as TextBlock).Name == SelectedDevice.port.PortLine.Where(n => n.Key == ports[i]).First().Value)
+            //        {
+            //            (item as TextBlock).Background = Brushes.Red;
+            //            XBut = (item as TextBlock).PointToScreen(new Point((item as TextBlock).ActualWidth, (item as TextBlock).ActualHeight)).X;
+            //            YBut = (item as TextBlock).PointToScreen(new Point((item as TextBlock).ActualWidth, (item as TextBlock).ActualHeight)).Y;
+            //            InputElements.grid.Children.Add(new ArrowInput(XBut, XGse, YBut, YGse));
+            //        }
+            //    }
+            //}
         }
 
+        private void Vzg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            SelectedDevice.InputElements.Show();
+        }
+
+        #region Drag&Drop
         protected override void OnDragOver(DragEventArgs e)
         {
             base.OnDragOver(e);
@@ -239,10 +282,19 @@ namespace Network_Tracer
                 }
             }
         }
-
-        protected override void OnDrop(DragEventArgs e)
+        protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
-            base.OnDrop(e);
+            base.OnMouseRightButtonDown(e);
+
+            if (Device.NewLine != null)
+            {
+                if (SelectedDevice.port.IsActive)
+                {
+                    SelectedDevice.port.Hide();
+                }
+                Device.NewLine.Remove(null, null);
+                Device.NewLine = null;
+            }
         }
         #endregion
         private void VZGButton_Click(object sender, RoutedEventArgs e)
@@ -337,9 +389,17 @@ namespace Network_Tracer
         #endregion
         public void OnWindowClosing(object sender, CancelEventArgs e)
         {
+            foreach (var item in (CanvasField.Children))
+            {
+                if (item is Device)
+                {
+                    (item as Device).port.Close();
+                }
+            }
             if (!this.CloseScheme())
             {
                 e.Cancel = true;
+
             }
         }
         private bool CloseScheme()
@@ -440,6 +500,7 @@ namespace Network_Tracer
         private void LineDelete_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedLine.Remove(null, null);
+            Device.NewLine = null;
         }
 
         private void CreateNewScheme_Click(object sender, RoutedEventArgs e)

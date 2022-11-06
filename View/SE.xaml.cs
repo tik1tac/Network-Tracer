@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -38,7 +39,9 @@ namespace Network_Tracer.View
             _neighbours = new List<Device>();
             NamePorts = new Dictionary<LineConnect, NamePorts>();
             port = new Port();
+            InputElements = new InputElements();
         }
+        public override InputElements InputElements { get; set; }
         public override Port port { get; set; }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
         public override void AddNEighbours(Device D)
@@ -116,7 +119,6 @@ namespace Network_Tracer.View
                         NamePorts.Add(ports[i], port.SelectedPorts);
                         port.IsClose = false;
                     }
-
                 }
             }
             await Task.Delay(0);
@@ -156,20 +158,11 @@ namespace Network_Tracer.View
             {
                 if (this.ports[i] != null && (line == null || this.ports[i] == line))
                 {
+                    DeletePort(i);
+                    NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
                     if (deep)
                     {
                         this.ports[i].Remove(this);
-                        foreach (var item in port.grid.Children)
-                        {
-                            if (item is Button)
-                            {
-                                if (!(item as Button).IsEnabled & (item as Button).Name == port.PortLine.Where(n => n.Key == ports[i]).First().Value)
-                                {
-                                    (item as Button).IsEnabled = true;
-                                }
-                            }
-                        }
-                        NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
                         port.PortLine.Remove(ports[i]);
                         this.Lines.Remove(line);
                     }
@@ -177,6 +170,20 @@ namespace Network_Tracer.View
                 }
             }
             return true;
+        }
+
+        public override void DeletePort(int i)
+        {
+            foreach (var item in port.grid.Children)
+            {
+                if (item is Button)
+                {
+                    if (!(item as Button).IsEnabled & (item as Button).Name == port.PortLine.Where(n => n.Key == ports[i]).First().Value)
+                    {
+                        (item as Button).IsEnabled = true;
+                    }
+                }
+            }
         }
     }
 }

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Network_Tracer.Model.Graph
@@ -114,6 +115,7 @@ namespace Network_Tracer.Model.Graph
                     & Device.Vertex[i].GetType() != typeof(VZG))
                 {
                     Device.Vertex[i].RectBorder = Brushes.Green;
+                    Device.Vertex[i].InputElements.GSE.Background = Brushes.Green;
                 }
             }
         }/// <summary>
@@ -121,9 +123,9 @@ namespace Network_Tracer.Model.Graph
          /// </summary>
         private static void BrushLineIfSourceVZG()
         {
+
             if (VZGStart.Count != 0)
             {
-
                 for (int i = 0; i < Device.Vertex.Count; i++)
                 {
                     if (Device.Vertex[i].GetType() == typeof(VZG))
@@ -141,6 +143,7 @@ namespace Network_Tracer.Model.Graph
                         VZGStart[(int)iter].PowerSuuply = true;
                         IsAdd = false;
                         VZGStart[(int)iter].RectBorder = Brushes.Yellow;
+
                         for (int n = 0; n < VZGStart[iter].Lines.Count; n++)
                         {
                             if (!VZGStart[iter]._neighbours[n].PowerSuuply)
@@ -151,6 +154,7 @@ namespace Network_Tracer.Model.Graph
                                 .First().ColorConnection = Brushes.Yellow;
                                 VZGStart[(int)iter].Lines[n].LineToArrow(VZGStart[(int)iter]);
                                 VZGStart[(int)iter]._neighbours[n].RectBorder = Brushes.Yellow;
+                                VZGStart[iter].Lines[n].IsArrow = true;
                                 Neighbo.Clear();
                                 if (!IsAdd)
                                 {
@@ -184,6 +188,7 @@ namespace Network_Tracer.Model.Graph
                         State[st].RectBorder = Brushes.Yellow;
                         State[st].ISVisited = true;
                         State[st].PowerSuuply = true;
+
                         for (int i = 0; i < State[st]._neighbours.Count; i++)
                         {
                             if (!State[st]._neighbours[i].PowerSuuply & !State[st]._neighbours[i].ISVisited)
@@ -193,6 +198,7 @@ namespace Network_Tracer.Model.Graph
                                 .Where(u => u.D2.LabelName == State[st]._neighbours[i].LabelName || u.D1.LabelName == State[st]._neighbours[i].LabelName)
                                 .First().ColorConnection = Brushes.Yellow;
                                 State[st].Lines[i].LineToArrow(State[st]);
+                                State[st].Lines[i].IsArrow = true;
                                 State[st]._neighbours[i].RectBorder = Brushes.Yellow;
                                 count--;
                             }
@@ -312,6 +318,7 @@ namespace Network_Tracer.Model.Graph
             {
                 State[i].ISVisited = true;
                 State[i].PowerSuuply = true;
+
                 if (source == Source.Peg)
                 {
                     State[i].RectBorder = Brushes.Red;

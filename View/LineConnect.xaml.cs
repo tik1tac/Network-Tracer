@@ -202,6 +202,7 @@ namespace Network_Tracer.View
 
         public Brush ColorConnection { get => Line.Stroke; set => Line.Stroke = value; }
 
+        public bool IsInput { get; set; }
         public bool IsArrow { get; set; }
         public int Cost { get; private set; }
 
@@ -211,9 +212,7 @@ namespace Network_Tracer.View
         public NamePorts Port1 { get => Port1; set => Port1 = value; }
         public NamePorts Port2 { get => Port2; set => Port2 = value; }
 
-
         Canvas canvas { get; set; }
-
         public void SetCost(Device D)
         {
             var TypeD = D.GetType();
@@ -254,38 +253,17 @@ namespace Network_Tracer.View
 
         public void Remove(object sender = null, RoutedEventArgs e = null)
         {
-
+            Device._count = 1;
             if (this.D1 != null && this.D1 != sender)
             {
                 this.D1.RemoveLine(false, this);
             }
-            foreach (var item in D1.Port.grid.Children)
-            {
-                if (item is Button)
-                {
-                    if (!(item as Button).IsEnabled & (item as Button).Name == D1.Port.PortLine.Where(n => n.Key == this).First().Value)
-                    {
-                        (item as Button).IsEnabled = true;
-                    }
-                }
-            }
+
             if (this.D2 != null && this.D2 != sender)
             {
                 this.D2.RemoveLine(false, this);
             }
 
-            foreach (var item in D2.Port.grid.Children)
-            {
-                if (item is Button)
-                {
-                    if (!(item as Button).IsEnabled & (item as Button).Name == D2.Port.PortLine.Where(n => n.Key == this).First().Value)
-                    {
-                        (item as Button).IsEnabled = true;
-                    }
-                }
-            }
-            D1.Port.PortLine.Remove(this);
-            D2.Port.PortLine.Remove(this);
             if (this.canvas != null)
             {
                 Device._lines.Remove(this);

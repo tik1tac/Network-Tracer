@@ -21,7 +21,9 @@ namespace Network_Tracer.Model.Graph
         public virtual List<Device> _neighbours { get; set; }
 
         public virtual Brush RectBorder { get; set; }
-        public Port Port { get; set; }
+        public virtual Port port { get; set; }
+
+        public abstract InputElements InputElements { get; set; }
 
         public static List<LineConnect> _lines = new List<LineConnect>();
 
@@ -55,11 +57,13 @@ namespace Network_Tracer.Model.Graph
 
         public abstract void AddNEighbours(Device D);
 
+        public abstract void DeletePort(int i);
+
         public abstract bool RemoveLine(bool deep, LineConnect line = null);
 
         public abstract void Remove(object sender, RoutedEventArgs e);
 
-        static int _count = 1;
+        public static int _count = 1;
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -83,7 +87,10 @@ namespace Network_Tracer.Model.Graph
                         _lines.Add(Device.NewLine);
                         if (this.AddLine(Device.NewLine))
                         {
-                            SetPort();
+                            if (Device.NewLine.D1 is VZG || Device.NewLine.D1 is SE)
+                            {
+                                SetPort();
+                            }
                             Canvas.SetZIndex(Device.NewLine, -1);
                             canvas.Children.Add(Device.NewLine);
                         }
@@ -92,6 +99,7 @@ namespace Network_Tracer.Model.Graph
                             Device.NewLine.Remove(null, null);
                             MessageBox.Show("Нет свободных портов");
                             Device.NewLine = null;
+                            _count = 1;
                         }
                     }
                     if (_count == 2)
@@ -108,7 +116,10 @@ namespace Network_Tracer.Model.Graph
                                 Device.NewLine.D2.AddNEighbours(Device.NewLine.D1);
                                 Device.NewLine.MouseLeftButtonDown += Window.OnLineLeftButtonDown;
                                 Device.NewLine.D2.UpdateLocation();
-                                SetPort();
+                                if (Device.NewLine.D2 is VZG || Device.NewLine.D2 is SE)
+                                {
+                                    SetPort();
+                                }
                                 _count = 1;
                             }
                             else
@@ -121,6 +132,10 @@ namespace Network_Tracer.Model.Graph
                     if (Device.NewLine != null)
                     {
                         _count++;
+                    }
+                    else
+                    {
+                        _count = 1;
                     }
                 }
             }

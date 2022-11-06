@@ -40,7 +40,6 @@ namespace Network_Tracer.View
             PowerSuuply = false;
             Lines = new System.Collections.Generic.List<LineConnect>();
             _neighbours = new List<Device>();
-            port = new Port();
         }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
         public override void AddNEighbours(Device D)
@@ -48,7 +47,6 @@ namespace Network_Tracer.View
             _neighbours.Add(D);
         }
 
-        public override Port port { get; set; }
         private Canvas canvas { get; set; }
 
         public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
@@ -79,23 +77,19 @@ namespace Network_Tracer.View
             if (Line == null)
             {
                 Line = line;
-                port.line = line;
                 Lines.Add(line);
                 return true;
             }
 
             return false;
         }
-        public async override void SetPort()
+        public override void SetPort()
         {
-            port.IsConnected = false;
-            port.ShowDialog();
-            if (port.IsConnected)
-            {
-                NamePorts = port.SelectedPorts;
-                port.IsClose = false;
-            }
-            await Task.Delay(0);
+            ;
+        }
+        public override void DeletePort(int i)
+        {
+            ;
         }
         public override void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -124,17 +118,6 @@ namespace Network_Tracer.View
                     if (deep)
                     {
                         Line.Remove(this);
-                        foreach (var item in port.grid.Children)
-                        {
-                            if (item is Button)
-                            {
-                                if (!(item as Button).IsEnabled)
-                                {
-                                    (item as Button).IsEnabled = true;
-                                }
-                            }
-                        }
-                        port.PortLine.Remove(Line);
                         this.Lines.Remove(line);
                     }
                     Line = null;
