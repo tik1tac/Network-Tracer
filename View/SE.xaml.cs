@@ -181,6 +181,7 @@ namespace Network_Tracer.View
                     if (!(item as Button).IsEnabled & (item as Button).Name == port.PortLine.Where(n => n.Key == ports[i]).First().Value)
                     {
                         (item as Button).IsEnabled = true;
+                        port.BlockOpen[port.PortLine.Where(n => n.Key == ports[i]).First().Value] = StatePort.Open;
                     }
                 }
             }

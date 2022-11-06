@@ -13,18 +13,12 @@ namespace Network_Tracer.View
         public InputElements()
         {
             InitializeComponent();
-
         }
-
         public double XGse { get; set; }
         public double YGse { get; set; }
-        private void Close_Click(object sender, RoutedEventArgs e)
+        private void Hide_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
-        }
-        public void EnergizeInputElement(Device dev)
-        {
-
+            this.Hide();
         }
     }
 }

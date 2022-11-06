@@ -123,7 +123,6 @@ namespace Network_Tracer.Model.Graph
          /// </summary>
         private static void BrushLineIfSourceVZG()
         {
-
             if (VZGStart.Count != 0)
             {
                 for (int i = 0; i < Device.Vertex.Count; i++)

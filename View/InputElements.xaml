@@ -25,6 +25,6 @@
         <TextBlock x:Name="T32" Background="White" Grid.Row="2" Grid.Column="3" TextAlignment="Center" >T3</TextBlock>
         <TextBlock x:Name="T42" Background="White" Grid.Row="3" Grid.Column="3" TextAlignment="Center" >T4</TextBlock>
         <view:GSE x:Name="GSE" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2"></view:GSE>
-        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Click="Close_Click">Закрыть</Button>
+        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Click="Hide_Click">Закрыть</Button>
     </Grid>
 </Window>

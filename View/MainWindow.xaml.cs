@@ -224,19 +224,22 @@ namespace Network_Tracer
         private void Se_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             SelectedDevice.InputElements.Show();
-            for (int i = 0; i < Device.Vertex.Count; i++)
+            if (EnergizeSheme.IsEnergy)
             {
-                if (Device.Vertex[i] is VZG || Device.Vertex[i] is SE)
+                for (int i = 0; i < Device.Vertex.Count; i++)
                 {
-                    var NamePorts = Device.Vertex[i].port.BlockOpen.Where(n => n.Value == StatePort.Blocked).Select(k => k.Key).ToList();
-                    foreach (var tb in Device.Vertex[i].InputElements.grid.Children)
+                    if (Device.Vertex[i] is VZG || Device.Vertex[i] is SE)
                     {
-                        if (tb is TextBlock)
+                        var NamePorts = Device.Vertex[i].port.BlockOpen.Where(n => n.Value == StatePort.Blocked).Select(k => k.Key).ToList();
+                        foreach (var tb in Device.Vertex[i].InputElements.grid.Children)
                         {
-                            for (int naras = 0; naras < NamePorts.Count - 1; naras++)
+                            if (tb is TextBlock)
                             {
-                                if ((tb as TextBlock).Name == NamePorts[naras])
-                                    (tb as TextBlock).Background = Brushes.Red;
+                                for (int naras = 0; naras < NamePorts.Count; naras++)
+                                {
+                                    if ((tb as TextBlock).Name == NamePorts[naras])
+                                        (tb as TextBlock).Background = Brushes.Red;
+                                }
                             }
                         }
                     }
