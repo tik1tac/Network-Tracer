@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Enums\InOrOutPort.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfNodes\CreatorNodes.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfLine\CreatorLine.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfLine\FactoryLine.cs" />

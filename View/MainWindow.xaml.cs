@@ -244,23 +244,33 @@ namespace Network_Tracer
                         }
                     }
                 }
-            }
+                double XBut;
+                double YBut;
+                SelectedDevice.InputElements.XGse = SelectedDevice.InputElements.GSE.PointToScreen(new Point(SelectedDevice.InputElements.GSE.ActualWidth, SelectedDevice.InputElements.GSE.ActualHeight)).X;
+                SelectedDevice.InputElements.YGse = SelectedDevice.InputElements.GSE.PointToScreen(new Point(SelectedDevice.InputElements.GSE.ActualWidth, SelectedDevice.InputElements.GSE.ActualHeight)).Y;
+                foreach (var item in SelectedDevice.port.InOrOutPortDict)
+                {
+                    if (item.Value == Enums.InOrOutPort.InEnerg)
+                    {
+                        foreach (var elemInPut in SelectedDevice.InputElements.grid.Children.OfType<UIElement>().ToList())
+                        {
+                            if (elemInPut is TextBlock)
+                            {
+                                if (item.Key == (elemInPut as TextBlock).Name)
+                                {
+                                    XBut = (elemInPut as TextBlock).PointToScreen(new Point((elemInPut as TextBlock).ActualWidth, (elemInPut as TextBlock).ActualHeight)).X;
+                                    YBut = (elemInPut as TextBlock).PointToScreen(new Point((elemInPut as TextBlock).ActualWidth, (elemInPut as TextBlock).ActualHeight)).Y;
+                                    SelectedDevice.InputElements.PaintLine(XBut, SelectedDevice.InputElements.XGse, YBut, SelectedDevice.InputElements.YGse);
+                                }
+                                //else if (item.Value==Enums.InOrOutPort.Out)
+                                //{
 
-            //SelectedDevice.InputElements.XGse = SelectedDevice.InputElements.GSE.PointToScreen(new Point(SelectedDevice.InputElements.GSE.ActualWidth, SelectedDevice.InputElements.GSE.ActualHeight)).X;
-            //SelectedDevice.InputElements.YGse = SelectedDevice.InputElements.GSE.PointToScreen(new Point(SelectedDevice.InputElements.GSE.ActualWidth, SelectedDevice.InputElements.GSE.ActualHeight)).Y;
-            //foreach (var item in SelectedDevice.InputElements.grid.Children)
-            //{
-            //    if (item is TextBlock)
-            //    {
-            //        if ((item as TextBlock).Name == SelectedDevice.port.PortLine.Where(n => n.Key == ports[i]).First().Value)
-            //        {
-            //            (item as TextBlock).Background = Brushes.Red;
-            //            XBut = (item as TextBlock).PointToScreen(new Point((item as TextBlock).ActualWidth, (item as TextBlock).ActualHeight)).X;
-            //            YBut = (item as TextBlock).PointToScreen(new Point((item as TextBlock).ActualWidth, (item as TextBlock).ActualHeight)).Y;
-            //            InputElements.grid.Children.Add(new ArrowInput(XBut, XGse, YBut, YGse));
-            //        }
-            //    }
-            //}
+                                //}
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void Vzg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -481,11 +491,23 @@ namespace Network_Tracer
                 Device.Vertex[i].PowerSuuply = false;
                 Device.Vertex[i].ISVisited = false;
                 Device.Vertex[i].RectBorder = Brushes.Silver;
+
                 for (int l = 0; l < Device.Vertex[i].Lines.Count; l++)
                 {
                     Device.Vertex[i].Lines[l].IsArrow = false;
                     Device.Vertex[i].Lines[l].ArrowToLine();
                     Device.Vertex[i].Lines[l].ColorConnection = Brushes.Black;
+                }
+            }
+            for (int i = 0; i < Device.Vertex.Count; i++)
+            {
+                if (Device.Vertex[i] is VZG || Device.Vertex[i] is SE)
+                {
+                    var NamePorts = Device.Vertex[i].port.BlockOpen.Where(n => n.Value == StatePort.Blocked).Select(k => k.Key).ToList();
+                    for (int j = 0; j < NamePorts.Count; j++)
+                    {
+                        Device.Vertex[i].port.InOrOutPortDict[NamePorts[j]] = Enums.InOrOutPort.Default;
+                    }
                 }
             }
         }

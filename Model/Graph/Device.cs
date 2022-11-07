@@ -90,6 +90,7 @@ namespace Network_Tracer.Model.Graph
                             if (Device.NewLine.D1 is VZG || Device.NewLine.D1 is SE)
                             {
                                 SetPort();
+                                Device.NewLine.Port1 = port.SelectedPorts;
                             }
                             Canvas.SetZIndex(Device.NewLine, -1);
                             canvas.Children.Add(Device.NewLine);
@@ -119,6 +120,7 @@ namespace Network_Tracer.Model.Graph
                                 if (Device.NewLine.D2 is VZG || Device.NewLine.D2 is SE)
                                 {
                                     SetPort();
+                                    Device.NewLine.Port2 = port.SelectedPorts;
                                 }
                                 _count = 1;
                             }

@@ -1,4 +1,5 @@
-﻿using Network_Tracer.Model.Graph;
+﻿using Network_Tracer.Enums;
+using Network_Tracer.Model.Graph;
 
 using System.Collections.Generic;
 using System.Windows;
@@ -17,6 +18,7 @@ namespace Network_Tracer.View
             WindowStartupLocation = WindowStartupLocation.Manual;
             PortLine = new Dictionary<LineConnect, string>();
             BlockOpen = new Dictionary<string, StatePort>();
+            InOrOutPortDict = new Dictionary<string, InOrOutPort>();
             BlockOpen.Add("S41", StatePort.Open);
             BlockOpen.Add("S42", StatePort.Open);
             BlockOpen.Add("T41", StatePort.Open);
@@ -25,9 +27,19 @@ namespace Network_Tracer.View
             BlockOpen.Add("T32", StatePort.Open);
             BlockOpen.Add("S161", StatePort.Open);
             BlockOpen.Add("S162", StatePort.Open);
+
+            InOrOutPortDict.Add("S41", InOrOutPort.Default);
+            InOrOutPortDict.Add("S42", InOrOutPort.Default);
+            InOrOutPortDict.Add("T41", InOrOutPort.Default);
+            InOrOutPortDict.Add("T42", InOrOutPort.Default);
+            InOrOutPortDict.Add("T31", InOrOutPort.Default);
+            InOrOutPortDict.Add("T32", InOrOutPort.Default);
+            InOrOutPortDict.Add("S161", InOrOutPort.Default);
+            InOrOutPortDict.Add("S162", InOrOutPort.Default);
         }
         public Dictionary<LineConnect, string> PortLine;
         public Dictionary<string, StatePort> BlockOpen;
+        public Dictionary<string, InOrOutPort> InOrOutPortDict;
         public LineConnect line;
         public NamePorts SelectedPorts
         {

@@ -2,6 +2,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Network_Tracer.View
 {
@@ -20,5 +21,10 @@ namespace Network_Tracer.View
         {
             this.Hide();
         }
+        public void PaintLine(double XBut,double XGSE,double YBut,double YGSE)
+        {
+            grid.Children.Add(new ArrowInput(XBut, XGse, YBut,YGse));
+        }
+
     }
 }
