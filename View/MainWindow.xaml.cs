@@ -12,7 +12,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace Network_Tracer
 {
@@ -34,6 +33,7 @@ namespace Network_Tracer
         Device SelectedDevice;
         PEG pegcount = null;
         PEGSpare pegsparecount = null;
+        Source source;
         public Tools SelectedTool
         {
             get
@@ -224,6 +224,17 @@ namespace Network_Tracer
         private void Se_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             SelectedDevice.InputElements.Show();
+            ShowEnergizeInputElements();
+        }
+
+        private void Vzg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            SelectedDevice.InputElements.Show();
+            ShowEnergizeInputElements();
+        }
+
+        private void ShowEnergizeInputElements()
+        {
             if (EnergizeSheme.IsEnergy)
             {
                 for (int i = 0; i < Device.Vertex.Count; i++)
@@ -237,45 +248,42 @@ namespace Network_Tracer
                             {
                                 for (int naras = 0; naras < NamePorts.Count; naras++)
                                 {
-                                    if ((tb as TextBlock).Name == NamePorts[naras])
-                                        (tb as TextBlock).Background = Brushes.Red;
+                                    switch (source)
+                                    {
+                                        case Source.Peg:
+                                            if ((tb as TextBlock).Name == NamePorts[naras])
+                                                (tb as TextBlock).Background = Brushes.Red;
+                                            break;
+                                        case Source.Vzg:
+                                            if ((tb as TextBlock).Name == NamePorts[naras])
+                                                (tb as TextBlock).Background = Brushes.Yellow;
+                                            break;
+                                        case Source.PegSpare:
+                                            if ((tb as TextBlock).Name == NamePorts[naras])
+                                                (tb as TextBlock).Background = Brushes.Blue;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
                                 }
                             }
                         }
                     }
                 }
-                double XBut;
-                double YBut;
-                SelectedDevice.InputElements.XGse = SelectedDevice.InputElements.GSE.PointToScreen(new Point(SelectedDevice.InputElements.GSE.ActualWidth, SelectedDevice.InputElements.GSE.ActualHeight)).X;
-                SelectedDevice.InputElements.YGse = SelectedDevice.InputElements.GSE.PointToScreen(new Point(SelectedDevice.InputElements.GSE.ActualWidth, SelectedDevice.InputElements.GSE.ActualHeight)).Y;
-                foreach (var item in SelectedDevice.port.InOrOutPortDict)
+                foreach (var elemInPut in SelectedDevice.InputElements.grid.Children.OfType<UIElement>().ToList())
                 {
-                    if (item.Value == Enums.InOrOutPort.InEnerg)
+                    if (elemInPut is TextBlock)
                     {
-                        foreach (var elemInPut in SelectedDevice.InputElements.grid.Children.OfType<UIElement>().ToList())
-                        {
-                            if (elemInPut is TextBlock)
-                            {
-                                if (item.Key == (elemInPut as TextBlock).Name)
-                                {
-                                    XBut = (elemInPut as TextBlock).PointToScreen(new Point((elemInPut as TextBlock).ActualWidth, (elemInPut as TextBlock).ActualHeight)).X;
-                                    YBut = (elemInPut as TextBlock).PointToScreen(new Point((elemInPut as TextBlock).ActualWidth, (elemInPut as TextBlock).ActualHeight)).Y;
-                                    SelectedDevice.InputElements.PaintLine(XBut, SelectedDevice.InputElements.XGse, YBut, SelectedDevice.InputElements.YGse);
-                                }
-                                //else if (item.Value==Enums.InOrOutPort.Out)
-                                //{
-
-                                //}
-                            }
-                        }
+                        if (SelectedDevice.port.InOrOutPortDict[(elemInPut as TextBlock).Name] == Enums.InOrOutPort.InEnerg)
+                            SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.InEnerg);
+                        else if (SelectedDevice.port.InOrOutPortDict[(elemInPut as TextBlock).Name] == Enums.InOrOutPort.Out)
+                            SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.Out);
                     }
-                }
-            }
-        }
 
-        private void Vzg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            SelectedDevice.InputElements.Show();
+                }
+
+            }
         }
 
         #region Drag&Drop
@@ -305,6 +313,7 @@ namespace Network_Tracer
                 {
                     SelectedDevice.port.Hide();
                 }
+
                 Device.NewLine.Remove(null, null);
                 Device.NewLine = null;
             }
@@ -404,7 +413,7 @@ namespace Network_Tracer
         {
             foreach (var item in (CanvasField.Children))
             {
-                if (item is Device)
+                if (item is Device & item.GetType() != typeof(PEG) & item.GetType() != typeof(PEGSpare))
                 {
                     (item as Device).port.Close();
                 }
@@ -441,18 +450,22 @@ namespace Network_Tracer
                 {
                     case "ПЭГ":
                         IsEnabledF();
+                        source = Source.Peg;
                         EnergizeSheme.Energize(Source.Peg);
                         break;
                     case "ВЗГ":
                         IsEnabledF();
+                        source = Source.Vzg;
                         EnergizeSheme.Energize(Source.Vzg);
                         break;
                     case "ПЭГ рез.":
                         IsEnabledF();
+                        source = Source.PegSpare;
                         EnergizeSheme.Energize(Source.PegSpare);
                         break;
                     case "ГСЭ":
                         IsEnabledF();
+                        source = Source.GSE;
                         EnergizeSheme.Energize(Source.GSE);
                         break;
                     default:
@@ -507,6 +520,20 @@ namespace Network_Tracer
                     for (int j = 0; j < NamePorts.Count; j++)
                     {
                         Device.Vertex[i].port.InOrOutPortDict[NamePorts[j]] = Enums.InOrOutPort.Default;
+                    }
+                    if (Device.Vertex[i] is VZG || Device.Vertex[i] is SE)
+                    {
+                        foreach (var tb in Device.Vertex[i].InputElements.grid.Children.OfType<UIElement>().ToList())
+                        {
+                            if (tb is TextBlock)
+                            {
+                                (tb as TextBlock).Background = Brushes.White;
+                            }
+                            if (tb is ArrowInput)
+                            {
+                                Device.Vertex[i].InputElements.grid.Children.Remove(tb as ArrowInput);
+                            }
+                        }
                     }
                 }
             }

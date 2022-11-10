@@ -160,11 +160,11 @@ namespace Network_Tracer.View
                 {
                     DeletePort(i);
                     NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
+                    port.PortLine.Remove(ports[i]);
+                    this.Lines.Remove(line);
                     if (deep)
                     {
                         this.ports[i].Remove(this);
-                        port.PortLine.Remove(ports[i]);
-                        this.Lines.Remove(line);
                     }
                     this.ports[i] = null;
                 }

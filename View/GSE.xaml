@@ -1,9 +1,9 @@
 ﻿<UserControl x:Class="Network_Tracer.View.GSE"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             Height="150" Width="150">
+             Height="75" Width="75">
     <Grid>
-        <Ellipse Width="150" Height="150" Fill="Silver" Stroke="Black">
+        <Ellipse Width="75" Height="75" Fill="Silver" Stroke="Black">
         </Ellipse>
         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="36">ГСЭ</TextBlock>
     </Grid>

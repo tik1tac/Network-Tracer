@@ -37,7 +37,9 @@ namespace Network_Tracer.View
             _neighbours = new List<Device>();
             NamePorts = new Dictionary<LineConnect, NamePorts>();
             port = new Port();
+            InputElements = new InputElements();
         }
+        public override InputElements InputElements { get; set; }
         public override Port port { get; set; }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
         private Canvas canvas { get; set; }
@@ -151,18 +153,18 @@ namespace Network_Tracer.View
                 {
                     DeletePort(i);
                     NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
+                    this.Lines.Remove(line);
+                    port.PortLine.Remove(ports[i]);
                     if (deep)
                     {
                         this.ports[i].Remove(this);
-                        port.PortLine.Remove(ports[i]);
-                        this.Lines.Remove(line);
                     }
-
                     this.ports[i] = null;
                 }
             }
             return true;
         }
+
         public override void DeletePort(int i)
         {
             foreach (var item in port.grid.Children)

@@ -123,15 +123,16 @@ namespace Network_Tracer.Model.Graph
          /// </summary>
         private static void BrushLineIfSourceVZG()
         {
+
+            for (int i = 0; i < Device.Vertex.Count; i++)
+            {
+                if (Device.Vertex[i].GetType() == typeof(VZG))
+                {
+                    VZGStart.Add(Device.Vertex[i]);
+                }
+            }
             if (VZGStart.Count != 0)
             {
-                for (int i = 0; i < Device.Vertex.Count; i++)
-                {
-                    if (Device.Vertex[i].GetType() == typeof(VZG))
-                    {
-                        VZGStart.Add(Device.Vertex[i]);
-                    }
-                }
                 count -= VZGStart.Count;
                 foreach (var item in VZGStart)
                 {
@@ -164,13 +165,16 @@ namespace Network_Tracer.Model.Graph
                                 VZGStart[(int)iter].Lines[n].LineToArrow(VZGStart[(int)iter]);
                                 VZGStart[(int)iter]._neighbours[n].RectBorder = Brushes.Yellow;
                                 VZGStart[iter].Lines[n].IsArrow = true;
-                                Port = VZGStart[iter]._neighbours[n].port.PortLine.Where(k => k.Key == VZGStart[iter].Lines[n]).First().Value;
-                                VZGStart[iter]._neighbours[n].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
-                                foreach (var item in VZGStart[iter]._neighbours[n].port.BlockOpen)
+                                if (VZGStart[iter]._neighbours[n] is VZG || VZGStart[iter]._neighbours[n] is SE)
                                 {
-                                    if (item.Value == StatePort.Blocked & item.Key != Port)
+                                    Port = VZGStart[iter]._neighbours[n].port.PortLine.Where(k => k.Key == VZGStart[iter].Lines[n]).First().Value;
+                                    VZGStart[iter]._neighbours[n].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
+                                    foreach (var item in VZGStart[iter]._neighbours[n].port.BlockOpen)
                                     {
-                                        VZGStart[iter]._neighbours[n].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
+                                        if (item.Value == StatePort.Blocked & item.Key != Port)
+                                        {
+                                            VZGStart[iter]._neighbours[n].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
+                                        }
                                     }
                                 }
                                 Neighbo.Clear();
@@ -218,14 +222,16 @@ namespace Network_Tracer.Model.Graph
                                 State[st].Lines[i].LineToArrow(State[st]);
                                 State[st].Lines[i].IsArrow = true;
                                 State[st]._neighbours[i].RectBorder = Brushes.Yellow;
-
-                                Port = State[st]._neighbours[i].port.PortLine.Where(k => k.Key == State[st].Lines[i]).First().Value;
-                                State[st]._neighbours[i].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
-                                foreach (var item in State[st]._neighbours[i].port.BlockOpen)
+                                if (State[st]._neighbours[i] is VZG || State[st]._neighbours[i] is SE)
                                 {
-                                    if (item.Value == StatePort.Blocked & item.Key != Port)
+                                    Port = State[st]._neighbours[i].port.PortLine.Where(k => k.Key == State[st].Lines[i]).First().Value;
+                                    State[st]._neighbours[i].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
+                                    foreach (var item in State[st]._neighbours[i].port.BlockOpen)
                                     {
-                                        State[st]._neighbours[i].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
+                                        if (item.Value == StatePort.Blocked & item.Key != Port)
+                                        {
+                                            State[st]._neighbours[i].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
+                                        }
                                     }
                                 }
                                 count--;
@@ -269,14 +275,16 @@ namespace Network_Tracer.Model.Graph
                                     NextNeighbo[pos].Lines[i].LineToArrow(NextNeighbo[pos]);
                                     NextNeighbo[pos].Lines[i].IsArrow = true;
                                     NextNeighbo[pos]._neighbours[i].RectBorder = Brushes.Yellow;
-
-                                    Port = NextNeighbo[pos]._neighbours[i].port.PortLine.Where(k => k.Key == NextNeighbo[pos].Lines[i]).First().Value;
-                                    NextNeighbo[pos]._neighbours[i].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
-                                    foreach (var item in NextNeighbo[pos]._neighbours[i].port.BlockOpen)
+                                    if (NextNeighbo[pos]._neighbours[i] is VZG || NextNeighbo[pos]._neighbours[i] is SE)
                                     {
-                                        if (item.Value == StatePort.Blocked & item.Key != Port)
+                                        Port = NextNeighbo[pos]._neighbours[i].port.PortLine.Where(k => k.Key == NextNeighbo[pos].Lines[i]).First().Value;
+                                        NextNeighbo[pos]._neighbours[i].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
+                                        foreach (var item in NextNeighbo[pos]._neighbours[i].port.BlockOpen)
                                         {
-                                            NextNeighbo[pos]._neighbours[i].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
+                                            if (item.Value == StatePort.Blocked & item.Key != Port)
+                                            {
+                                                NextNeighbo[pos]._neighbours[i].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
+                                            }
                                         }
                                     }
                                     count--;
@@ -324,8 +332,8 @@ namespace Network_Tracer.Model.Graph
                             break;
                         }
                     }
-
                 }
+                IsEnergy = true;
             }
             else
             {
@@ -366,15 +374,6 @@ namespace Network_Tracer.Model.Graph
                 {
                     State[i].RectBorder = Brushes.Blue;
                 }
-                Port = State[0]._neighbours[0].port.PortLine.Where(k => k.Key == State[0].Lines[0]).First().Value;
-                State[0]._neighbours[0].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
-                foreach (var item in State[0]._neighbours[0].port.BlockOpen)
-                {
-                    if (item.Value == StatePort.Blocked & item.Key != Port)
-                    {
-                        State[0]._neighbours[0].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
-                    }
-                }
                 for (int iter = 0; iter < State[i]._neighbours.Count; iter++)
                 {
                     if (!State[i]._neighbours[iter].PowerSuuply)
@@ -396,13 +395,16 @@ namespace Network_Tracer.Model.Graph
                         State[i]._neighbours[iter].PowerSuuply = true;
                         State[i].Lines[iter].LineToArrow(State[i]);
                         State[i].Lines[iter].IsArrow = true;
-                        Port = State[i]._neighbours[iter].port.PortLine.Where(k => k.Key == State[i].Lines[iter]).First().Value;
-                        State[i]._neighbours[iter].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
-                        foreach (var item in State[i]._neighbours[iter].port.BlockOpen)
+                        if (State[i]._neighbours[iter] is VZG || State[i]._neighbours[iter] is SE)
                         {
-                            if (item.Value == StatePort.Blocked & item.Key != Port)
+                            Port = State[i]._neighbours[iter].port.PortLine.Where(k => k.Key == State[i].Lines[iter]).First().Value;
+                            State[i]._neighbours[iter].port.InOrOutPortDict[Port] = Enums.InOrOutPort.InEnerg;
+                            foreach (var item in State[i]._neighbours[iter].port.BlockOpen)
                             {
-                                State[i]._neighbours[iter].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
+                                if (item.Value == StatePort.Blocked & item.Key != Port)
+                                {
+                                    State[i]._neighbours[iter].port.InOrOutPortDict[item.Key] = Enums.InOrOutPort.Out;
+                                }
                             }
                         }
                         count--;

@@ -2,29 +2,19 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:view="clr-namespace:Network_Tracer.View"
-        Background="Silver" Height="450" Width="800" WindowStyle="None">
-    <Grid x:Name="grid">
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <TextBlock x:Name="S41" Background="White" Grid.Row="0" Grid.Column="0" TextAlignment="Center" >S4</TextBlock>
-        <TextBlock x:Name="S161" Background="White" Grid.Row="1" Grid.Column="0" TextAlignment="Center" >S16</TextBlock>
-        <TextBlock x:Name="T31" Background="White" Grid.Row="2" Grid.Column="0" TextAlignment="Center" >T3</TextBlock>
-        <TextBlock x:Name="T41" Background="White" Grid.Row="3" Grid.Column="0" TextAlignment="Center" >T4</TextBlock>
-        <TextBlock x:Name="S42" Background="White" Grid.Row="0" Grid.Column="3" TextAlignment="Center" >S4</TextBlock>
-        <TextBlock x:Name="S162" Background="White" Grid.Row="1" Grid.Column="3" TextAlignment="Center" >S16</TextBlock>
-        <TextBlock x:Name="T32" Background="White" Grid.Row="2" Grid.Column="3" TextAlignment="Center" >T3</TextBlock>
-        <TextBlock x:Name="T42" Background="White" Grid.Row="3" Grid.Column="3" TextAlignment="Center" >T4</TextBlock>
-        <view:GSE x:Name="GSE" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2"></view:GSE>
-        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Click="Hide_Click">Закрыть</Button>
-    </Grid>
+        Background="Silver" Height="440" Width="450" WindowStyle="None" WindowStartupLocation="CenterScreen">
+    <Canvas x:Name="grid">
+        <TextBlock x:Name="S41" Width="150" Height="100" Canvas.Top="40" Canvas.Left="0"   Background="White"  TextAlignment="Center" >S4</TextBlock>
+        <TextBlock x:Name="S161" Canvas.Top="140" Canvas.Left="0"  Width="150" Height="100" Background="White"  TextAlignment="Center"  >S16</TextBlock>
+        <TextBlock x:Name="T31" Canvas.Top="240" Canvas.Left="0" Width="150" Height="100" Background="White"  TextAlignment="Center"  >T3</TextBlock>
+        <TextBlock x:Name="T41" Canvas.Top="340" Canvas.Left="0" Width="150" Height="100" Background="White"  TextAlignment="Center"  >T4</TextBlock>
+        <TextBlock x:Name="S42" Canvas.Top="40" Canvas.Left="300" Width="150" Height="100" Background="White"  TextAlignment="Center" >S4</TextBlock>
+        <TextBlock x:Name="S162" Canvas.Top="140" Canvas.Left="300"  Width="150" Height="100" Background="White"  TextAlignment="Center" >S16</TextBlock>
+        <TextBlock x:Name="T32" Canvas.Top="240" Canvas.Left="300" Width="150" Height="100" Background="White"  TextAlignment="Center" >T3</TextBlock>
+        <TextBlock x:Name="T42" Canvas.Top="340" Canvas.Left="300" Width="150" Height="100" Background="White"  TextAlignment="Center">T4</TextBlock>
+        <view:GSE x:Name="GSE" Canvas.Top="300" Canvas.Left="190" ></view:GSE>
+        <Button Canvas.Top="0" Canvas.Left="410"  Width="40" Height="40" Click="Hide_Click">
+            <Image Source="pack://application:,,,/Resources/close.png" Width="40" Height="40"></Image>
+        </Button>
+    </Canvas>
 </Window>

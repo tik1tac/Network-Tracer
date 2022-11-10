@@ -105,10 +105,10 @@ namespace Network_Tracer.View
             {
                 if (line == null || line == Line)
                 {
+                    this.Lines.Remove(line);
                     if (deep)
                     {
                         Line.Remove(this);
-                        this.Lines.Remove(line);
                     }
                     Line = null;
                     return true;

@@ -17,7 +17,6 @@
         <Button x:Name="S161" Grid.Row="1" Foreground="Black" Background="White" Click="S16_Click">S16.1</Button>
         <Button x:Name="T41" Grid.Row="2" Foreground="Black" Background="White" Click="T4_Click">T4.1</Button>
         <Button x:Name="T31" Grid.Row="3" Foreground="Black" Background="White" Click="T3_Click">T3.1</Button>
-
         <Button x:Name="S42" Grid.Column="1" Foreground="Black" Background="White" Click="S4_Click_2" >S4.2</Button>
         <Button x:Name="S162" Grid.Row="1" Grid.Column="1" Foreground="Black" Background="White" Click="S16_Click_2">S16.2</Button>
         <Button x:Name="T42" Grid.Row="2" Grid.Column="1" Foreground="Black" Background="White" Click="T4_Click_2">T4.2</Button>
