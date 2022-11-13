@@ -1,4 +1,4 @@
-﻿<src:Nodes x:Class="Network_Tracer.View.SE"
+﻿<src:NodesWithPort x:Class="Network_Tracer.View.SE"
              xmlns:src="clr-namespace:Network_Tracer.Model.Graph"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -28,4 +28,4 @@
             </TextBlock>
         </StackPanel>
     </Grid>
-</src:Nodes>
+</src:NodesWithPort>

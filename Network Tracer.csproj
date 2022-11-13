@@ -46,6 +46,9 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity.resources, Version=4.5.0.0, Culture=ru, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -75,8 +78,9 @@
     <Compile Include="Model\AbstractGraph\FabricaOfLine\CreatorLine.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfLine\FactoryLine.cs" />
     <Compile Include="Model\AbstractGraph\FabricaOfNodes\FactoryNodes.cs" />
+    <Compile Include="Model\Graph\NodesWithPort.cs" />
     <Compile Include="Model\Synchronization\EnergizeSheme.cs" />
-    <Compile Include="Model\Graph\Nodes.cs" />
+    <Compile Include="Model\Graph\NodesWithoutPort.cs" />
     <Compile Include="Model\Scheme.cs" />
     <Compile Include="Enums\Source.cs" />
     <Compile Include="Enums\NamePorts.cs" />
@@ -104,6 +108,9 @@
     </Compile>
     <Compile Include="View\SE.xaml.cs">
       <DependentUpon>SE.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\User.xaml.cs">
+      <DependentUpon>User.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\VZG.xaml.cs">
       <DependentUpon>VZG.xaml</DependentUpon>
@@ -145,6 +152,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SE.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\User.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -190,6 +201,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\User.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

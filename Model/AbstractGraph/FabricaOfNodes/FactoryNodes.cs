@@ -13,5 +13,7 @@ namespace Network_Tracer.Model.Graph.AbstractGraph
         public override SE CreateSe( Canvas canvas ) => new SE(canvas);
 
         public override PEGSpare CreatePegSpare( Canvas canvas ) => new PEGSpare(canvas);
+
+        public override User CreateUser(Canvas canvas) => new User(canvas);
     }
 }

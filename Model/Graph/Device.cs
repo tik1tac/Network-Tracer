@@ -1,5 +1,6 @@
 ﻿using Network_Tracer.View;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Windows.Media;
 
 namespace Network_Tracer.Model.Graph
 {
+    [Serializable]
     public abstract class Device : UserControl
     {
         public Device(Canvas canvas) => this.canvas = canvas;

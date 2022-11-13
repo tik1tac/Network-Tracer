@@ -1,4 +1,6 @@
-﻿using Network_Tracer.Model;
+﻿using Microsoft.Win32;
+
+using Network_Tracer.Model;
 using Network_Tracer.Model.Graph;
 using Network_Tracer.Model.Graph.AbstractGraph;
 using Network_Tracer.View;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -34,6 +37,28 @@ namespace Network_Tracer
         PEG pegcount = null;
         PEGSpare pegsparecount = null;
         Source source;
+        private string fileName;
+        private string FileName
+        {
+            get
+            {
+                return this.fileName;
+            }
+
+            set
+            {
+                this.fileName = value;
+
+                if (!string.IsNullOrEmpty(this.fileName))
+                {
+                    this.Title = this.Title + " - " + this.fileName.Split('\\').Last();
+                }
+                else
+                {
+                    this.Title = this.Title + " - " + "Новая схема";
+                }
+            }
+        }
         public Tools SelectedTool
         {
             get
@@ -61,6 +86,10 @@ namespace Network_Tracer
                 {
                     return Tools.PEGSpare;
                 }
+                if (this.User.Opacity > 0.9)
+                {
+                    return Tools.User;
+                }
                 return Tools.Cursor;
             }
             set
@@ -68,31 +97,35 @@ namespace Network_Tracer
                 switch (value)
                 {
                     case Tools.VZG:
-                        this.Connection.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
+                        this.Connection.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = this.User.Opacity = 0.4;
                         this.VZGButton.Opacity = 1.0;
                         break;
 
                     case Tools.Connection:
-                        this.SEButton.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
+                        this.SEButton.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = this.User.Opacity = 0.4;
                         this.Connection.Opacity = 1.0;
                         break;
 
                     case Tools.PEG:
-                        this.Connection.Opacity = this.VZGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.SEButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = this.User.Opacity = 0.4;
                         this.PEGButton.Opacity = 1.0;
                         break;
 
                     case Tools.SE:
-                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = 0.4;
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = this.PEGSpare.Opacity = this.User.Opacity = 0.4;
                         this.SEButton.Opacity = 1.0;
                         break;
                     case Tools.PEGSpare:
-                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = SEButton.Opacity = 0.4;
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = SEButton.Opacity = this.User.Opacity = 0.4;
                         this.PEGSpare.Opacity = 1.0;
+                        break;
+                    case Tools.User:
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.CursorButton.Opacity = SEButton.Opacity = this.PEGSpare.Opacity = 0.4;
+                        this.User.Opacity = 1.0;
                         break;
 
                     default:
-                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = this.PEGSpare.Opacity = 0.4;
+                        this.Connection.Opacity = this.VZGButton.Opacity = this.PEGButton.Opacity = this.SEButton.Opacity = this.PEGSpare.Opacity = this.User.Opacity = 0.4;
                         this.CursorButton.Opacity = 1.0;
                         break;
                 }
@@ -195,7 +228,7 @@ namespace Network_Tracer
                     break;
 
                 case Tools.SE:
-                    SE se = new SE(CanvasField);
+                    SE se = cn.CreateSe(CanvasField);
                     Canvas.SetLeft(se, p.X - (se.Width / 2));
                     Canvas.SetTop(se, p.Y - (se.Height / 2));
                     se.MouseLeftButtonDown += this.OnSELeftButtonDown;
@@ -214,6 +247,15 @@ namespace Network_Tracer
                     SelectedTool = Tools.Cursor;
                     Device.pegsparecount = pegspare;
                     Device.Vertex.Add(pegspare);
+                    break;
+                case Tools.User:
+                    User user = cn.CreateUser(CanvasField);
+                    Canvas.SetLeft(user, p.X - (user.Width / 2));
+                    Canvas.SetTop(user, p.Y - (user.Height / 2));
+                    user.MouseLeftButtonDown += this.OnUserMouseLeftButtonDown;
+                    CanvasField.Children.Add(user);
+                    SelectedTool = Tools.Cursor;
+                    Device.Vertex.Add(user);
                     break;
 
                 case Tools.Connection:
@@ -276,9 +318,9 @@ namespace Network_Tracer
                     if (elemInPut is TextBlock)
                     {
                         if (SelectedDevice.port.InOrOutPortDict[(elemInPut as TextBlock).Name] == Enums.InOrOutPort.InEnerg)
-                            SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.InEnerg);
+                            SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.InEnerg, source);
                         else if (SelectedDevice.port.InOrOutPortDict[(elemInPut as TextBlock).Name] == Enums.InOrOutPort.Out)
-                            SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.Out);
+                            SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.Out, source);
                     }
 
                 }
@@ -354,6 +396,13 @@ namespace Network_Tracer
             this.SelectedTool = Tools.Connection;
         }
 
+        private void User_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedTool = Tools.Cursor;
+            this.SelectedTool = Tools.User;
+
+        }
+
         private void PEGSpare_Click(object sender, RoutedEventArgs e)
         {
             if (Device.pegsparecount == null)
@@ -374,6 +423,27 @@ namespace Network_Tracer
             NameDevice.Text = "Основной ПЭГ";
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
+
+        }
+        public void ListPorts()
+        {
+            foreach (var item in ListPort.Items.OfType<Label>().ToList())
+            {
+                item.Background = Brushes.White;
+            }
+            foreach (var item in SelectedDevice.port.BlockOpen)
+            {
+                if (item.Value == StatePort.Blocked)
+                {
+                    foreach (var listelem in ListPort.Items.OfType<Label>().ToList())
+                    {
+                        if (listelem.Name == item.Key)
+                        {
+                            listelem.Background = Brushes.Red;
+                        }
+                    }
+                }
+            }
         }
         public void OnPEGSpareLeftButtonDown(object sender, RoutedEventArgs e)
         {
@@ -390,6 +460,7 @@ namespace Network_Tracer
             NameDevice.Text = vzg.LabelName;
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
+            ListPorts();
         }
         public void OnSELeftButtonDown(object sender, RoutedEventArgs e)
         {
@@ -398,6 +469,7 @@ namespace Network_Tracer
             NameDevice.Text = se.LabelName;
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
+            ListPorts();
         }
         public void OnLineLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -405,42 +477,20 @@ namespace Network_Tracer
             this.SelectedLine = line;
             Device1.Text = SelectedLine.D1.LabelName;
             Device2.Text = SelectedLine.D2.LabelName;
+            Port1.Text = SelectedLine.Port1.ToString();
+            Port2.Text = SelectedLine.Port2.ToString();
             DeviceExpander.Visibility = Visibility.Collapsed;
             LineExpender.Visibility = Visibility.Visible;
         }
+        public void OnUserMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            User user = (User)sender;
+            this.SelectedDevice = user;
+            NameDevice.Text = "Пользователь";
+            LineExpender.Visibility = Visibility.Collapsed;
+            DeviceExpander.Visibility = Visibility.Visible;
+        }
         #endregion
-        public void OnWindowClosing(object sender, CancelEventArgs e)
-        {
-            foreach (var item in (CanvasField.Children))
-            {
-                if (item is Device & item.GetType() != typeof(PEG) & item.GetType() != typeof(PEGSpare))
-                {
-                    (item as Device).port.Close();
-                }
-            }
-            if (!this.CloseScheme())
-            {
-                e.Cancel = true;
-
-            }
-        }
-        private bool CloseScheme()
-        {
-            switch (MessageBox.Show("Схема была изменена", "Схема была изменена", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel))
-            {
-                case MessageBoxResult.Cancel:
-                    return false;
-
-                case MessageBoxResult.Yes:
-                    //this.SaveScheme(null, null);
-                    return false;
-
-                case MessageBoxResult.No:
-                    break;
-            }
-
-            return true;
-        }
 
         private void Show_Click(object sender, RoutedEventArgs e)
         {
@@ -495,7 +545,7 @@ namespace Network_Tracer
             PEGSpare.IsEnabled = true;
             Connection.IsEnabled = true;
         }
-        private void Clear_Click(object sender, RoutedEventArgs e)
+        private void ClearResource(object sender, RoutedEventArgs e)
         {
             IsEnabledT();
             EnergizeSheme.IsEnergy = false;
@@ -555,21 +605,126 @@ namespace Network_Tracer
             Device.NewLine = null;
         }
 
-        private void CreateNewScheme_Click(object sender, RoutedEventArgs e)
+        private void CreateNewScheme(object sender, RoutedEventArgs e)
         {
-            Clear_Click(null, null);
-            CanvasField.Children.Clear();
-            Scheme.NewList();
+            if (CloseScheme())
+            {
+                ClearResource(null, null);
+                CanvasField.Children.Clear();
+                Scheme.NewList();
+            }
         }
 
-        private void OpenScheme_Click(object sender, RoutedEventArgs e)
+        private void OpenScheme(object sender, RoutedEventArgs e)
         {
+            //if (this.CloseScheme())
+            //{
+            //    OpenFileDialog dialog = new OpenFileDialog();
+            //    dialog.Filter = "Файлы схемы" + " (*.scheme)|*.scheme|" + "Все файлы" + "|*";
+            //    dialog.RestoreDirectory = true;
 
+            //    if (dialog.ShowDialog() == true)
+            //    {
+            //        try
+            //        {
+            //            this.ClearResource(null, null);
+
+            //            Scheme.LoadScheme(
+            //                dialog.FileName,
+            //                this.CanvasField,
+            //                this.OnVZGLeftButtonDown,
+            //                this.OnSELeftButtonDown,
+            //                this.OnPEGLeftButtonDown,
+            //                this.OnLineLeftButtonDown);
+
+            //            this.FileName = dialog.FileName;
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            this.CreateNewScheme(null,null);
+            //            MessageBox.Show("Невозможно открыть" + ": " + ex.Message,"Ошибка");
+            //        }
+            //    }
+            //}
         }
 
-        private void SaveScheme_Click(object sender, RoutedEventArgs e)
+        private void SaveScheme(object sender, RoutedEventArgs e)
         {
+            //if (!string.IsNullOrEmpty(this.FileName))
+            //{
+            //    try
+            //    {
+            //        Scheme.WriteSchemeToFile(this.FileName, this.CanvasField);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show("Не правильное сохранение" + ex.Message);
+            //    }
+            //}
+            //else
+            //{
+            //    this.SaveSchemeAs(sender, e);
+            //}
+        }
 
+        private void SaveSchemeAs(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Файлы схем" + " (*.scheme)|*.scheme";
+            dialog.RestoreDirectory = true;
+
+            //try
+            //{
+                if (dialog.ShowDialog() == true)
+                {
+                    Scheme.WriteSchemeToFile(dialog.FileName, this.CanvasField);
+                    this.FileName = dialog.FileName;
+                }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Не правильное сохранение" + ex.Message);
+            //}
+        }
+
+        public void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            foreach (var item in (CanvasField.Children))
+            {
+                if (item is Device & (item.GetType() == typeof(VZG) || item.GetType() == typeof(SE)))
+                {
+                    (item as Device).port.Close();
+                }
+            }
+            if (!this.CloseScheme())
+            {
+                e.Cancel = true;
+            }
+        }
+        private bool CloseScheme()
+        {
+            switch (MessageBox.Show("Схема была изменена", "Схема была изменена", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel))
+            {
+                case MessageBoxResult.Cancel:
+                    return false;
+
+                case MessageBoxResult.Yes:
+                    this.SaveScheme(null, null);
+                    return false;
+
+                case MessageBoxResult.No:
+                    break;
+            }
+
+            return true;
+        }
+
+        private void ReferenceOpen(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Авторы:\n" +
+                "к-т Овешников Ю.М. 394 учебная группа;\n" +
+                "Безручко В.М.;\n" +
+                "Тезин А.С.");
         }
     }
 }

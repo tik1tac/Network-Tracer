@@ -7,6 +7,7 @@
         PEG,
         SE,
         Cursor,
-        PEGSpare
+        PEGSpare,
+        User
     }
 }

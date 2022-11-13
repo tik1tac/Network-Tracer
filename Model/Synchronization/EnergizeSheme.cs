@@ -50,20 +50,32 @@ namespace Network_Tracer.Model.Graph
                     case Source.Vzg:
                         CleanUp();
                         BrushLineIfSourceVZG();
-                        if (Device.pegcount != null || Device.pegsparecount != null)
+                        if (Device.pegcount != null)
                         {
-                            ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
-                            ExcludedDev.RectBorder = Brushes.Silver;
-                            ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                            ExcludedDev.Lines[0].ArrowToLine();
-                            ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
-                            ExcludedDev.RectBorder = Brushes.Silver;
-                            ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                            ExcludedDev.Lines[0].ArrowToLine();
+                            if (Device.pegcount.Lines.Count != 0)
+                            {
+                                ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
+                                ExcludedDev.RectBorder = Brushes.Silver;
+                                ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                                ExcludedDev.Lines[0].ArrowToLine();
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("На схеме нет ПЭГ или ПЭГ рез.");
+                            Device.Window.IsEnabledT();
+                        }
+                        if (Device.pegsparecount != null)
+                        {
+                            if (Device.pegsparecount.Lines.Count != 0)
+                            {
+                                ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
+                                ExcludedDev.RectBorder = Brushes.Silver;
+                                ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                                ExcludedDev.Lines[0].ArrowToLine();
+                            }
+                        }
+                        else
+                        {
                             Device.Window.IsEnabledT();
                         }
                         break;
@@ -363,6 +375,10 @@ namespace Network_Tracer.Model.Graph
             //Для всего графа
             while (true)
             {
+                if (State[0].Lines.Count == 0)
+                {
+                    break;
+                }
                 State[i].ISVisited = true;
                 State[i].PowerSuuply = true;
 

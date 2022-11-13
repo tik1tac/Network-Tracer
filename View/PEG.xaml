@@ -1,10 +1,7 @@
-﻿<src:Nodes  x:Class="Network_Tracer.View.PEG"
+﻿<src:NodesWithoutPort  x:Class="Network_Tracer.View.PEG"
              xmlns:src="clr-namespace:Network_Tracer.Model.Graph" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" 
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              Width="100" Height="70">
     <Grid>
@@ -25,4 +22,4 @@
                 </TextBlock>
         </StackPanel>
     </Grid>
-</src:Nodes>
+</src:NodesWithoutPort>

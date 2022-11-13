@@ -1,4 +1,4 @@
-﻿<src:Nodes   x:Class="Network_Tracer.View.PEGSpare"
+﻿<src:NodesWithoutPort   x:Class="Network_Tracer.View.PEGSpare"
              xmlns:src="clr-namespace:Network_Tracer.Model.Graph"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -25,4 +25,4 @@
             </TextBlock>
         </StackPanel>
     </Grid>
-</src:Nodes>
+</src:NodesWithoutPort>

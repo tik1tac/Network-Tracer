@@ -1,12 +1,14 @@
 ﻿using Network_Tracer.Enums;
 using Network_Tracer.Model.Graph;
 
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
 namespace Network_Tracer.View
 {
+    [Serializable]
     /// <summary>
     /// Логика взаимодействия для Port.xaml
     /// </summary>

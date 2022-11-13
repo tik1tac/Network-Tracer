@@ -7,12 +7,12 @@ namespace Network_Tracer.View
 {
     internal class ArrowInput : Shape
     {
-        public ArrowInput(double X1, double X2, double Y1, double Y2)
+        public ArrowInput(/*double X1, double X2, double Y1, double Y2*/)
         {
-            this.X1 = X1;
-            this.X2 = X2;
-            this.Y1 = Y1;
-            this.Y2 = Y2;
+            //this.X1 = X1;
+            //this.X2 = X2;
+            //this.Y1 = Y1;
+            //this.Y2 = Y2;
         }
         public Brush StrokeArrow { get => this.Stroke; set => this.Stroke = value; }
         public double X1

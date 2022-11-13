@@ -16,16 +16,17 @@
         </Grid.ColumnDefinitions>
         <Menu Grid.Row="0" Grid.ColumnSpan="3">
             <MenuItem Header="Файл" Height="26">
-                <MenuItem Header="Новая схема" Click="CreateNewScheme_Click"></MenuItem>
-                <MenuItem Header="Открыть" Click="OpenScheme_Click" ></MenuItem>
-                <MenuItem Header="Сохранить" Click="SaveScheme_Click"></MenuItem>
+                <MenuItem Header="Новая схема" Click="CreateNewScheme"></MenuItem>
+                <MenuItem Header="Открыть" Click="OpenScheme" ></MenuItem>
+                <MenuItem Header="Сохранить" Click="SaveScheme"></MenuItem>
+                <MenuItem Header="СохранитьКак" Click="SaveSchemeAs"></MenuItem>
             </MenuItem>
             <MenuItem Header="Схема" Height="26">
                 <MenuItem Header="Карта"></MenuItem>
             </MenuItem>
             <MenuItem Header="Справка" Height="26">
                 <MenuItem Header="РУководство пользования"></MenuItem>
-                <MenuItem Header="Авторы"></MenuItem>
+                <MenuItem Header="Авторы" Click="ReferenceOpen"></MenuItem>
             </MenuItem>
             <MenuItem Header="Выход" Height="26" >
             </MenuItem>
@@ -55,6 +56,7 @@
                             <ColumnDefinition Width="150"></ColumnDefinition>
                             <ColumnDefinition Width="150"></ColumnDefinition>
                             <ColumnDefinition Width="150"></ColumnDefinition>
+                            <ColumnDefinition Width="150"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Button x:Name="VZGButton" BorderBrush="Transparent" Click="VZGButton_Click" Style="{StaticResource ToolStyle}" Grid.Row="0" >
                             <view:VZG></view:VZG>
@@ -80,11 +82,15 @@
                         <Button x:Name="PEGSpare" BorderBrush="Transparent" Grid.Row="1" Click="PEGSpare_Click" Style="{StaticResource ToolStyle}"  Grid.Column="2" >
                             <view:PEGSpare></view:PEGSpare>
                         </Button>
+                        <Button x:Name="User" BorderBrush="Transparent" Grid.Row="0" Click="User_Click" Style="{StaticResource ToolStyle}" Margin="0,0,0,20"  Grid.Column="3" >
+                            <view:User></view:User>
+                        </Button>
+                        <TextBlock Grid.Row="0" Grid.Column="3"  Height="20" VerticalAlignment="Bottom" TextAlignment="Center">Пользователь</TextBlock>
                     </Grid>
                 </StackPanel>
             </Expander>
 
-            <Expander IsExpanded="True" Header="Выбрать источник" Visibility="Visible" ExpandDirection="Right">
+            <Expander IsExpanded="True" Header="Источник" Visibility="Visible" ExpandDirection="Right">
                 <StackPanel Width="130">
                     <ComboBox x:Name="SourceBox"  Width="100" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Выберите" IsEditable="True" Margin="0,30,0,0">
                         <ComboBoxItem>ПЭГ</ComboBoxItem>
@@ -98,7 +104,7 @@
                             <TextBlock  Margin="0,0,0,0" TextAlignment="Center" > Подключить питание</TextBlock>
                         </StackPanel>
                     </Button>
-                    <Button VerticalAlignment="Bottom" Height="50" Click="Clear_Click" Margin="0,10,0,0">
+                    <Button VerticalAlignment="Bottom" Height="50" Click="ClearResource" Margin="0,10,0,0">
                         <StackPanel>
                             <Image Height="30" Width="30" Source="pack://application:,,,/Resources/notEnerg.png"></Image>
                             <TextBlock  Margin="0,0,0,0" TextAlignment="Center" > Отключить питание</TextBlock>
@@ -107,7 +113,7 @@
                 </StackPanel>
             </Expander>
 
-            <Expander x:Name="DeviceExpander"  IsExpanded="True" Header="Характеристика" ExpandDirection="Right" Visibility="Collapsed">
+            <Expander x:Name="DeviceExpander"  IsExpanded="True" Header="Элемент" ExpandDirection="Right" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" >
                     <Grid Margin="0,30,0,0">
                         <Grid.RowDefinitions>
@@ -118,7 +124,7 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"></ColumnDefinition>
-                            <ColumnDefinition Width="0"></ColumnDefinition>
+                            <ColumnDefinition Width="200"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
                         <Label Content="Название:" HorizontalAlignment="Left"></Label>
@@ -127,7 +133,18 @@
                         <Label Grid.Row="1" Grid.Column="0" Content="Город:" HorizontalAlignment="Left"></Label>
                         <TextBox Grid.Row="1" Grid.Column="0" Background="Transparent" BorderBrush="Transparent" x:Name="CityDevice" Width="150" HorizontalAlignment="Right" TextChanged="CityDevice_TextChanged" ></TextBox>
 
-                        <Button Grid.Row="2" Grid.Column="0"  Height="20" Click="DeviceDelete_Click">Удалить элемент</Button>
+                        <ListBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" x:Name="ListPort">
+                            <Label x:Name="S41">S4.1</Label>
+                            <Label x:Name="S42">S4.2</Label>
+                            <Label Name="S161">S16.1</Label>
+                            <Label Name="S162">S16.2</Label>
+                            <Label Name="T41">T4.1</Label>
+                            <Label Name="T42">T4.2</Label>
+                            <Label Name="T31">T3.1</Label>
+                            <Label Name="T32">T3.2</Label>
+                        </ListBox>
+
+                        <Button Grid.Row="3" Grid.Column="0"  Height="20" Click="DeviceDelete_Click">Удалить элемент</Button>
                     </Grid>
                 </StackPanel>
 

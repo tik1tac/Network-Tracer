@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 
 namespace Network_Tracer.View
 {
+    [Serializable]
     /// <summary>
     /// Логика взаимодействия для LineConnect.xaml
     /// </summary>
