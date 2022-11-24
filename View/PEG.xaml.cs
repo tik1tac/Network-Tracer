@@ -1,6 +1,8 @@
 ﻿using Network_Tracer.Model;
 using Network_Tracer.Model.Graph;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -26,10 +28,10 @@ namespace Network_Tracer.View
             InitializeComponent();
             Weight = 10;
             Number = 1;
-            //this.LabelName = Scheme.GenerateName(Properties.Resources.PEGLabelName);
+            this.LabelName = "ПЭГ";
         }
         public override int Number { get => base.Number; set => base.Number = value; }
-
+        [JsonIgnore]
         public override Brush RectBorder { get => PEGX.Fill; set => PEGX.Fill = value; }
 
         public override string city

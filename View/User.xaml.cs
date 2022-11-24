@@ -22,6 +22,7 @@ namespace Network_Tracer.View
             InitializeComponent();
             Weight = 0;
             Number = 5;
+            LabelName = Scheme.GenerateName("Пользователь");
         }
         public override int Number { get => base.Number; set => base.Number = value; }
         public override string city
@@ -31,6 +32,19 @@ namespace Network_Tracer.View
             {
                 base.city = value;
                 CITY.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
+            }
+        }
+        public override string LabelName
+        {
+            get
+            {
+                return base.LabelName;
+            }
+
+            set
+            {
+                base.LabelName = value;
+                NameUser.GetBindingExpression(TextBlock.TextProperty).UpdateTarget();
             }
         }
     }

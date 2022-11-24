@@ -201,6 +201,7 @@ namespace Network_Tracer.View
         }
         #endregion
 
+        public string NameLine { get; set; }
         public Brush ColorConnection { get => Line.Stroke; set => Line.Stroke = value; }
 
         public bool IsInput { get; set; }

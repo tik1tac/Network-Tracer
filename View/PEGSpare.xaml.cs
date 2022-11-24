@@ -34,6 +34,7 @@ namespace Network_Tracer.View
             InitializeComponent();
             Weight = 10;
             Number = 2;
+            this.LabelName = "ПЭГрез.";
         }
 
         public override int Number { get => base.Number; set => base.Number = value; }

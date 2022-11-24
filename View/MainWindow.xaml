@@ -82,10 +82,9 @@
                         <Button x:Name="PEGSpare" BorderBrush="Transparent" Grid.Row="1" Click="PEGSpare_Click" Style="{StaticResource ToolStyle}"  Grid.Column="2" >
                             <view:PEGSpare></view:PEGSpare>
                         </Button>
-                        <Button x:Name="User" BorderBrush="Transparent" Grid.Row="0" Click="User_Click" Style="{StaticResource ToolStyle}" Margin="0,0,0,20"  Grid.Column="3" >
-                            <view:User></view:User>
+                        <Button x:Name="User" BorderBrush="Transparent" Grid.Row="0" Click="User_Click" Style="{StaticResource ToolStyle}"   Grid.Column="3" >
+                            <view:User Width="106"></view:User>
                         </Button>
-                        <TextBlock Grid.Row="0" Grid.Column="3"  Height="20" VerticalAlignment="Bottom" TextAlignment="Center">Пользователь</TextBlock>
                     </Grid>
                 </StackPanel>
             </Expander>
@@ -98,7 +97,7 @@
                         <ComboBoxItem>ВЗГ</ComboBoxItem>
                         <ComboBoxItem>ГСЭ</ComboBoxItem>
                     </ComboBox>
-                    <Button x:Name="EnergBut" VerticalAlignment="Bottom"  Height="50" Click="Show_Click" Margin="0,20,0,0">
+                    <Button x:Name="EnergBut" VerticalAlignment="Bottom"  Height="50" Click="Energize_Click" Margin="0,20,0,0">
                         <StackPanel>
                             <Image Height="30" Width="30" Source="pack://application:,,,/Resources/Energize.png"></Image>
                             <TextBlock  Margin="0,0,0,0" TextAlignment="Center" > Подключить питание</TextBlock>

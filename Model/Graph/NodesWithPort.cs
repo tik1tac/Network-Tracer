@@ -9,7 +9,7 @@ using System.Windows.Controls;
 namespace Network_Tracer.Model.Graph
 {
     [Serializable]
-    public abstract class NodesWithPort : Device
+    public class NodesWithPort : Device
     {
         public NodesWithPort(Canvas canvas) : base(canvas)
         {

@@ -1,5 +1,7 @@
 ﻿using Network_Tracer.View;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using System.Windows.Shapes;
 namespace Network_Tracer.Model.Graph
 {
     [Serializable]
-    public abstract class NodesWithoutPort : Device
+    public class NodesWithoutPort : Device
     {
         public NodesWithoutPort(Canvas canvas) : base(canvas)
         {
@@ -19,23 +21,20 @@ namespace Network_Tracer.Model.Graph
             _neighbours = new System.Collections.Generic.List<Device>();
             port = new Port();
         }
+        [JsonProperty]
         public virtual int Weight { get; set; }
-
+        [JsonProperty]
         public virtual int NumberPorts { get; set; }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
-
+        [JsonProperty]
         public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
-
+        [JsonProperty]
         public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
-
         public LineConnect Line { get; set; }
-
-        public virtual StatePort StatePort { get; set; }
-
-
         public override Port port { get; set; }
 
         public override InputElements InputElements { get; set; }
+
         public override void AddNEighbours(Device D)
         {
             _neighbours.Add(D);
@@ -97,7 +96,6 @@ namespace Network_Tracer.Model.Graph
             }
 
         }
-
         public override void SetPort()
         {
             ;

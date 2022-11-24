@@ -1,5 +1,7 @@
 ﻿using Network_Tracer.View;
 
+using Newtonsoft.Json;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +10,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Media3D;
+using System.Xml.Serialization;
 
 namespace Network_Tracer.Model.Graph
 {
@@ -15,16 +20,11 @@ namespace Network_Tracer.Model.Graph
     public abstract class Device : UserControl
     {
         public Device(Canvas canvas) => this.canvas = canvas;
-
         public static List<Device> Vertex = new List<Device>();
-
         public virtual List<LineConnect> Lines { get; set; }
-
         public virtual List<Device> _neighbours { get; set; }
-
         public virtual Brush RectBorder { get; set; }
         public virtual Port port { get; set; }
-
         public abstract InputElements InputElements { get; set; }
 
         public static List<LineConnect> _lines = new List<LineConnect>();
@@ -32,11 +32,8 @@ namespace Network_Tracer.Model.Graph
         public virtual string LabelName { get; set; }
 
         public virtual string city { get; set; }
-
         public static PEG pegcount { get; set; }
-
         public static PEGSpare pegsparecount { get; set; }
-
         public Canvas canvas { get; set; }
 
         public virtual int Number { get; set; }
@@ -44,9 +41,7 @@ namespace Network_Tracer.Model.Graph
         public virtual bool PowerSuuply { get; set; }
 
         public virtual bool ISVisited { get; set; }
-
         public static MainWindow Window { get; set; }
-
         public static LineConnect NewLine { get; set; }
 
         public virtual NamePorts NamePorts { get; set; }
@@ -86,6 +81,7 @@ namespace Network_Tracer.Model.Graph
                             Y2 = p.Y,
                             D1 = this
                         };
+                        Device.NewLine.NameLine = NewLine.D1.LabelName + "-Линия-";
                         _lines.Add(Device.NewLine);
                         if (this.AddLine(Device.NewLine))
                         {
@@ -114,6 +110,7 @@ namespace Network_Tracer.Model.Graph
                                 Device.NewLine.X2 = Canvas.GetLeft(this) + (this.Width / 2);
                                 Device.NewLine.Y2 = Canvas.GetTop(this) + (this.Height / 2);
                                 Device.NewLine.D2 = this;
+                                Device.NewLine.NameLine += Device.NewLine.D2.LabelName;
                                 Device.NewLine.SetCost(Device.NewLine.D1);
                                 Device.NewLine.D1.AddNEighbours(Device.NewLine.D2);
                                 Device.NewLine.D2.AddNEighbours(Device.NewLine.D1);

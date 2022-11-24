@@ -38,6 +38,7 @@ namespace Network_Tracer
         PEGSpare pegsparecount = null;
         Source source;
         private string fileName;
+        bool Modified { get; set; } = false;
         private string FileName
         {
             get
@@ -423,7 +424,7 @@ namespace Network_Tracer
             NameDevice.Text = "Основной ПЭГ";
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
-
+            ListPorts();
         }
         public void ListPorts()
         {
@@ -452,6 +453,7 @@ namespace Network_Tracer
             NameDevice.Text = "Резервный ПЭГ";
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
+            ListPorts();
         }
         public void OnVZGLeftButtonDown(object sender, RoutedEventArgs e)
         {
@@ -489,10 +491,11 @@ namespace Network_Tracer
             NameDevice.Text = "Пользователь";
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
+            ListPorts();
         }
         #endregion
 
-        private void Show_Click(object sender, RoutedEventArgs e)
+        private void Energize_Click(object sender, RoutedEventArgs e)
         {
             if (SourceBox.SelectedItem != null || Device.Vertex.Count != 0)
             {
@@ -587,22 +590,26 @@ namespace Network_Tracer
                     }
                 }
             }
+            Modified = true;
         }
 
         private void CityDevice_TextChanged(object sender, TextChangedEventArgs e)
         {
             SelectedDevice.city = CityDevice.Text;
+            Modified = true;
         }
 
         private void DeviceDelete_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedDevice.Remove(null, null);
+            Modified = true;
         }
 
         private void LineDelete_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedLine.Remove(null, null);
             Device.NewLine = null;
+            Modified = true;
         }
 
         private void CreateNewScheme(object sender, RoutedEventArgs e)
@@ -612,6 +619,7 @@ namespace Network_Tracer
                 ClearResource(null, null);
                 CanvasField.Children.Clear();
                 Scheme.NewList();
+                Modified = false;
             }
         }
 
@@ -669,17 +677,19 @@ namespace Network_Tracer
 
         private void SaveSchemeAs(object sender, RoutedEventArgs e)
         {
+            ClearResource(null, null);
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filter = "Файлы схем" + " (*.scheme)|*.scheme";
             dialog.RestoreDirectory = true;
 
             //try
             //{
-                if (dialog.ShowDialog() == true)
-                {
-                    Scheme.WriteSchemeToFile(dialog.FileName, this.CanvasField);
-                    this.FileName = dialog.FileName;
-                }
+            if (dialog.ShowDialog() == true)
+            {
+                Scheme.WriteSchemeToFile(dialog.FileName, this.CanvasField);
+                this.FileName = dialog.FileName;
+                Modified = false;
+            }
             //}
             //catch (Exception ex)
             //{
@@ -696,9 +706,12 @@ namespace Network_Tracer
                     (item as Device).port.Close();
                 }
             }
-            if (!this.CloseScheme())
+            if (Modified)
             {
-                e.Cancel = true;
+                if (!this.CloseScheme())
+                {
+                    e.Cancel = true;
+                }
             }
         }
         private bool CloseScheme()
