@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Network_Tracer.Model.Graph
 {
@@ -148,6 +149,7 @@ namespace Network_Tracer.Model.Graph
                     if (!(item as Button).IsEnabled & (item as Button).Name == port.PortLine.Where(n => n.Key == ports[i]).First().Value)
                     {
                         (item as Button).IsEnabled = true;
+                        (item as Button).Background = Brushes.White;
                         port.BlockOpen[port.PortLine.Where(n => n.Key == ports[i]).First().Value] = StatePort.Open;
                     }
                 }

@@ -616,44 +616,43 @@ namespace Network_Tracer
         {
             if (CloseScheme())
             {
-                ClearResource(null, null);
-                CanvasField.Children.Clear();
-                Scheme.NewList();
+                ClearCanvas();
                 Modified = false;
             }
         }
 
         private void OpenScheme(object sender, RoutedEventArgs e)
         {
-            //if (this.CloseScheme())
-            //{
-            //    OpenFileDialog dialog = new OpenFileDialog();
-            //    dialog.Filter = "Файлы схемы" + " (*.scheme)|*.scheme|" + "Все файлы" + "|*";
-            //    dialog.RestoreDirectory = true;
+            if (this.CloseScheme())
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Filter = "Файлы схемы" + " (*.scheme)|*.scheme|" + "Все файлы" + "|*";
+                dialog.RestoreDirectory = true;
 
-            //    if (dialog.ShowDialog() == true)
-            //    {
-            //        try
-            //        {
-            //            this.ClearResource(null, null);
+                if (dialog.ShowDialog() == true)
+                {
+                    //try
+                    //{
+                    ClearCanvas();
+                    Scheme.LoadScheme(this.CanvasField, dialog.FileName);
+                    Modified = true;
+                    this.FileName = dialog.FileName;
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    this.CreateNewScheme(null, null);
+                    //    MessageBox.Show("Невозможно открыть" + ": " + ex.Message, "Ошибка");
+                    //}
+                }
 
-            //            Scheme.LoadScheme(
-            //                dialog.FileName,
-            //                this.CanvasField,
-            //                this.OnVZGLeftButtonDown,
-            //                this.OnSELeftButtonDown,
-            //                this.OnPEGLeftButtonDown,
-            //                this.OnLineLeftButtonDown);
+            }
+        }
 
-            //            this.FileName = dialog.FileName;
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            this.CreateNewScheme(null,null);
-            //            MessageBox.Show("Невозможно открыть" + ": " + ex.Message,"Ошибка");
-            //        }
-            //    }
-            //}
+        private void ClearCanvas()
+        {
+            this.ClearResource(null, null);
+            CanvasField.Children.Clear();
+            Scheme.NewList();
         }
 
         private void SaveScheme(object sender, RoutedEventArgs e)
@@ -682,19 +681,19 @@ namespace Network_Tracer
             dialog.Filter = "Файлы схем" + " (*.scheme)|*.scheme";
             dialog.RestoreDirectory = true;
 
-            //try
-            //{
-            if (dialog.ShowDialog() == true)
+            try
             {
-                Scheme.WriteSchemeToFile(dialog.FileName, this.CanvasField);
-                this.FileName = dialog.FileName;
-                Modified = false;
+                if (dialog.ShowDialog() == true)
+                {
+                    Scheme.WriteSchemeToFile(dialog.FileName, this.CanvasField);
+                    this.FileName = dialog.FileName;
+                    Modified = false;
+                }
             }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Не правильное сохранение" + ex.Message);
-            //}
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не правильное сохранение" + ex.Message);
+            }
         }
 
         public void OnWindowClosing(object sender, CancelEventArgs e)
@@ -716,19 +715,22 @@ namespace Network_Tracer
         }
         private bool CloseScheme()
         {
-            switch (MessageBox.Show("Схема была изменена", "Схема была изменена", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel))
+            if (Modified)
             {
-                case MessageBoxResult.Cancel:
-                    return false;
+                switch (MessageBox.Show("Схема была изменена", "Схема была изменена", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel))
+                {
+                    case MessageBoxResult.Cancel:
+                        return false;
 
-                case MessageBoxResult.Yes:
-                    this.SaveScheme(null, null);
-                    return false;
+                    case MessageBoxResult.Yes:
+                        this.SaveScheme(null, null);
+                        return false;
 
-                case MessageBoxResult.No:
-                    break;
+                    case MessageBoxResult.No:
+                        break;
+                }
+
             }
-
             return true;
         }
 

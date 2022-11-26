@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
+using System.Windows.Shapes;
 using System.Xml.Serialization;
 
 namespace Network_Tracer.Model.Graph
@@ -26,20 +27,14 @@ namespace Network_Tracer.Model.Graph
         public virtual Brush RectBorder { get; set; }
         public virtual Port port { get; set; }
         public abstract InputElements InputElements { get; set; }
-
-        public static List<LineConnect> _lines = new List<LineConnect>();
-
         public virtual string LabelName { get; set; }
-
         public virtual string city { get; set; }
         public static PEG pegcount { get; set; }
         public static PEGSpare pegsparecount { get; set; }
         public Canvas canvas { get; set; }
-
         public virtual int Number { get; set; }
-
         public virtual bool PowerSuuply { get; set; }
-
+        public static List<LineConnect> _lines = new List<LineConnect>();
         public virtual bool ISVisited { get; set; }
         public static MainWindow Window { get; set; }
         public static LineConnect NewLine { get; set; }
@@ -81,8 +76,8 @@ namespace Network_Tracer.Model.Graph
                             Y2 = p.Y,
                             D1 = this
                         };
-                        Device.NewLine.NameLine = NewLine.D1.LabelName + "-Линия-";
                         _lines.Add(Device.NewLine);
+                        Device.NewLine.NameLine = NewLine.D1.LabelName + "-Линия-";
                         if (this.AddLine(Device.NewLine))
                         {
                             if (Device.NewLine.D1 is VZG || Device.NewLine.D1 is SE)
