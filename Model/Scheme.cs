@@ -344,6 +344,7 @@ namespace Network_Tracer.Model
             line.Y1 = Canvas.GetTop(line.D1) + (line.D1.Height / 2);
             line.X2 = Canvas.GetLeft(line.D2) + (line.D2.Width / 2);
             line.Y2 = Canvas.GetTop(line.D2) + (line.D2.Height / 2);
+            Canvas.SetZIndex(line, -1);
 
             line.D1.UpdateLocation();
             line.D2.UpdateLocation();
