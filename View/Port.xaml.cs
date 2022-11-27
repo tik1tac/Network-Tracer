@@ -50,7 +50,6 @@ namespace Network_Tracer.View
             set;
         }
         public bool IsConnected = false;
-        public bool IsClose = false;
         private void S4_Click(object sender, RoutedEventArgs e)
         {
             SelectedPorts = NamePorts.S41;

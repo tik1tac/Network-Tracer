@@ -124,7 +124,8 @@ namespace Network_Tracer.Model.Graph
             {
                 if (Device.Vertex[i].GetType() != typeof(PEG)
                     & Device.Vertex[i].GetType() != typeof(PEGSpare)
-                    & Device.Vertex[i].GetType() != typeof(VZG))
+                    & Device.Vertex[i].GetType() != typeof(VZG)
+                    & Device.Vertex[i].GetType() != typeof(User))
                 {
                     Device.Vertex[i].RectBorder = Brushes.Green;
                     Device.Vertex[i].InputElements.GSE.Background = Brushes.Green;

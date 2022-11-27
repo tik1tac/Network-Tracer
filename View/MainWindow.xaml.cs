@@ -264,13 +264,13 @@ namespace Network_Tracer
             }
         }
 
-        private void Se_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        public void Se_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             SelectedDevice.InputElements.Show();
             ShowEnergizeInputElements();
         }
 
-        private void Vzg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        public void Vzg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             SelectedDevice.InputElements.Show();
             ShowEnergizeInputElements();

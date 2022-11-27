@@ -39,7 +39,7 @@ namespace Network_Tracer.Model.Graph
         public static MainWindow Window { get; set; }
         public static LineConnect NewLine { get; set; }
 
-        public virtual NamePorts NamePorts { get; set; }
+        public virtual Dictionary<LineConnect,NamePorts> NamePorts { get; set; }
 
         public abstract void SetPort();
 

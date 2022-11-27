@@ -29,10 +29,10 @@ namespace Network_Tracer.Model.Graph
         public override InputElements InputElements { get; set; }
         public override Port port { get; set; }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
-        private LineConnect[] ports;
+        public LineConnect[] ports;
         public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
         public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
-        public new Dictionary<LineConnect, NamePorts> NamePorts { get; set; }
+        public override Dictionary<LineConnect, NamePorts> NamePorts { get; set; }
         public int PortsN
         {
             get => ports.Length;
@@ -69,7 +69,6 @@ namespace Network_Tracer.Model.Graph
                     if (port.IsConnected & !NamePorts.ContainsKey(ports[i]))
                     {
                         NamePorts.Add(ports[i], port.SelectedPorts);
-                        port.IsClose = false;
                     }
 
                 }

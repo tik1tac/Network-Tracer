@@ -9,8 +9,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Xml;
 
 namespace Network_Tracer.Model
@@ -18,7 +20,7 @@ namespace Network_Tracer.Model
     public class Scheme
     {
         public static readonly HashSet<string> Labelsname = new HashSet<string>();
-
+        static List<Device> dev = new List<Device>();
         public static string GenerateName(string baseword)
         {
             string namelabel = baseword;
@@ -142,6 +144,7 @@ namespace Network_Tracer.Model
                         LineConnect line = item as LineConnect;
                         writer.WriteStartElement("LineConnect");
                         writer.WriteAttributeString("NameLine", line.NameLine);
+                        writer.WriteAttributeString("Cost", line.Cost.ToString());
                         writer.WriteAttributeString("D1", line.D1.LabelName);
                         writer.WriteAttributeString("D2", line.D2.LabelName);
                         writer.WriteEndElement();
@@ -152,11 +155,13 @@ namespace Network_Tracer.Model
         }
         public static void LoadScheme(Canvas canvas, string filename)
         {
-            Dictionary<Device, string> DeviceLabelName = new Dictionary<Device, string>();
+            Dictionary<Device, List<string>> DeviceLabelName = new Dictionary<Device, List<string>>();
             string source = null;
             string destination = null;
             Dictionary<Device, Dictionary<string, string>> DevicePort = new Dictionary<Device, Dictionary<string, string>>();
+            Dictionary<string, string> LinePortName = new Dictionary<string, string>();
             Dictionary<LineConnect, List<string>> LineDevice = new Dictionary<LineConnect, List<string>>();
+            List<string> Neighbours = new List<string>();
             CreatorNodes CreatorNodes = new FactoryNodes();
             CreatorLine creatorLine = new FactoryLine();
             using (XmlReader reader = XmlReader.Create(filename, new XmlReaderSettings()))
@@ -184,7 +189,6 @@ namespace Network_Tracer.Model
                                 {
                                     NodeNoPort = CreatorNodes.CreateUser(canvas);
                                 }
-                                Device.Vertex.Add(NodeNoPort);
                                 while (reader.MoveToNextAttribute())
                                 {
                                     switch (reader.Name)
@@ -202,7 +206,7 @@ namespace Network_Tracer.Model
                                             NodeNoPort.city = reader.Value;
                                             break;
                                         case "Neighbours":
-                                            DeviceLabelName.Add(NodeNoPort, reader.Value);
+                                            DeviceLabelName.Add(NodeNoPort, new List<string>() { reader.Value });
                                             break;
                                         default:
                                             break;
@@ -216,7 +220,7 @@ namespace Network_Tracer.Model
                                 {
                                     NodeNoPort.MouseLeftButtonDown += Device.Window.OnPEGSpareLeftButtonDown;
                                 }
-                                canvas.Children.Add(NodeNoPort);
+                                Device.Vertex.Add(NodeNoPort);
                                 break;
                             }
                         case "VZG":
@@ -230,7 +234,8 @@ namespace Network_Tracer.Model
                             {
                                 NodeWithPort = CreatorNodes.CreateVZG(canvas);
                             }
-                            Device.Vertex.Add(NodeWithPort);
+                            Neighbours = new List<string>();
+                            LinePortName = new Dictionary<string, string>();
                             while (reader.MoveToNextAttribute())
                             {
                                 switch (reader.Name)
@@ -248,20 +253,31 @@ namespace Network_Tracer.Model
                                         NodeWithPort.city = reader.Value;
                                         continue;
                                     default:
+                                        if (!reader.Name.Contains("-"))
+                                            Neighbours.Add(reader.Value);
+                                        else
+                                            LinePortName.Add(reader.Name, reader.Value);
                                         break;
                                 }
-                                if (!reader.Value.Contains("-") & !DeviceLabelName.ContainsKey(NodeWithPort))
-                                {
-                                    DeviceLabelName.Add(NodeWithPort, reader.Value);
-                                }
-                                else if(!DeviceLabelName.ContainsKey(NodeWithPort))
-                                {
-                                    DevicePort.Add(NodeWithPort, new Dictionary<string, string>() { [reader.Name] = reader.Value });
-                                }
+
                             }
-                            canvas.Children.Add(NodeWithPort);
+                            DeviceLabelName.Add(NodeWithPort, Neighbours);
+                            DevicePort.Add(NodeWithPort, LinePortName);
+                            if (NodeWithPort is SE)
+                            {
+                                NodeWithPort.MouseLeftButtonDown += Device.Window.OnSELeftButtonDown;
+                                NodeWithPort.MouseDoubleClick += Device.Window.Se_MouseDoubleClick;
+                            }
+                            if (NodeWithPort is VZG)
+                            {
+                                NodeWithPort.MouseLeftButtonDown += Device.Window.OnVZGLeftButtonDown;
+                                NodeWithPort.MouseDoubleClick += Device.Window.Vzg_MouseDoubleClick;
+                            }
+                            Device.Vertex.Add(NodeWithPort);
                             break;
                         case "LineConnect":
+                            source = null;
+                            destination = null;
                             LineConnect line = creatorLine.LineCreate(canvas);
                             while (reader.MoveToNextAttribute())
                             {
@@ -269,6 +285,9 @@ namespace Network_Tracer.Model
                                 {
                                     case "NameLine":
                                         line.NameLine = reader.Value;
+                                        break;
+                                    case "Cost":
+                                        line.Cost = Convert.ToInt32(reader.Value);
                                         break;
                                     case "D1":
                                         source = reader.Value;
@@ -284,220 +303,159 @@ namespace Network_Tracer.Model
                                     LineDevice.Add(line, new List<string>() { source, destination });
                                 }
                             }
+                            Device._lines.Add(line);
                             break;
                         default:
                             break;
                     }
 
                 }
+                foreach (var item in DevicePort)
+                {
+                    canvas.Children.Add(MappingPortDevice(item.Key as NodesWithPort, item.Value));
+                }
+                foreach (var item in DeviceLabelName)
+                {
+                    if (!canvas.Children.Contains(item.Key))
+                    {
+                        canvas.Children.Add(MappingNeighbours(item.Value, item.Key));
+                    }
+                    else
+                    {
+                        canvas.Children.Remove(item.Key);
+                        canvas.Children.Add(MappingNeighbours(item.Value, item.Key));
+                    }
+                }
+                foreach (var item in LineDevice)
+                {
+                    canvas.Children.Add(MappingDeviceLine(item.Key, item.Value));
+                }
             }
+        }
+
+        private static LineConnect MappingDeviceLine(LineConnect line, List<string> ports)
+        {
+            line.D1 = Device.Vertex.First(l => l.LabelName == ports[0]);
+            line.D1.Lines.Add(line);
+            line.D2 = Device.Vertex.First(l => l.LabelName == ports[1]);
+            line.D2.Lines.Add(line);
+
+            line.X1 = Canvas.GetLeft(line.D1) + (line.D1.Width / 2);
+            line.Y1 = Canvas.GetTop(line.D1) + (line.D1.Height / 2);
+            line.X2 = Canvas.GetLeft(line.D2) + (line.D2.Width / 2);
+            line.Y2 = Canvas.GetTop(line.D2) + (line.D2.Height / 2);
+
+            line.D1.UpdateLocation();
+            line.D2.UpdateLocation();
+
+            if ((line.D1 is NodesWithPort & line.D2 is NodesWithPort))
+            {
+                line.Port1 = Device.Vertex.First(d => d.LabelName == ports[0]).NamePorts[line];
+                line.Port2 = Device.Vertex.First(d => d.LabelName == ports[1]).NamePorts[line];
+                for (int i = 0; i < (line.D1 as NodesWithPort).ports.Length; ++i)
+                {
+                    if ((line.D1 as NodesWithPort).ports[i] == null)
+                    {
+                        (line.D1 as NodesWithPort).ports[i] = line;
+                        break;
+                    }
+                }
+                for (int i = 0; i < (line.D2 as NodesWithPort).ports.Length; ++i)
+                {
+                    if ((line.D2 as NodesWithPort).ports[i] == null)
+                    {
+                        (line.D2 as NodesWithPort).ports[i] = line;
+                        break;
+                    }
+                }
+            }
+            if (line.D1 is NodesWithPort & line.D2 is NodesWithoutPort)
+            {
+                line.Port1 = Device.Vertex.First(d => d.LabelName == ports[0]).NamePorts[line];
+                for (int i = 0; i < (line.D1 as NodesWithPort).ports.Length; ++i)
+                {
+                    if ((line.D1 as NodesWithPort).ports[i] == null)
+                    {
+                        (line.D1 as NodesWithPort).ports[i] = line;
+                        break;
+                    }
+                }
+                (line.D2 as NodesWithoutPort).Line = line;
+            }
+            if (line.D2 is NodesWithPort & line.D1 is NodesWithoutPort)
+            {
+                line.Port2 = Device.Vertex.First(d => d.LabelName == ports[1]).NamePorts[line];
+                for (int i = 0; i < (line.D2 as NodesWithPort).ports.Length; ++i)
+                {
+                    if ((line.D2 as NodesWithPort).ports[i] == null)
+                    {
+                        (line.D2 as NodesWithPort).ports[i] = line;
+                        break;
+                    }
+                }
+                (line.D1 as NodesWithoutPort).Line = line;
+            }
+            return line;
+        }
+
+        private static Device MappingPortDevice(NodesWithPort device, Dictionary<string, string> port)
+        {
+            NamePorts namePorts = NamePorts.S41;
+            foreach (var item in port)
+            {
+                device.port.PortLine.Add(Device._lines.First(l => l.NameLine == item.Key), item.Value);
+                device.port.IsConnected = true;
+                foreach (var elem in device.port.grid.Children)
+                {
+                    if ((elem as Button).Name == item.Value)
+                    {
+                        (elem as Button).IsEnabled = false;
+                        (elem as Button).Background = Brushes.Red;
+                    }
+
+                }
+                switch (item.Value)
+                {
+                    case "S41":
+                        namePorts = NamePorts.S41;
+                        break;
+                    case "T41":
+                        namePorts = NamePorts.T41;
+                        break;
+                    case "S161":
+                        namePorts = NamePorts.S161;
+                        break;
+                    case "T31":
+                        namePorts = NamePorts.T31;
+                        break;
+                    case "S42":
+                        namePorts = NamePorts.S42;
+                        break;
+                    case "T42":
+                        namePorts = NamePorts.T42;
+                        break;
+                    case "S162":
+                        namePorts = NamePorts.S162;
+                        break;
+                    case "T32":
+                        namePorts = NamePorts.T32;
+                        break;
+                    default:
+                        break;
+                }
+                device.NamePorts.Add(Device._lines.First(l => l.NameLine == item.Key), namePorts);
+                device.port.BlockOpen[item.Key] = StatePort.Blocked;
+            }
+            return device;
+        }
+
+        private static Device MappingNeighbours(List<string> NameNeighbour, Device Node)
+        {
+            foreach (var item in NameNeighbour)
+            {
+                Node._neighbours.Add(Device.Vertex.Where(n => n.LabelName == item).First());
+            }
+            return Node;
         }
     }
 }
-//public static void LoadScheme(
-//    string filename,
-//    Canvas canvas,
-//    MouseButtonEventHandler onVZGMouseDown,
-//    MouseButtonEventHandler onSEMouseDown,
-//    MouseButtonEventHandler onNodeMouseDown,
-//    MouseButtonEventHandler onLineMouseDown)
-//{
-//    Device[] pair = new Device[2];
-
-//    Dictionary<string, Device> devices = new Dictionary<string, Device>();
-//    string srchash, desthash;
-//    int value;
-//    bool flag;
-//    CreatorNodes cn = new FactoryNodes();
-
-//    using (XmlReader reader = XmlReader.Create(filename, new XmlReaderSettings()))
-//    {
-//        while (reader.Read())
-//        {
-//            if (reader.IsStartElement())
-//            {
-//                switch (reader.Name)
-//                {
-//                    case "SE":
-//                        SE se = cn.CreateSe(canvas);
-//                        Canvas.SetTop(se, 0);
-//                        Canvas.SetLeft(se, 0);
-
-//                        while (reader.MoveToNextAttribute())
-//                        {
-//                            switch (reader.Name)
-//                            {
-//                                case "HashCode":
-//                                    devices[reader.Value] = se;
-//                                    break;
-
-//                                case "Position":
-//                                    SetPosition(se, reader.Value);
-//                                    break;
-//                            }
-//                        }
-
-//                        if (onSEMouseDown != null)
-//                        {
-//                            se.MouseLeftButtonDown += onSEMouseDown;
-//                        }
-
-//                        canvas.Children.Add(se);
-//                        break;
-
-//                    case "PEG":
-//                    case "PEGSpare":
-//                    case "User":
-//                        NodesWithoutPort node=null;
-
-//                        if (reader.Name == "PC")
-//                        {
-//                            node = cn.CreatePeg(canvas);
-//                        }
-//                        if (reader.Name == "PEGSpare")
-//                        {
-//                            node = cn.CreatePegSpare(canvas);
-//                        }
-//                        if (reader.Name == "User")
-//                        {
-//                            node = cn.CreateUser(canvas);
-//                        }
-
-//                        Canvas.SetTop(node, 0);
-//                        Canvas.SetLeft(node, 0);
-
-//                        while (reader.MoveToNextAttribute())
-//                        {
-//                            switch (reader.Name)
-//                            {
-//                                case "HashCode":
-//                                    devices[reader.Value] = node;
-//                                    break;
-
-//                                case "Position":
-//                                    SetPosition(node, reader.Value);
-//                                    break;
-
-//                                case "Label":
-//                                    node.LabelName = reader.Value;
-//                                    break;
-//                            }
-//                        }
-
-//                        if (onNodeMouseDown != null)
-//                        {
-//                            node.MouseLeftButtonDown += onNodeMouseDown;
-//                        }
-
-//                        canvas.Children.Add(node);
-//                        break;
-
-//                    case "LineConnect":
-//                        reader.MoveToAttribute("Source");
-//                        pair[0] = GetDevice(devices, reader.Value);
-//                        srchash = reader.Value;
-
-//                        reader.MoveToAttribute("Destination");
-//                        pair[1] = GetDevice(devices, reader.Value);
-//                        desthash = reader.Value;
-
-//                        LineConnect line = new LineConnect(canvas)
-//                        {
-//                            X1 = Canvas.GetLeft(pair[0]) + (pair[0].Width / 2),
-//                            Y1 = Canvas.GetTop(pair[0]) + (pair[0].Height / 2),
-//                            X2 = Canvas.GetLeft(pair[1]) + (pair[1].Width / 2),
-//                            Y2 = Canvas.GetTop(pair[1]) + (pair[1].Height / 2),
-//                            D1 = pair[0],
-//                            D2 = pair[1]
-//                        };
-
-//                        if (onLineMouseDown != null)
-//                        {
-//                            line.MouseLeftButtonDown += onLineMouseDown;
-//                        }
-
-//                        Canvas.SetZIndex(line, -1);
-//                        canvas.Children.Add(line);
-
-//                        reader.MoveToAttribute("SourcePort");
-//                        if (int.TryParse(reader.Value, out value))
-//                        {
-//                            if (value < 0)
-//                            {
-//                                node = pair[0] as NodesWithoutPort;
-
-//                                if (node == null)
-//                                {
-//                                    throw new FormatException(
-//                                        "Устройство с таким хеш-кодом" + " \"" + srchash + "\" " + "не устройство");
-//                                }
-
-//                                if (node.Line != null)
-//                                {
-//                                    node.Line.Remove();
-//                                }
-
-//                                node.Line = line;
-//                            }
-//                            else
-//                            {
-//                                se = pair[0] as SE;
-
-//                                if (se == null)
-//                                {
-//                                    throw new FormatException(
-//                                        "Устройство с таким хеш-кодом" + " \"" + srchash + "\" " + "не устройство");
-//                                }
-
-//                            }
-//                        }
-//                        else
-//                        {
-//                            throw new FormatException(
-//                                "Устройство с таким хеш-кодом" + " \"" + srchash + "\" " + "не устройство");
-//                        }
-
-//                        reader.MoveToAttribute("DestinationPort");
-//                        if (int.TryParse(reader.Value, out value))
-//                        {
-//                            if (value < 0)
-//                            {
-//                                node = pair[1] as NodesWithoutPort;
-
-//                                if (node == null)
-//                                {
-//                                    throw new FormatException(
-//                                        "Устройство с таким хеш-кодом" + " \"" + srchash + "\" " + "не устройство");
-//                                }
-
-//                                if (node.Line != null)
-//                                {
-//                                    node.Line.Remove();
-//                                }
-
-//                                node.Line = line;
-//                            }
-//                            else
-//                            {
-//                                se = pair[1] as SE;
-
-//                                if (se == null)
-//                                {
-//                                    throw new FormatException(
-//                                        "Устройство с таким хеш-кодом" + " \"" + srchash + "\" " + "не устройство");
-//                                }
-//                            }
-//                        }
-//                        else
-//                        {
-//                            throw new FormatException(
-//                                        "Устройство с таким хеш-кодом" + " \"" + srchash + "\" " + "не устройство");
-//                        }
-
-//                        line.D2.UpdateLocation();
-//                        break;
-//                }
-//            }
-//        }
-//    }
-//}

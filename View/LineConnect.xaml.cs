@@ -206,7 +206,7 @@ namespace Network_Tracer.View
 
         public bool IsInput { get; set; }
         public bool IsArrow { get; set; }
-        public int Cost { get; private set; }
+        public int Cost { get; set; }
 
         public Device D1 { get; set; }
         public Device D2 { get; set; }
