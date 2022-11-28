@@ -22,6 +22,7 @@ namespace Network_Tracer.View
             PortLine = new Dictionary<LineConnect, string>();
             BlockOpen = new Dictionary<string, StatePort>();
             InOrOutPortDict = new Dictionary<string, InOrOutPort>();
+
             BlockOpen.Add("S41", StatePort.Open);
             BlockOpen.Add("S42", StatePort.Open);
             BlockOpen.Add("T41", StatePort.Open);
@@ -54,7 +55,7 @@ namespace Network_Tracer.View
         {
             SelectedPorts = NamePorts.S41;
             IsConnected = true;
-            S41.IsEnabled = false;
+            //S41.IsEnabled = false;
             S41.Background = Brushes.Red;
             PortLine.Add(line, "S41");
             BlockOpen["S41"] = StatePort.Blocked;
@@ -65,7 +66,7 @@ namespace Network_Tracer.View
         {
             SelectedPorts = NamePorts.S161;
             IsConnected = true;
-            S161.IsEnabled = false;
+            //S161.IsEnabled = false;
             S161.Background = Brushes.Red;
             PortLine.Add(line, "S161");
             BlockOpen["S161"] = StatePort.Blocked;
@@ -76,7 +77,7 @@ namespace Network_Tracer.View
         {
             SelectedPorts = NamePorts.T41;
             IsConnected = true;
-            T41.IsEnabled = false;
+            //T41.IsEnabled = false;
             T41.Background = Brushes.Red;
             PortLine.Add(line, "T41");
             BlockOpen["T41"] = StatePort.Blocked;
@@ -87,7 +88,7 @@ namespace Network_Tracer.View
         {
             SelectedPorts = NamePorts.T31;
             IsConnected = true;
-            T31.IsEnabled = false;
+            //T31.IsEnabled = false;
             T31.Background = Brushes.Red;
             PortLine.Add(line, "T31");
             BlockOpen["T31"] = StatePort.Blocked;
@@ -98,7 +99,7 @@ namespace Network_Tracer.View
         {
             SelectedPorts = NamePorts.S42;
             IsConnected = true;
-            S42.IsEnabled = false;
+            //S42.IsEnabled = false;
             S42.Background = Brushes.Red;
             PortLine.Add(line, "S42");
             BlockOpen["S42"] = StatePort.Blocked;
@@ -109,7 +110,7 @@ namespace Network_Tracer.View
         {
             SelectedPorts = NamePorts.S162;
             IsConnected = true;
-            S162.IsEnabled = false;
+            //S162.IsEnabled = false;
             S162.Background = Brushes.Red;
             PortLine.Add(line, "S162");
             BlockOpen["S162"] = StatePort.Blocked;
@@ -120,7 +121,7 @@ namespace Network_Tracer.View
         {
             SelectedPorts = NamePorts.T42;
             IsConnected = true;
-            T42.IsEnabled = false;
+            //T42.IsEnabled = false;
             T42.Background = Brushes.Red;
             PortLine.Add(line, "T42");
             BlockOpen["T42"] = StatePort.Blocked;
@@ -131,17 +132,21 @@ namespace Network_Tracer.View
         {
             SelectedPorts = NamePorts.T32;
             IsConnected = true;
-            T32.IsEnabled = false;
+            //T32.IsEnabled = false;
             T32.Background = Brushes.Red;
             PortLine.Add(line, "S41");
             BlockOpen["T32"] = StatePort.Blocked;
             this.Hide();
         }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        public void LoadedPort(double X, double Y)
         {
-            this.Left = Mouse.GetPosition(Device.Window.CanvasField).X;
-            this.Top = Mouse.GetPosition(Device.Window.CanvasField).Y;
+            this.Left = X;
+            this.Top = Y;
         }
+        //private void Window_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    this.Left = Mouse.GetPosition(Device.Window.CanvasField).X;
+        //    this.Top = Mouse.GetPosition(Device.Window.CanvasField).Y;
+        //}
     }
 }

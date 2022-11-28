@@ -43,6 +43,7 @@ namespace Network_Tracer.Model
         public static void NewList()
         {
             Device.Vertex.Clear();
+            Device._lines.Clear();
             Scheme.Labelsname.Clear();
 
         }
@@ -445,8 +446,10 @@ namespace Network_Tracer.Model
                         break;
                 }
                 device.NamePorts.Add(Device._lines.First(l => l.NameLine == item.Key), namePorts);
-                device.port.BlockOpen[item.Key] = StatePort.Blocked;
+                device.port.BlockOpen[item.Value] = StatePort.Blocked;
+                device.port.grid.Children.OfType<Button>().ToList().First(n => n.Name == item.Value).Background = Brushes.Red;
             }
+
             return device;
         }
 

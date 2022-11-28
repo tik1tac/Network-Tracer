@@ -50,6 +50,7 @@ namespace Network_Tracer.Model.Graph
                 {
                     this.ports[i] = line;
                     port.line = ports[i];
+                    Device.Window.Modified = true;
                     Lines.Add(line);
                     return true;
                 }
@@ -57,9 +58,10 @@ namespace Network_Tracer.Model.Graph
 
             return false;
         }
-        public async override void SetPort()
+        public  override void SetPort()
         {
             port.IsConnected = false;
+            port.LoadedPort(Canvas.GetLeft(this), Canvas.GetTop(this));
             port.ShowDialog();
             for (int i = 0; i < this.ports.Length; ++i)
             {
@@ -69,11 +71,12 @@ namespace Network_Tracer.Model.Graph
                     if (port.IsConnected & !NamePorts.ContainsKey(ports[i]))
                     {
                         NamePorts.Add(ports[i], port.SelectedPorts);
+                        Device.Window.Modified = true;
                     }
 
                 }
             }
-            await Task.Delay(0);
+            //await Task.Delay(0);
         }
         public override void UpdateLocation()
         {
@@ -82,6 +85,7 @@ namespace Network_Tracer.Model.Graph
                 if (this.ports[i] != null)
                 {
                     this.ports[i].UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
+                    Device.Window.Modified = true;
                 }
             }
         }
@@ -100,6 +104,7 @@ namespace Network_Tracer.Model.Graph
             {
                 Scheme.Labelsname.Remove(this.LabelName);
             }
+            Device.Window.Modified = true;
             this.canvas.Children.Remove(this);
         }
 
@@ -114,10 +119,13 @@ namespace Network_Tracer.Model.Graph
                         this._neighbours.Remove(elem.D1);
                         elem.D1._neighbours.Remove(this);
                     }
-                    if (elem.D2.LabelName == line.D2.LabelName)
+                    if (line.D2 != null)
                     {
-                        this._neighbours.Remove(elem.D2);
-                        elem.D2._neighbours.Remove(this);
+                        if (elem.D2.LabelName == line.D2.LabelName)
+                        {
+                            this._neighbours.Remove(elem.D2);
+                            elem.D2._neighbours.Remove(this);
+                        }
                     }
                 }
             }
@@ -133,6 +141,7 @@ namespace Network_Tracer.Model.Graph
                     {
                         this.ports[i].Remove(this);
                     }
+                    Device.Window.Modified = true;
                     this.ports[i] = null;
                 }
             }

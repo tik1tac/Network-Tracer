@@ -45,6 +45,7 @@ namespace Network_Tracer.Model.Graph
             {
                 Line = line;
                 Lines.Add(line);
+                Device.Window.Modified = true;
                 return true;
             }
             return false;
@@ -65,6 +66,7 @@ namespace Network_Tracer.Model.Graph
             {
                 Scheme.Labelsname.Remove(this.LabelName);
             }
+            Device.Window.Modified = true;
             this.canvas.Children.Remove(this);
         }
 
@@ -80,11 +82,11 @@ namespace Network_Tracer.Model.Graph
                     {
                         Line.Remove(this);
                     }
+                    Device.Window.Modified = true;
                     Line = null;
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -93,6 +95,7 @@ namespace Network_Tracer.Model.Graph
             if (Line != null)
             {
                 Line.UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
+                Device.Window.Modified = true;
             }
 
         }

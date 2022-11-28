@@ -38,7 +38,7 @@ namespace Network_Tracer
         PEGSpare pegsparecount = null;
         Source source;
         private string fileName;
-        bool Modified { get; set; } = false;
+        public bool Modified { get; set; } = false;
         private string FileName
         {
             get
@@ -215,6 +215,7 @@ namespace Network_Tracer
                     SelectedTool = Tools.Cursor;
                     Device.pegcount = peg;
                     Device.Vertex.Add(peg);
+                    Modified = true;
                     break;
 
                 case Tools.VZG:
@@ -226,6 +227,7 @@ namespace Network_Tracer
                     CanvasField.Children.Add(vzg);
                     SelectedTool = Tools.Cursor;
                     Device.Vertex.Add(vzg);
+                    Modified = true;
                     break;
 
                 case Tools.SE:
@@ -237,6 +239,7 @@ namespace Network_Tracer
                     CanvasField.Children.Add(se);
                     SelectedTool = Tools.Cursor;
                     Device.Vertex.Add(se);
+                    Modified = true;
                     break;
 
                 case Tools.PEGSpare:
@@ -248,6 +251,7 @@ namespace Network_Tracer
                     SelectedTool = Tools.Cursor;
                     Device.pegsparecount = pegspare;
                     Device.Vertex.Add(pegspare);
+                    Modified = true;
                     break;
                 case Tools.User:
                     User user = cn.CreateUser(CanvasField);
@@ -257,6 +261,7 @@ namespace Network_Tracer
                     CanvasField.Children.Add(user);
                     SelectedTool = Tools.Cursor;
                     Device.Vertex.Add(user);
+                    Modified = true;
                     break;
 
                 case Tools.Connection:
@@ -343,6 +348,7 @@ namespace Network_Tracer
                     Canvas.SetLeft(obj, p.X - (obj.Width / 2));
                     Canvas.SetTop(obj, p.Y - (obj.Height / 2));
                     obj.UpdateLocation();
+                    Modified = true;
                 }
             }
         }
@@ -631,18 +637,18 @@ namespace Network_Tracer
 
                 if (dialog.ShowDialog() == true)
                 {
-                    //try
-                    //{
-                    ClearCanvas();
-                    Scheme.LoadScheme(this.CanvasField, dialog.FileName);
-                    Modified = true;
-                    this.FileName = dialog.FileName;
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    this.CreateNewScheme(null, null);
-                    //    MessageBox.Show("Невозможно открыть" + ": " + ex.Message, "Ошибка");
-                    //}
+                    try
+                    {
+                        ClearCanvas();
+                        Scheme.LoadScheme(this.CanvasField, dialog.FileName);
+                        Modified = false;
+                        this.FileName = dialog.FileName;
+                    }
+                    catch (Exception ex)
+                    {
+                        this.CreateNewScheme(null, null);
+                        MessageBox.Show("Невозможно открыть" + ": " + ex.Message, "Ошибка");
+                    }
                 }
 
             }
@@ -700,9 +706,10 @@ namespace Network_Tracer
         {
             foreach (var item in (CanvasField.Children))
             {
-                if (item is Device & (item.GetType() == typeof(VZG) || item.GetType() == typeof(SE)))
+                if (item is NodesWithPort & (item.GetType() == typeof(VZG) || item.GetType() == typeof(SE)))
                 {
-                    (item as Device).port.Close();
+                    (item as NodesWithPort).port.Close();
+                    (item as NodesWithPort).InputElements.Close();
                 }
             }
             if (Modified)
