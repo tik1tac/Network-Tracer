@@ -143,10 +143,5 @@ namespace Network_Tracer.View
             this.Left = X;
             this.Top = Y;
         }
-        //private void Window_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    this.Left = Mouse.GetPosition(Device.Window.CanvasField).X;
-        //    this.Top = Mouse.GetPosition(Device.Window.CanvasField).Y;
-        //}
     }
 }

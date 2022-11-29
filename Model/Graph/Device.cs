@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -39,25 +40,49 @@ namespace Network_Tracer.Model.Graph
         public static MainWindow Window { get; set; }
         public static LineConnect NewLine { get; set; }
 
-        public virtual Dictionary<LineConnect,NamePorts> NamePorts { get; set; }
+        public virtual Dictionary<LineConnect, NamePorts> NamePorts { get; set; }
 
+        /// <summary>
+        /// Установить порт на устройство SE или VZG
+        /// </summary>
         public abstract void SetPort();
-
+        /// <summary>
+        /// Обновить координаты
+        /// </summary>
         public abstract void UpdateLocation();
-
-        public abstract bool AddLine(LineConnect line);
-
+        /// <summary>
+        /// Добавить линиию к устройству
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public abstract Task<bool> AddLine(LineConnect line);
+        /// <summary>
+        /// Добавить соседей
+        /// </summary>
+        /// <param name="D"></param>
         public abstract void AddNEighbours(Device D);
-
+        /// <summary>
+        /// Удалить порт
+        /// </summary>
+        /// <param name="i"></param>
         public abstract void DeletePort(int i);
-
-        public abstract bool RemoveLine(bool deep, LineConnect line = null);
-
+        /// <summary>
+        /// Удалить линию
+        /// </summary>
+        /// <param name="deep"></param>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        public abstract Task<bool> RemoveLine(bool deep, LineConnect line = null);
+        /// <summary>
+        /// Удалить элемент с канваса
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public abstract void Remove(object sender, RoutedEventArgs e);
 
         public static int _count = 1;
 
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        protected async override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
 
@@ -78,7 +103,7 @@ namespace Network_Tracer.Model.Graph
                         };
                         _lines.Add(Device.NewLine);
                         Device.NewLine.NameLine = NewLine.D1.LabelName + "-Линия-";
-                        if (this.AddLine(Device.NewLine))
+                        if (await this.AddLine(Device.NewLine))
                         {
                             if (Device.NewLine.D1 is VZG || Device.NewLine.D1 is SE)
                             {
@@ -100,7 +125,7 @@ namespace Network_Tracer.Model.Graph
                     {
                         if (Device.NewLine != null && Device.NewLine.D1 != this)
                         {
-                            if (this.AddLine(Device.NewLine))
+                            if (await this.AddLine(Device.NewLine))
                             {
                                 Device.NewLine.X2 = Canvas.GetLeft(this) + (this.Width / 2);
                                 Device.NewLine.Y2 = Canvas.GetTop(this) + (this.Height / 2);

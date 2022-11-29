@@ -21,11 +21,8 @@
                 <MenuItem Header="Сохранить" Click="SaveScheme"></MenuItem>
                 <MenuItem Header="СохранитьКак" Click="SaveSchemeAs"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Схема" Height="26">
-                <MenuItem Header="Карта"></MenuItem>
-            </MenuItem>
             <MenuItem Header="Справка" Height="26">
-                <MenuItem Header="РУководство пользования"></MenuItem>
+                <!--<MenuItem Header="РУководство пользования"></MenuItem>-->
                 <MenuItem Header="Авторы" Click="ReferenceOpen"></MenuItem>
             </MenuItem>
             <MenuItem Header="Выход" Height="26" >

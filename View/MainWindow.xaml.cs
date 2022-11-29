@@ -198,7 +198,10 @@ namespace Network_Tracer
             Device.NewLine.Y2 = Mouse.GetPosition(this).Y - CanvasField.Margin.Top;
         }
         #endregion
-
+        /// <summary>
+        /// Выбор элементов на панели
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
@@ -210,7 +213,7 @@ namespace Network_Tracer
                     PEG peg = cn.CreatePeg(CanvasField);
                     Canvas.SetLeft(peg, p.X - (peg.Width / 2));
                     Canvas.SetTop(peg, p.Y - (peg.Height / 2));
-                    peg.MouseLeftButtonDown += this.OnPEGLeftButtonDown;
+                    peg.MouseLeftButtonDown += this.OnPEGLeftButtonDownAsync;
                     CanvasField.Children.Add(peg);
                     SelectedTool = Tools.Cursor;
                     Device.pegcount = peg;
@@ -246,7 +249,7 @@ namespace Network_Tracer
                     PEGSpare pegspare = cn.CreatePegSpare(CanvasField);
                     Canvas.SetLeft(pegspare, p.X - (pegspare.Width / 2));
                     Canvas.SetTop(pegspare, p.Y - (pegspare.Height / 2));
-                    pegspare.MouseLeftButtonDown += this.OnPEGSpareLeftButtonDown;
+                    pegspare.MouseLeftButtonDown += this.OnPEGSpareLeftButtonDownAsync;
                     CanvasField.Children.Add(pegspare);
                     SelectedTool = Tools.Cursor;
                     Device.pegsparecount = pegspare;
@@ -268,20 +271,30 @@ namespace Network_Tracer
                     break;
             }
         }
-
-        public void Se_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        /// <summary>
+        /// Открыть внутренние элементы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void Se_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             SelectedDevice.InputElements.Show();
-            ShowEnergizeInputElements();
+            await ShowEnergizeInputElements();
         }
-
-        public void Vzg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        /// <summary>
+        /// Открыть внутренние элементы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void Vzg_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             SelectedDevice.InputElements.Show();
-            ShowEnergizeInputElements();
+            await ShowEnergizeInputElements();
         }
-
-        private void ShowEnergizeInputElements()
+        /// <summary>
+        /// Показать внутренние элементы 
+        /// </summary>
+        private async Task ShowEnergizeInputElements()
         {
             if (EnergizeSheme.IsEnergy)
             {
@@ -324,9 +337,9 @@ namespace Network_Tracer
                     if (elemInPut is TextBlock)
                     {
                         if (SelectedDevice.port.InOrOutPortDict[(elemInPut as TextBlock).Name] == Enums.InOrOutPort.InEnerg)
-                            SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.InEnerg, source);
+                            await SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.InEnerg, source);
                         else if (SelectedDevice.port.InOrOutPortDict[(elemInPut as TextBlock).Name] == Enums.InOrOutPort.Out)
-                            SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.Out, source);
+                            await SelectedDevice.InputElements.PaintLine(elemInPut as TextBlock, Enums.InOrOutPort.Out, source);
                     }
 
                 }
@@ -335,6 +348,10 @@ namespace Network_Tracer
         }
 
         #region Drag&Drop
+        /// <summary>
+        /// DragOver
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnDragOver(DragEventArgs e)
         {
             base.OnDragOver(e);
@@ -352,6 +369,10 @@ namespace Network_Tracer
                 }
             }
         }
+        /// <summary>
+        /// Удалить линию нажатием правой кнопкой мыши
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonDown(e);
@@ -368,11 +389,20 @@ namespace Network_Tracer
             }
         }
         #endregion
+        /// <summary>
+        /// Выбрать VZG
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void VZGButton_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedTool = Tools.VZG;
         }
-
+        /// <summary>
+        /// Выбрать PEG
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PEGButton_Click(object sender, RoutedEventArgs e)
         {
             if (Device.pegcount == null)
@@ -385,31 +415,51 @@ namespace Network_Tracer
                 MessageBox.Show("Основной ПЭГ уже создан");
             }
         }
-
+        /// <summary>
+        /// Выбрать SE
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SEButton_Click(object sender, RoutedEventArgs e)
         {
             SelectedTool = Tools.Cursor;
             this.SelectedTool = Tools.SE;
         }
-
+        /// <summary>
+        /// Выбрать Курсор
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CursorButton_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedTool = Tools.Cursor;
         }
-
+        /// <summary>
+        /// Выбрать Line
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Connection_Click(object sender, RoutedEventArgs e)
         {
             SelectedTool = Tools.Cursor;
             this.SelectedTool = Tools.Connection;
         }
-
+        /// <summary>
+        /// Выбрать User
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void User_Click(object sender, RoutedEventArgs e)
         {
             SelectedTool = Tools.Cursor;
             this.SelectedTool = Tools.User;
 
         }
-
+        /// <summary>
+        /// Выбрать PEGSpare
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PEGSpare_Click(object sender, RoutedEventArgs e)
         {
             if (Device.pegsparecount == null)
@@ -422,17 +472,103 @@ namespace Network_Tracer
                 MessageBox.Show("Резервный ПЭГ уже создан");
             }
         }
-
-        public void OnPEGLeftButtonDown(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Выбрать элемент "PEG" и получить по нему данные
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void OnPEGLeftButtonDownAsync(object sender, RoutedEventArgs e)
         {
             PEG peg = (PEG)sender;
             this.SelectedDevice = peg;
             NameDevice.Text = "Основной ПЭГ";
             LineExpender.Visibility = Visibility.Collapsed;
             DeviceExpander.Visibility = Visibility.Visible;
-            ListPorts();
+            await ListPorts();
+            ListPort.Visibility = Visibility.Collapsed;
         }
-        public void ListPorts()
+        /// <summary>
+        /// Выбрать элемент "PEGSpare" и получить по нему данные
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void OnPEGSpareLeftButtonDownAsync(object sender, RoutedEventArgs e)
+        {
+            PEGSpare pegspare = (PEGSpare)sender;
+            this.SelectedDevice = pegspare;
+            NameDevice.Text = "Резервный ПЭГ";
+            LineExpender.Visibility = Visibility.Collapsed;
+            DeviceExpander.Visibility = Visibility.Visible;
+            await ListPorts();
+            ListPort.Visibility = Visibility.Collapsed;
+        }
+        /// <summary>
+        /// Выбрать элемент "VZG" и получить по нему данные
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void OnVZGLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            VZG vzg = (VZG)sender;
+            this.SelectedDevice = vzg;
+            NameDevice.Text = vzg.LabelName;
+            LineExpender.Visibility = Visibility.Collapsed;
+            DeviceExpander.Visibility = Visibility.Visible;
+            await ListPorts();
+            ListPort.Visibility = Visibility.Visible;
+        }
+        /// <summary>
+        /// Выбрать элемент "SE" и получить по нему данные
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void OnSELeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            SE se = (SE)sender;
+            this.SelectedDevice = se;
+            NameDevice.Text = se.LabelName;
+            LineExpender.Visibility = Visibility.Collapsed;
+            DeviceExpander.Visibility = Visibility.Visible;
+            await ListPorts();
+            ListPort.Visibility = Visibility.Visible;
+        }
+        /// <summary>
+        /// Выбрать Элемент "User" и получить по нему данные
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void OnUserMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            User user = (User)sender;
+            this.SelectedDevice = user;
+            NameDevice.Text = "Пользователь";
+            LineExpender.Visibility = Visibility.Collapsed;
+            DeviceExpander.Visibility = Visibility.Visible;
+            await ListPorts();
+            ListPort.Visibility = Visibility.Collapsed;
+        }
+        /// <summary>
+        /// Выбрать линию и получить по ней данные
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnLineLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            LineConnect line = (LineConnect)sender;
+            this.SelectedLine = line;
+            Device1.Text = SelectedLine.D1.LabelName;
+            Device2.Text = SelectedLine.D2.LabelName;
+            Port1.Text = SelectedLine.Port1.ToString();
+            Port2.Text = SelectedLine.Port2.ToString();
+            DeviceExpander.Visibility = Visibility.Collapsed;
+            LineExpender.Visibility = Visibility.Visible;
+        }
+        #endregion
+        /// <summary>
+        /// Показать выбранные порты на устройстве
+        /// </summary>
+        /// <returns></returns>
+        public async Task ListPorts()
         {
             foreach (var item in ListPort.Items.OfType<Label>().ToList())
             {
@@ -451,57 +587,14 @@ namespace Network_Tracer
                     }
                 }
             }
+            await Task.Delay(0);
         }
-        public void OnPEGSpareLeftButtonDown(object sender, RoutedEventArgs e)
-        {
-            PEGSpare pegspare = (PEGSpare)sender;
-            this.SelectedDevice = pegspare;
-            NameDevice.Text = "Резервный ПЭГ";
-            LineExpender.Visibility = Visibility.Collapsed;
-            DeviceExpander.Visibility = Visibility.Visible;
-            ListPorts();
-        }
-        public void OnVZGLeftButtonDown(object sender, RoutedEventArgs e)
-        {
-            VZG vzg = (VZG)sender;
-            this.SelectedDevice = vzg;
-            NameDevice.Text = vzg.LabelName;
-            LineExpender.Visibility = Visibility.Collapsed;
-            DeviceExpander.Visibility = Visibility.Visible;
-            ListPorts();
-        }
-        public void OnSELeftButtonDown(object sender, RoutedEventArgs e)
-        {
-            SE se = (SE)sender;
-            this.SelectedDevice = se;
-            NameDevice.Text = se.LabelName;
-            LineExpender.Visibility = Visibility.Collapsed;
-            DeviceExpander.Visibility = Visibility.Visible;
-            ListPorts();
-        }
-        public void OnLineLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            LineConnect line = (LineConnect)sender;
-            this.SelectedLine = line;
-            Device1.Text = SelectedLine.D1.LabelName;
-            Device2.Text = SelectedLine.D2.LabelName;
-            Port1.Text = SelectedLine.Port1.ToString();
-            Port2.Text = SelectedLine.Port2.ToString();
-            DeviceExpander.Visibility = Visibility.Collapsed;
-            LineExpender.Visibility = Visibility.Visible;
-        }
-        public void OnUserMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            User user = (User)sender;
-            this.SelectedDevice = user;
-            NameDevice.Text = "Пользователь";
-            LineExpender.Visibility = Visibility.Collapsed;
-            DeviceExpander.Visibility = Visibility.Visible;
-            ListPorts();
-        }
-        #endregion
-
-        private void Energize_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Зарядить схему по выбранному элементу в ComboBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Energize_Click(object sender, RoutedEventArgs e)
         {
             if (SourceBox.SelectedItem != null || Device.Vertex.Count != 0)
             {
@@ -510,22 +603,22 @@ namespace Network_Tracer
                     case "ПЭГ":
                         IsEnabledF();
                         source = Source.Peg;
-                        EnergizeSheme.Energize(Source.Peg);
+                        await EnergizeSheme.Energize(Source.Peg);
                         break;
                     case "ВЗГ":
                         IsEnabledF();
                         source = Source.Vzg;
-                        EnergizeSheme.Energize(Source.Vzg);
+                        await EnergizeSheme.Energize(Source.Vzg);
                         break;
                     case "ПЭГ рез.":
                         IsEnabledF();
                         source = Source.PegSpare;
-                        EnergizeSheme.Energize(Source.PegSpare);
+                        await EnergizeSheme.Energize(Source.PegSpare);
                         break;
                     case "ГСЭ":
                         IsEnabledF();
                         source = Source.GSE;
-                        EnergizeSheme.Energize(Source.GSE);
+                        await EnergizeSheme.Energize(Source.GSE);
                         break;
                     default:
                         break;
@@ -536,6 +629,9 @@ namespace Network_Tracer
                 MessageBox.Show("Выберите источник синхронизации и проверьте схему на правильность");
             }
         }
+        /// <summary>
+        /// Запретить использование элементов
+        /// </summary>
         public void IsEnabledF()
         {
             EnergBut.IsEnabled = false;
@@ -545,6 +641,9 @@ namespace Network_Tracer
             PEGSpare.IsEnabled = false;
             Connection.IsEnabled = false;
         }
+        /// <summary>
+        /// Разрешить использование элементов
+        /// </summary>
         public void IsEnabledT()
         {
             EnergBut.IsEnabled = true;
@@ -554,6 +653,11 @@ namespace Network_Tracer
             PEGSpare.IsEnabled = true;
             Connection.IsEnabled = true;
         }
+        /// <summary>
+        /// Очищение ресурсов и отключение схемы от энергии
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClearResource(object sender, RoutedEventArgs e)
         {
             IsEnabledT();
@@ -598,38 +702,58 @@ namespace Network_Tracer
             }
             Modified = true;
         }
-
+        /// <summary>
+        /// Изменение города
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CityDevice_TextChanged(object sender, TextChangedEventArgs e)
         {
             SelectedDevice.city = CityDevice.Text;
             Modified = true;
         }
-
+        /// <summary>
+        /// Удаление выбранного элемента
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeviceDelete_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedDevice.Remove(null, null);
             Modified = true;
         }
-
+        /// <summary>
+        /// Удаление выбранной линии
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LineDelete_Click(object sender, RoutedEventArgs e)
         {
             this.SelectedLine.Remove(null, null);
             Device.NewLine = null;
             Modified = true;
         }
-
-        private void CreateNewScheme(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Создать новую схему
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void CreateNewScheme(object sender, RoutedEventArgs e)
         {
-            if (CloseScheme())
+            if (await CloseScheme())
             {
-                ClearCanvas();
+                await ClearCanvas();
                 Modified = false;
             }
         }
-
-        private void OpenScheme(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Открытие схемы из файла 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void OpenScheme(object sender, RoutedEventArgs e)
         {
-            if (this.CloseScheme())
+            if (await CloseScheme())
             {
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.Filter = "Файлы схемы" + " (*.scheme)|*.scheme|" + "Все файлы" + "|*";
@@ -639,7 +763,7 @@ namespace Network_Tracer
                 {
                     try
                     {
-                        ClearCanvas();
+                        await ClearCanvas();
                         Scheme.LoadScheme(this.CanvasField, dialog.FileName);
                         Modified = false;
                         this.FileName = dialog.FileName;
@@ -653,33 +777,45 @@ namespace Network_Tracer
 
             }
         }
-
-        private void ClearCanvas()
+        /// <summary>
+        /// Очищение канваса
+        /// </summary>
+        private async Task ClearCanvas()
         {
             this.ClearResource(null, null);
             CanvasField.Children.Clear();
             Scheme.NewList();
+            await Task.Delay(0);
         }
-
-        private void SaveScheme(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Сохранить
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void SaveScheme(object sender, RoutedEventArgs e)
         {
-            //if (!string.IsNullOrEmpty(this.FileName))
-            //{
-            //    try
-            //    {
-            //        Scheme.WriteSchemeToFile(this.FileName, this.CanvasField);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show("Не правильное сохранение" + ex.Message);
-            //    }
-            //}
-            //else
-            //{
-            //    this.SaveSchemeAs(sender, e);
-            //}
+            if (!string.IsNullOrEmpty(this.FileName))
+            {
+                try
+                {
+                    Scheme.WriteSchemeToFile(this.FileName, this.CanvasField);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Не правильное сохранение" + ex.Message);
+                }
+            }
+            else
+            {
+                this.SaveSchemeAs(sender, e);
+            }
+            await Task.Delay(0);
         }
-
+        /// <summary>
+        /// Сохранить как
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveSchemeAs(object sender, RoutedEventArgs e)
         {
             ClearResource(null, null);
@@ -701,8 +837,12 @@ namespace Network_Tracer
                 MessageBox.Show("Не правильное сохранение" + ex.Message);
             }
         }
-
-        public void OnWindowClosing(object sender, CancelEventArgs e)
+        /// <summary>
+        /// Событие на закрытие
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void OnWindowClosing(object sender, CancelEventArgs e)
         {
             foreach (var item in (CanvasField.Children))
             {
@@ -714,13 +854,17 @@ namespace Network_Tracer
             }
             if (Modified)
             {
-                if (!this.CloseScheme())
+                if (!(await CloseScheme()))
                 {
                     e.Cancel = true;
                 }
             }
         }
-        private bool CloseScheme()
+        /// <summary>
+        /// Окно подтверждение закрытия
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> CloseScheme()
         {
             if (Modified)
             {
@@ -738,15 +882,20 @@ namespace Network_Tracer
                 }
 
             }
+            await Task.Delay(0);
             return true;
         }
-
+        /// <summary>
+        /// Информация о программе
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReferenceOpen(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Авторы:\n" +
                 "к-т Овешников Ю.М. 394 учебная группа;\n" +
                 "Безручко В.М.;\n" +
-                "Тезин А.С.");
+                "Тезин А.B.");
         }
     }
 }

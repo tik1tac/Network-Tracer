@@ -4,6 +4,7 @@ using Network_Tracer.Model.Graph.AbstractGraph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -215,7 +216,11 @@ namespace Network_Tracer.View
         public NamePorts Port2 { get; set; }
 
         Canvas canvas { get; set; }
-        public void SetCost(Device D)
+        /// <summary>
+        /// Установление веса линии
+        /// </summary>
+        /// <param name="D"></param>
+        public async void SetCost(Device D)
         {
             var TypeD = D.GetType();
             if (TypeD == typeof(PEG))
@@ -234,9 +239,16 @@ namespace Network_Tracer.View
             {
                 Cost = 7;
             }
+            await Task.Delay(0);
         }
-
-        public void UpdateLocation(Device device, double x, double y)
+        /// <summary>
+        /// Обновление координат
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public async Task UpdateLocation(Device device, double x, double y)
         {
             if (this.D1 == device)
             {
@@ -251,9 +263,14 @@ namespace Network_Tracer.View
 
             Canvas.SetTop(this.WireBorder, (this.Y1 + this.Y2 - this.WireBorder.Height) / 2);
             Canvas.SetLeft(this.WireBorder, (this.X1 + this.X2 - this.WireBorder.Width) / 2);
+            await Task.Delay(0);
         }
-
-        public void Remove(object sender = null, RoutedEventArgs e = null)
+        /// <summary>
+        /// Удаление линии
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public async void Remove(object sender = null, RoutedEventArgs e = null)
         {
             Device._count = 1;
             if (this.D1 != null && this.D1 != sender)
@@ -271,8 +288,14 @@ namespace Network_Tracer.View
                 Device._lines.Remove(this);
                 this.canvas.Children.Remove(this);
             }
+            await Task.Delay(0);
         }
-        public void LineToArrow(Device dev)
+        /// <summary>
+        /// Превращение линии в стрелку
+        /// </summary>
+        /// <param name="dev"></param>
+        /// <returns></returns>
+        public async Task LineToArrow(Device dev)
         {
             double X3 = (this.X1 + this.X2) / 2;
             double Y3 = (this.Y1 + this.Y2) / 2;
@@ -321,8 +344,13 @@ namespace Network_Tracer.View
             ArrowRight.Y2 = Y5;
             ArrowLeft.X2 = X6;
             ArrowLeft.Y2 = Y6;
+            await Task.Delay(0);
         }
-        public void ArrowToLine()
+        /// <summary>
+        /// Превращение стрелки в линию
+        /// </summary>
+        /// <returns></returns>
+        public async Task ArrowToLine()
         {
             ArrowRight.X1 = 0;
             ArrowRight.Y1 = 0;
@@ -333,6 +361,7 @@ namespace Network_Tracer.View
             ArrowRight.Y2 = 0;
             ArrowLeft.X2 = 0;
             ArrowLeft.Y2 = 0;
+            await Task.Delay(0);
         }
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {

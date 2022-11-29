@@ -2,6 +2,7 @@
 using Network_Tracer.Model.Graph;
 
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -24,7 +25,14 @@ namespace Network_Tracer.View
         {
             this.Hide();
         }
-        public void PaintLine(TextBlock textBlock, InOrOutPort switcher, Source source)
+        /// <summary>
+        /// Нарисовать стрелку во внутреннем элементе
+        /// </summary>
+        /// <param name="textBlock"></param>
+        /// <param name="switcher"></param>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public async Task PaintLine(TextBlock textBlock, InOrOutPort switcher, Source source)
         {
             ArrowInput Arrow;
             switch (switcher)
@@ -54,6 +62,7 @@ namespace Network_Tracer.View
                 default:
                     break;
             }
+            await Task.Delay(0);
 
         }
     }

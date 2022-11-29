@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -35,11 +36,12 @@ namespace Network_Tracer.Model.Graph
 
         public override InputElements InputElements { get; set; }
 
-        public override void AddNEighbours(Device D)
+        public async override void AddNEighbours(Device D)
         {
             _neighbours.Add(D);
+            await Task.Delay(0);
         }
-        public override bool AddLine(LineConnect line)
+        public async override Task<bool> AddLine(LineConnect line)
         {
             if (Line == null)
             {
@@ -48,11 +50,12 @@ namespace Network_Tracer.Model.Graph
                 Device.Window.Modified = true;
                 return true;
             }
+            await Task.Delay(0);
             return false;
         }
-        public override void Remove(object sender, System.Windows.RoutedEventArgs e)
+        public override async void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.RemoveLine(true);
+            await this.RemoveLine(true);
             pegcount = null;
             if (Vertex.Contains(this))
             {
@@ -70,7 +73,7 @@ namespace Network_Tracer.Model.Graph
             this.canvas.Children.Remove(this);
         }
 
-        public override bool RemoveLine(bool deep, LineConnect line = null)
+        public async override Task<bool> RemoveLine(bool deep, LineConnect line = null)
         {
             if (Line != null)
             {
@@ -87,14 +90,15 @@ namespace Network_Tracer.Model.Graph
                     return true;
                 }
             }
+            await Task.Delay(0);
             return false;
         }
 
-        public override void UpdateLocation()
+        public override async void UpdateLocation()
         {
             if (Line != null)
             {
-                Line.UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
+                await Line.UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
                 Device.Window.Modified = true;
             }
 

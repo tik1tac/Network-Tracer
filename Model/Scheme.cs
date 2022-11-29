@@ -1,18 +1,12 @@
 ﻿using Network_Tracer.Model.Graph;
 using Network_Tracer.Model.Graph.AbstractGraph;
 using Network_Tracer.View;
-
-using Newtonsoft.Json;
-
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Xml;
 
 namespace Network_Tracer.Model
@@ -21,6 +15,11 @@ namespace Network_Tracer.Model
     {
         public static readonly HashSet<string> Labelsname = new HashSet<string>();
         static List<Device> dev = new List<Device>();
+        /// <summary>
+        /// Сгенерировать новое имя элементу
+        /// </summary>
+        /// <param name="baseword"></param>
+        /// <returns></returns>
         public static string GenerateName(string baseword)
         {
             string namelabel = baseword;
@@ -40,15 +39,22 @@ namespace Network_Tracer.Model
             Labelsname.Add(namelabel);
             return namelabel;
         }
-        public static void NewList()
+        /// <summary>
+        /// Создать новый лист
+        /// </summary>
+        public async static void NewList()
         {
             Device.Vertex.Clear();
             Device._lines.Clear();
             Scheme.Labelsname.Clear();
-
+            await Task.Delay(0);
         }
-
-        public static void WriteSchemeToFile(string filename, Canvas canvas)
+        /// <summary>
+        /// Записать схему в файл
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="canvas"></param>
+        public static async void WriteSchemeToFile(string filename, Canvas canvas)
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -149,12 +155,19 @@ namespace Network_Tracer.Model
                         writer.WriteAttributeString("D1", line.D1.LabelName);
                         writer.WriteAttributeString("D2", line.D2.LabelName);
                         writer.WriteEndElement();
+                        continue;
                     }
                 }
                 writer.WriteEndElement();
             }
+            await Task.Delay(0);
         }
-        public static void LoadScheme(Canvas canvas, string filename)
+        /// <summary>
+        /// Загрузить схему из файла
+        /// </summary>
+        /// <param name="canvas"></param>
+        /// <param name="filename"></param>
+        public async static void LoadScheme(Canvas canvas, string filename)
         {
             Dictionary<Device, List<string>> DeviceLabelName = new Dictionary<Device, List<string>>();
             string source = null;
@@ -215,11 +228,11 @@ namespace Network_Tracer.Model
                                 }
                                 if (NodeNoPort is PEG)
                                 {
-                                    NodeNoPort.MouseLeftButtonDown += Device.Window.OnPEGLeftButtonDown;
+                                    NodeNoPort.MouseLeftButtonDown += Device.Window.OnPEGLeftButtonDownAsync;
                                 }
                                 if (NodeNoPort is PEGSpare)
                                 {
-                                    NodeNoPort.MouseLeftButtonDown += Device.Window.OnPEGSpareLeftButtonDown;
+                                    NodeNoPort.MouseLeftButtonDown += Device.Window.OnPEGSpareLeftButtonDownAsync;
                                 }
                                 Device.Vertex.Add(NodeNoPort);
                                 break;
@@ -313,28 +326,33 @@ namespace Network_Tracer.Model
                 }
                 foreach (var item in DevicePort)
                 {
-                    canvas.Children.Add(MappingPortDevice(item.Key as NodesWithPort, item.Value));
+                    canvas.Children.Add(await MappingPortDevice(item.Key as NodesWithPort, item.Value));
                 }
                 foreach (var item in DeviceLabelName)
                 {
                     if (!canvas.Children.Contains(item.Key))
                     {
-                        canvas.Children.Add(MappingNeighbours(item.Value, item.Key));
+                        canvas.Children.Add(await MappingNeighbours(item.Value, item.Key));
                     }
                     else
                     {
                         canvas.Children.Remove(item.Key);
-                        canvas.Children.Add(MappingNeighbours(item.Value, item.Key));
+                        canvas.Children.Add(await MappingNeighbours(item.Value, item.Key));
                     }
                 }
                 foreach (var item in LineDevice)
                 {
-                    canvas.Children.Add(MappingDeviceLine(item.Key, item.Value));
+                    canvas.Children.Add(await MappingDeviceLine(item.Key, item.Value));
                 }
             }
         }
-
-        private static LineConnect MappingDeviceLine(LineConnect line, List<string> ports)
+        /// <summary>
+        /// Сопоставить порты линии
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="ports"></param>
+        /// <returns></returns>
+        private async static Task<LineConnect> MappingDeviceLine(LineConnect line, List<string> ports)
         {
             line.D1 = Device.Vertex.First(l => l.LabelName == ports[0]);
             line.D1.Lines.Add(line);
@@ -397,10 +415,16 @@ namespace Network_Tracer.Model
                 }
                 (line.D1 as NodesWithoutPort).Line = line;
             }
+            await Task.Delay(0);
             return line;
         }
-
-        private static Device MappingPortDevice(NodesWithPort device, Dictionary<string, string> port)
+        /// <summary>
+        /// Сопоставить порты элементу
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        private async static Task<Device> MappingPortDevice(NodesWithPort device, Dictionary<string, string> port)
         {
             NamePorts namePorts = NamePorts.S41;
             foreach (var item in port)
@@ -449,16 +473,22 @@ namespace Network_Tracer.Model
                 device.port.BlockOpen[item.Value] = StatePort.Blocked;
                 device.port.grid.Children.OfType<Button>().ToList().First(n => n.Name == item.Value).Background = Brushes.Red;
             }
-
+            await Task.Delay(0);
             return device;
         }
-
-        private static Device MappingNeighbours(List<string> NameNeighbour, Device Node)
+        /// <summary>
+        /// Сопоставить соседей элементу
+        /// </summary>
+        /// <param name="NameNeighbour"></param>
+        /// <param name="Node"></param>
+        /// <returns></returns>
+        private async static Task<Device> MappingNeighbours(List<string> NameNeighbour, Device Node)
         {
             foreach (var item in NameNeighbour)
             {
                 Node._neighbours.Add(Device.Vertex.Where(n => n.LabelName == item).First());
             }
+            await Task.Delay(0);
             return Node;
         }
     }

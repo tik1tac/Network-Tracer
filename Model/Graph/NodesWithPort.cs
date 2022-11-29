@@ -38,11 +38,12 @@ namespace Network_Tracer.Model.Graph
             get => ports.Length;
             set => ports = new LineConnect[value];
         }
-        public override void AddNEighbours(Device D)
+        public async override void AddNEighbours(Device D)
         {
             _neighbours.Add(D);
+            await Task.Delay(0);
         }
-        public override bool AddLine(LineConnect line)
+        public async override Task<bool> AddLine(LineConnect line)
         {
             for (int i = 0; i < this.ports.Length; ++i)
             {
@@ -55,10 +56,10 @@ namespace Network_Tracer.Model.Graph
                     return true;
                 }
             }
-
+            await Task.Delay(0);
             return false;
         }
-        public  override void SetPort()
+        public override void SetPort()
         {
             port.IsConnected = false;
             port.LoadedPort(Canvas.GetLeft(this), Canvas.GetTop(this));
@@ -76,22 +77,21 @@ namespace Network_Tracer.Model.Graph
 
                 }
             }
-            //await Task.Delay(0);
         }
-        public override void UpdateLocation()
+        public async override void UpdateLocation()
         {
             for (int i = 0; i < this.ports.Length; ++i)
             {
                 if (this.ports[i] != null)
                 {
-                    this.ports[i].UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
+                    await this.ports[i].UpdateLocation(this, Canvas.GetLeft(this) + (this.Width / 2), Canvas.GetTop(this) + (this.Height / 2));
                     Device.Window.Modified = true;
                 }
             }
         }
-        public override void Remove(object sender, System.Windows.RoutedEventArgs e)
+        public async override void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.RemoveLine(true);
+            await this.RemoveLine(true);
             if (Vertex.Contains(this))
             {
                 Vertex.Remove(this);
@@ -106,9 +106,10 @@ namespace Network_Tracer.Model.Graph
             }
             Device.Window.Modified = true;
             this.canvas.Children.Remove(this);
+            await Task.Delay(0);
         }
 
-        public override bool RemoveLine(bool deep, LineConnect line = null)
+        public async override Task<bool> RemoveLine(bool deep, LineConnect line = null)
         {
             if (line != null)
             {
@@ -145,10 +146,11 @@ namespace Network_Tracer.Model.Graph
                     this.ports[i] = null;
                 }
             }
+            await Task.Delay(0);
             return true;
         }
 
-        public override void DeletePort(int i)
+        public async override void DeletePort(int i)
         {
             foreach (var item in port.grid.Children)
             {
@@ -162,6 +164,7 @@ namespace Network_Tracer.Model.Graph
                     }
                 }
             }
+            await Task.Delay(0);
         }
     }
 }

@@ -2,8 +2,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Network_Tracer.Model.Graph
@@ -23,7 +23,7 @@ namespace Network_Tracer.Model.Graph
         /// Запитать схему от source
         /// </summary>
         /// <param name="source"></param>
-        public static void Energize(Source source)
+        public async static Task Energize(Source source)
         {
             Neighbo = new List<Device>();
             State = new List<Device>();
@@ -39,7 +39,7 @@ namespace Network_Tracer.Model.Graph
                         if (Device.pegcount != null)
                         {
                             CleanUp();
-                            BrushLineIfSourcePEGorPEGsp(Source.Peg);
+                            await BrushLineIfSourcePEGorPEGsp(Source.Peg);
                         }
                         else
                         {
@@ -49,7 +49,7 @@ namespace Network_Tracer.Model.Graph
                         break;
                     case Source.Vzg:
                         CleanUp();
-                        BrushLineIfSourceVZG();
+                        await BrushLineIfSourceVZG();
                         if (Device.pegcount != null)
                         {
                             if (Device.pegcount.Lines.Count != 0)
@@ -57,7 +57,7 @@ namespace Network_Tracer.Model.Graph
                                 ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
                                 ExcludedDev.RectBorder = Brushes.Silver;
                                 ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                                ExcludedDev.Lines[0].ArrowToLine();
+                                await ExcludedDev.Lines[0].ArrowToLine();
                             }
                         }
                         else
@@ -71,7 +71,7 @@ namespace Network_Tracer.Model.Graph
                                 ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
                                 ExcludedDev.RectBorder = Brushes.Silver;
                                 ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                                ExcludedDev.Lines[0].ArrowToLine();
+                                await ExcludedDev.Lines[0].ArrowToLine();
                             }
                         }
                         else
@@ -83,11 +83,11 @@ namespace Network_Tracer.Model.Graph
                         if (Device.pegsparecount != null)
                         {
                             CleanUp();
-                            BrushLineIfSourcePEGorPEGsp(Source.PegSpare);
+                            await BrushLineIfSourcePEGorPEGsp(Source.PegSpare);
                             ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
                             ExcludedDev.RectBorder = Brushes.Silver;
                             ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                            ExcludedDev.Lines[0].ArrowToLine();
+                            await ExcludedDev.Lines[0].ArrowToLine();
                         }
                         else
                         {
@@ -97,7 +97,7 @@ namespace Network_Tracer.Model.Graph
                         break;
                     case Source.GSE:
                         CleanUp();
-                        BrushLineIfSourceGSE();
+                        await BrushLineIfSourceGSE();
                         break;
                     default:
                         break;
@@ -118,7 +118,7 @@ namespace Network_Tracer.Model.Graph
         /// <summary>
         /// Запитать схему от СЭ
         /// </summary>
-        private static void BrushLineIfSourceGSE()
+        private async static Task BrushLineIfSourceGSE()
         {
             for (int i = 0; i < Device.Vertex.Count; i++)
             {
@@ -131,12 +131,13 @@ namespace Network_Tracer.Model.Graph
                     Device.Vertex[i].InputElements.GSE.Background = Brushes.Green;
                 }
             }
-        }/// <summary>
-         /// Запитать схему от ВЗГ
-         /// </summary>
-        private static void BrushLineIfSourceVZG()
+            await Task.Delay(0);
+        }
+        /// <summary>
+        /// Запитать схему от ВЗГ
+        /// </summary>
+        private static async Task BrushLineIfSourceVZG()
         {
-
             for (int i = 0; i < Device.Vertex.Count; i++)
             {
                 if (Device.Vertex[i].GetType() == typeof(VZG))
@@ -175,7 +176,7 @@ namespace Network_Tracer.Model.Graph
                                 VZGStart[(int)iter].Lines
                                 .Where(u => u.D2.LabelName == VZGStart[(int)iter]._neighbours[n].LabelName || u.D1.LabelName == VZGStart[(int)iter]._neighbours[n].LabelName)
                                 .First().ColorConnection = Brushes.Yellow;
-                                VZGStart[(int)iter].Lines[n].LineToArrow(VZGStart[(int)iter]);
+                                await VZGStart[(int)iter].Lines[n].LineToArrow(VZGStart[(int)iter]);
                                 VZGStart[(int)iter]._neighbours[n].RectBorder = Brushes.Yellow;
                                 VZGStart[iter].Lines[n].IsArrow = true;
                                 if (VZGStart[iter]._neighbours[n] is VZG || VZGStart[iter]._neighbours[n] is SE)
@@ -232,7 +233,7 @@ namespace Network_Tracer.Model.Graph
                                 State[st].Lines
                                 .Where(u => u.D2.LabelName == State[st]._neighbours[i].LabelName || u.D1.LabelName == State[st]._neighbours[i].LabelName)
                                 .First().ColorConnection = Brushes.Yellow;
-                                State[st].Lines[i].LineToArrow(State[st]);
+                                await State[st].Lines[i].LineToArrow(State[st]);
                                 State[st].Lines[i].IsArrow = true;
                                 State[st]._neighbours[i].RectBorder = Brushes.Yellow;
                                 if (State[st]._neighbours[i] is VZG || State[st]._neighbours[i] is SE)
@@ -285,7 +286,7 @@ namespace Network_Tracer.Model.Graph
                                     NextNeighbo[pos]._neighbours[i].RectBorder = Brushes.Yellow;
 
                                     NextNeighbo[pos]._neighbours[i].PowerSuuply = true;
-                                    NextNeighbo[pos].Lines[i].LineToArrow(NextNeighbo[pos]);
+                                    await NextNeighbo[pos].Lines[i].LineToArrow(NextNeighbo[pos]);
                                     NextNeighbo[pos].Lines[i].IsArrow = true;
                                     NextNeighbo[pos]._neighbours[i].RectBorder = Brushes.Yellow;
                                     if (NextNeighbo[pos]._neighbours[i] is VZG || NextNeighbo[pos]._neighbours[i] is SE)
@@ -353,12 +354,13 @@ namespace Network_Tracer.Model.Graph
                 Device.Window.IsEnabledT();
                 MessageBox.Show("На схеме нет ни одного ВЗГ");
             }
+            await Task.Delay(0);
         }
         /// <summary>
         /// Запитать схему от ПЭГ или ПЭГ рез.
         /// </summary>
         /// <param name="source"></param>
-        private static void BrushLineIfSourcePEGorPEGsp(Source source)
+        private async static Task BrushLineIfSourcePEGorPEGsp(Source source)
         {
 
             if (source == Source.Peg)
@@ -410,7 +412,7 @@ namespace Network_Tracer.Model.Graph
                             State[i]._neighbours[iter].RectBorder = Brushes.Blue;
                         }
                         State[i]._neighbours[iter].PowerSuuply = true;
-                        State[i].Lines[iter].LineToArrow(State[i]);
+                        await State[i].Lines[iter].LineToArrow(State[i]);
                         State[i].Lines[iter].IsArrow = true;
                         if (State[i]._neighbours[iter] is VZG || State[i]._neighbours[iter] is SE)
                         {
@@ -454,6 +456,7 @@ namespace Network_Tracer.Model.Graph
                 }
 
             }
+            await Task.Delay(0);
         }
     }
 }
