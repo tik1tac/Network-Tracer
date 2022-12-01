@@ -1,14 +1,7 @@
-﻿using Network_Tracer.Model;
-using Network_Tracer.Model.Graph;
-
-using Newtonsoft.Json;
+﻿using Network_Tracer.Model.Graph;
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Network_Tracer.View
@@ -31,7 +24,6 @@ namespace Network_Tracer.View
             this.LabelName = "ПЭГ";
         }
         public override int Number { get => base.Number; set => base.Number = value; }
-        [JsonIgnore]
         public override Brush RectBorder { get => PEGX.Fill; set => PEGX.Fill = value; }
 
         public override string city

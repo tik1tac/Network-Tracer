@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -45,16 +46,23 @@ namespace Network_Tracer.Model.Graph
         }
         public async override Task<bool> AddLine(LineConnect line)
         {
-            for (int i = 0; i < this.ports.Length; ++i)
+            if (!EnergizeSheme.IsEnergy)
             {
-                if (this.ports[i] == null)
+                for (int i = 0; i < this.ports.Length; ++i)
                 {
-                    this.ports[i] = line;
-                    port.line = ports[i];
-                    Device.Window.Modified = true;
-                    Lines.Add(line);
-                    return true;
+                    if (this.ports[i] == null)
+                    {
+                        this.ports[i] = line;
+                        port.line = ports[i];
+                        Device.Window.Modified = true;
+                        Lines.Add(line);
+                        return true;
+                    }
                 }
+            }
+            else
+            {
+                MessageBox.Show("Выключите питание");
             }
             await Task.Delay(0);
             return false;
@@ -91,60 +99,73 @@ namespace Network_Tracer.Model.Graph
         }
         public async override void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
-            await this.RemoveLine(true);
-            if (Vertex.Contains(this))
+            if (!EnergizeSheme.IsEnergy)
             {
-                Vertex.Remove(this);
+                await this.RemoveLine(true);
+                if (Vertex.Contains(this))
+                {
+                    Vertex.Remove(this);
+                }
+                for (int i = 0; i < _neighbours.Count; i++)
+                {
+                    _neighbours[i]._neighbours.Remove(this);
+                }
+                if (Scheme.Labelsname.Contains(this.LabelName))
+                {
+                    Scheme.Labelsname.Remove(this.LabelName);
+                }
+                Device.Window.Modified = true;
+                this.canvas.Children.Remove(this);
             }
-            for (int i = 0; i < _neighbours.Count; i++)
+            else
             {
-                _neighbours[i]._neighbours.Remove(this);
+                MessageBox.Show("Выключите питание");
             }
-            if (Scheme.Labelsname.Contains(this.LabelName))
-            {
-                Scheme.Labelsname.Remove(this.LabelName);
-            }
-            Device.Window.Modified = true;
-            this.canvas.Children.Remove(this);
-            await Task.Delay(0);
         }
 
         public async override Task<bool> RemoveLine(bool deep, LineConnect line = null)
         {
-            if (line != null)
+            if (!EnergizeSheme.IsEnergy)
             {
-                foreach (var elem in this.Lines)
+                if (line != null)
                 {
-                    if (elem.D1.LabelName == line.D1.LabelName)
+                    foreach (var elem in this.Lines)
                     {
-                        this._neighbours.Remove(elem.D1);
-                        elem.D1._neighbours.Remove(this);
-                    }
-                    if (line.D2 != null)
-                    {
-                        if (elem.D2.LabelName == line.D2.LabelName)
+                        if (elem.D1.LabelName == line.D1.LabelName)
                         {
-                            this._neighbours.Remove(elem.D2);
-                            elem.D2._neighbours.Remove(this);
+                            this._neighbours.Remove(elem.D1);
+                            elem.D1._neighbours.Remove(this);
+                        }
+                        if (line.D2 != null)
+                        {
+                            if (elem.D2.LabelName == line.D2.LabelName)
+                            {
+                                this._neighbours.Remove(elem.D2);
+                                elem.D2._neighbours.Remove(this);
+                            }
                         }
                     }
                 }
-            }
-            for (int i = 0; i < this.PortsN; ++i)
-            {
-                if (this.ports[i] != null && (line == null || this.ports[i] == line))
+                for (int i = 0; i < this.PortsN; ++i)
                 {
-                    DeletePort(i);
-                    NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
-                    this.Lines.Remove(line);
-                    port.PortLine.Remove(ports[i]);
-                    if (deep)
+                    if (this.ports[i] != null && (line == null || this.ports[i] == line))
                     {
-                        this.ports[i].Remove(this);
+                        DeletePort(i);
+                        NamePorts.Remove(NamePorts.Where(n => n.Key == ports[i]).First().Key);
+                        this.Lines.Remove(line);
+                        port.PortLine.Remove(ports[i]);
+                        if (deep)
+                        {
+                            this.ports[i].Remove(this);
+                        }
+                        Device.Window.Modified = true;
+                        this.ports[i] = null;
                     }
-                    Device.Window.Modified = true;
-                    this.ports[i] = null;
                 }
+            }
+            else
+            {
+                MessageBox.Show("Выключите питание");
             }
             await Task.Delay(0);
             return true;

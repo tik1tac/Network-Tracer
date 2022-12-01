@@ -121,12 +121,9 @@ C:\Users\user\Desktop\Network Tracer\bin\Debug\Newtonsoft.Json.xml
 C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\Network Tracer.exe.config
 C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\Network Tracer.exe
 C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\Network Tracer.pdb
-C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\CommonServiceLocator.dll
 C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.dll
-C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\Newtonsoft.Json.dll
 C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.pdb
 C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\Microsoft.Xaml.Behaviors.xml
-C:\Users\user\Desktop\12к\Network Tracer\bin\Debug\Newtonsoft.Json.xml
 C:\Users\user\Desktop\12к\Network Tracer\obj\Debug\Network Tracer.csproj.AssemblyReference.cache
 C:\Users\user\Desktop\12к\Network Tracer\obj\Debug\Network Tracer.csproj.SuggestedBindingRedirects.cache
 C:\Users\user\Desktop\12к\Network Tracer\obj\Debug\View\GSE.baml

@@ -272,15 +272,15 @@ namespace Network_Tracer.View
         /// <param name="e"></param>
         public async void Remove(object sender = null, RoutedEventArgs e = null)
         {
-            Device._count = 1;
+            Device._connected = true;
             if (this.D1 != null && this.D1 != sender)
             {
-                this.D1.RemoveLine(false, this);
+                await this.D1.RemoveLine(false, this);
             }
 
             if (this.D2 != null && this.D2 != sender)
             {
-                this.D2.RemoveLine(false, this);
+                await this.D2.RemoveLine(false, this);
             }
 
             if (this.canvas != null)

@@ -1,0 +1,42 @@
+C:\Users\user\Desktop\12к\Network Tracer\bin\Release\Network Tracer.exe.config
+C:\Users\user\Desktop\12к\Network Tracer\bin\Release\Network Tracer.exe
+C:\Users\user\Desktop\12к\Network Tracer\bin\Release\Network Tracer.pdb
+C:\Users\user\Desktop\12к\Network Tracer\bin\Release\Microsoft.Expression.Interactions.resources.dll
+C:\Users\user\Desktop\12к\Network Tracer\bin\Release\Microsoft.Xaml.Behaviors.dll
+C:\Users\user\Desktop\12к\Network Tracer\bin\Release\System.Windows.Interactivity.resources.dll
+C:\Users\user\Desktop\12к\Network Tracer\bin\Release\Microsoft.Xaml.Behaviors.pdb
+C:\Users\user\Desktop\12к\Network Tracer\bin\Release\Microsoft.Xaml.Behaviors.xml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer.csproj.SuggestedBindingRedirects.cache
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\GSE.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\LineConnect.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\Port.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\GSE.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\InputElements.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\LineConnect.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\MainWindow.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\PEG.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\PEGSpare.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\Port.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\SE.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\User.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\VZG.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\App.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\GeneratedInternalTypeHelper.g.cs
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer_MarkupCompile.cache
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer_MarkupCompile.lref
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\App.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\InputElements.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\MainWindow.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\PEG.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\PEGSpare.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\SE.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\User.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\View\VZG.baml
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer.g.resources
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network_Tracer.Properties.Resources.resources
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer.csproj.GenerateResource.cache
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer.csproj.CopyComplete
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer.exe
+C:\Users\user\Desktop\12к\Network Tracer\obj\Release\Network Tracer.pdb

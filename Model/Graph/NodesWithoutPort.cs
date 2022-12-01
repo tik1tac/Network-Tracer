@@ -1,14 +1,10 @@
 ﻿using Network_Tracer.View;
 
-using Newtonsoft.Json;
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace Network_Tracer.Model.Graph
 {
@@ -22,14 +18,10 @@ namespace Network_Tracer.Model.Graph
             _neighbours = new System.Collections.Generic.List<Device>();
             port = new Port();
         }
-        [JsonProperty]
         public virtual int Weight { get; set; }
-        [JsonProperty]
         public virtual int NumberPorts { get; set; }
         public override List<Device> _neighbours { get => base._neighbours; set => base._neighbours = value; }
-        [JsonProperty]
         public override bool ISVisited { get => base.ISVisited; set => base.ISVisited = value; }
-        [JsonProperty]
         public override bool PowerSuuply { get => base.PowerSuuply; set => base.PowerSuuply = value; }
         public LineConnect Line { get; set; }
         public override Port port { get; set; }
@@ -43,52 +35,73 @@ namespace Network_Tracer.Model.Graph
         }
         public async override Task<bool> AddLine(LineConnect line)
         {
-            if (Line == null)
+            if (!EnergizeSheme.IsEnergy)
             {
-                Line = line;
-                Lines.Add(line);
-                Device.Window.Modified = true;
-                return true;
+                if (Line == null)
+                {
+                    Line = line;
+                    Lines.Add(line);
+                    Device.Window.Modified = true;
+                    return true;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выключите питание");
             }
             await Task.Delay(0);
             return false;
         }
         public override async void Remove(object sender, System.Windows.RoutedEventArgs e)
         {
-            await this.RemoveLine(true);
-            pegcount = null;
-            if (Vertex.Contains(this))
+            if (!EnergizeSheme.IsEnergy)
             {
-                Vertex.Remove(this);
+                await this.RemoveLine(true);
+                pegelement = null;
+                if (Vertex.Contains(this))
+                {
+                    Vertex.Remove(this);
+                }
+                for (int i = 0; i < _neighbours.Count; i++)
+                {
+                    _neighbours[i]._neighbours.Remove(this);
+                }
+                if (Scheme.Labelsname.Contains(this.LabelName))
+                {
+                    Scheme.Labelsname.Remove(this.LabelName);
+                }
+                Device.Window.Modified = true;
+                this.canvas.Children.Remove(this);
             }
-            for (int i = 0; i < _neighbours.Count; i++)
+            else
             {
-                _neighbours[i]._neighbours.Remove(this);
+                MessageBox.Show("Выключите питание");
             }
-            if (Scheme.Labelsname.Contains(this.LabelName))
-            {
-                Scheme.Labelsname.Remove(this.LabelName);
-            }
-            Device.Window.Modified = true;
-            this.canvas.Children.Remove(this);
         }
 
         public async override Task<bool> RemoveLine(bool deep, LineConnect line = null)
         {
-            if (Line != null)
+            if (!EnergizeSheme.IsEnergy)
             {
-                if (line == null || line == Line)
+                if (Line != null)
                 {
-                    this.Lines.Remove(line);
-                    this._neighbours.Clear();
-                    if (deep)
+                    if (line == null || line == Line)
                     {
-                        Line.Remove(this);
+                        this.Lines.Remove(line);
+                        this._neighbours.Clear();
+                        if (deep)
+                        {
+                            Line.Remove(this);
+                        }
+                        Device.Window.Modified = true;
+                        Line = null;
+                        return true;
                     }
-                    Device.Window.Modified = true;
-                    Line = null;
-                    return true;
                 }
+            }
+            else
+            {
+                MessageBox.Show("Выключите питание");
             }
             await Task.Delay(0);
             return false;

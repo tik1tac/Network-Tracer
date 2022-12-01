@@ -8,11 +8,11 @@ using Network_Tracer.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -27,6 +27,7 @@ namespace Network_Tracer
         {
             InitializeComponent();
             this.Closing += OnWindowClosing;
+            this.Closed += CloseMainWindow;
             Device.Window = this;
             SelectedTool = Tools.Cursor;
         }
@@ -34,8 +35,6 @@ namespace Network_Tracer
         #region Элементы на канвасе
         LineConnect SelectedLine;
         Device SelectedDevice;
-        PEG pegcount = null;
-        PEGSpare pegsparecount = null;
         Source source;
         private string fileName;
         public bool Modified { get; set; } = false;
@@ -216,7 +215,7 @@ namespace Network_Tracer
                     peg.MouseLeftButtonDown += this.OnPEGLeftButtonDownAsync;
                     CanvasField.Children.Add(peg);
                     SelectedTool = Tools.Cursor;
-                    Device.pegcount = peg;
+                    Device.pegelement = peg;
                     Device.Vertex.Add(peg);
                     Modified = true;
                     break;
@@ -252,7 +251,7 @@ namespace Network_Tracer
                     pegspare.MouseLeftButtonDown += this.OnPEGSpareLeftButtonDownAsync;
                     CanvasField.Children.Add(pegspare);
                     SelectedTool = Tools.Cursor;
-                    Device.pegsparecount = pegspare;
+                    Device.pegspareelement = pegspare;
                     Device.Vertex.Add(pegspare);
                     Modified = true;
                     break;
@@ -405,7 +404,7 @@ namespace Network_Tracer
         /// <param name="e"></param>
         private void PEGButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Device.pegcount == null)
+            if (Device.pegelement == null)
             {
                 SelectedTool = Tools.Cursor;
                 this.SelectedTool = Tools.PEG;
@@ -462,7 +461,7 @@ namespace Network_Tracer
         /// <param name="e"></param>
         private void PEGSpare_Click(object sender, RoutedEventArgs e)
         {
-            if (Device.pegsparecount == null)
+            if (Device.pegspareelement == null)
             {
                 SelectedTool = Tools.Cursor;
                 this.SelectedTool = Tools.PEGSpare;
@@ -596,7 +595,7 @@ namespace Network_Tracer
         /// <param name="e"></param>
         private async void Energize_Click(object sender, RoutedEventArgs e)
         {
-            if (SourceBox.SelectedItem != null || Device.Vertex.Count != 0)
+            if (SourceBox.SelectedItem != null & Device.Vertex.Count != 0)
             {
                 switch ((SourceBox.SelectedItem as ComboBoxItem).Content.ToString())
                 {
@@ -658,7 +657,7 @@ namespace Network_Tracer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ClearResource(object sender, RoutedEventArgs e)
+        private async void ClearResource(object sender, RoutedEventArgs e)
         {
             IsEnabledT();
             EnergizeSheme.IsEnergy = false;
@@ -671,7 +670,7 @@ namespace Network_Tracer
                 for (int l = 0; l < Device.Vertex[i].Lines.Count; l++)
                 {
                     Device.Vertex[i].Lines[l].IsArrow = false;
-                    Device.Vertex[i].Lines[l].ArrowToLine();
+                    await Device.Vertex[i].Lines[l].ArrowToLine();
                     Device.Vertex[i].Lines[l].ColorConnection = Brushes.Black;
                 }
             }
@@ -868,7 +867,7 @@ namespace Network_Tracer
         {
             if (Modified)
             {
-                switch (MessageBox.Show("Схема была изменена", "Схема была изменена", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel))
+                switch (MessageBox.Show("Закрыть приложение", "Схема была изменена", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel))
                 {
                     case MessageBoxResult.Cancel:
                         return false;
@@ -884,6 +883,15 @@ namespace Network_Tracer
             }
             await Task.Delay(0);
             return true;
+        }
+        /// <summary>
+        /// Убивает процесс в пуле процессов
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseMainWindow(object sender, EventArgs e)
+        {
+            Process.GetCurrentProcess().Kill();
         }
         /// <summary>
         /// Информация о программе

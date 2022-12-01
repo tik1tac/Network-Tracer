@@ -1,6 +1,7 @@
 ﻿using Network_Tracer.Model.Graph;
 using Network_Tracer.Model.Graph.AbstractGraph;
 using Network_Tracer.View;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +77,10 @@ namespace Network_Tracer.Model
                             writer.WriteAttributeString("PositionLeft", Canvas.GetLeft(peg).ToString());
                             writer.WriteAttributeString("PositionTop", Canvas.GetTop(peg).ToString());
                             writer.WriteAttributeString("city", peg.city);
-                            writer.WriteAttributeString("Neighbours", peg._neighbours[0].LabelName);
+                            if (peg._neighbours.Count != 0)
+                            {
+                                writer.WriteAttributeString("Neighbours", peg._neighbours[0].LabelName);
+                            }
                             writer.WriteEndElement();
                             continue;
                         }
@@ -88,7 +92,10 @@ namespace Network_Tracer.Model
                             writer.WriteAttributeString("PositionLeft", Canvas.GetLeft(pegsp).ToString());
                             writer.WriteAttributeString("PositionTop", Canvas.GetTop(pegsp).ToString());
                             writer.WriteAttributeString("city", pegsp.city);
-                            writer.WriteAttributeString("Neighbours", pegsp._neighbours[0].LabelName);
+                            if (peg._neighbours.Count != 0)
+                            {
+                                writer.WriteAttributeString("Neighbours", pegsp._neighbours[0].LabelName);
+                            }
                             writer.WriteEndElement();
                             continue;
                         }
@@ -100,7 +107,10 @@ namespace Network_Tracer.Model
                             writer.WriteAttributeString("PositionLeft", Canvas.GetLeft(user).ToString());
                             writer.WriteAttributeString("PositionTop", Canvas.GetTop(user).ToString());
                             writer.WriteAttributeString("city", user.city);
-                            writer.WriteAttributeString("Neighbours", user._neighbours[0].LabelName);
+                            if (peg._neighbours.Count != 0)
+                            {
+                                writer.WriteAttributeString("Neighbours", user._neighbours[0].LabelName);
+                            }
                             writer.WriteEndElement();
                             continue;
                         }
@@ -192,12 +202,12 @@ namespace Network_Tracer.Model
                                 if (reader.Name == "PEG")
                                 {
                                     NodeNoPort = CreatorNodes.CreatePeg(canvas);
-                                    Device.pegcount = NodeNoPort as PEG;
+                                    Device.pegelement = NodeNoPort as PEG;
                                 }
                                 if (reader.Name == "PEGSpare")
                                 {
                                     NodeNoPort = CreatorNodes.CreatePegSpare(canvas);
-                                    Device.pegsparecount = NodeNoPort as PEGSpare;
+                                    Device.pegspareelement = NodeNoPort as PEGSpare;
                                 }
                                 if (reader.Name == "User")
                                 {

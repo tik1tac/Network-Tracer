@@ -30,79 +30,86 @@ namespace Network_Tracer.Model.Graph
             VZGStart = new List<Device>();
             NextNeighbo = new List<Device>();
             count = Device.Vertex.Where(n => n.Lines.Count != 0).Count();
-
-            if (Device._lines.Count != 0)
+            try
             {
-                switch (source)
+                if (Device._lines.Count != 0)
                 {
-                    case Source.Peg:
-                        if (Device.pegcount != null)
-                        {
-                            CleanUp();
-                            await BrushLineIfSourcePEGorPEGsp(Source.Peg);
-                        }
-                        else
-                        {
-                            MessageBox.Show("На схеме нет ПЭГ");
-                            Device.Window.IsEnabledT();
-                        }
-                        break;
-                    case Source.Vzg:
-                        CleanUp();
-                        await BrushLineIfSourceVZG();
-                        if (Device.pegcount != null)
-                        {
-                            if (Device.pegcount.Lines.Count != 0)
+                    switch (source)
+                    {
+                        case Source.Peg:
+                            if (Device.pegelement != null)
                             {
+                                CleanUp();
+                                await BrushLineIfSourcePEGorPEGsp(Source.Peg);
+                            }
+                            else
+                            {
+                                MessageBox.Show("На схеме нет ПЭГ");
+                                Device.Window.IsEnabledT();
+                            }
+                            break;
+                        case Source.Vzg:
+                            CleanUp();
+                            await BrushLineIfSourceVZG();
+                            if (Device.pegelement != null)
+                            {
+                                if (Device.pegelement.Lines.Count != 0)
+                                {
+                                    ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
+                                    ExcludedDev.RectBorder = Brushes.Silver;
+                                    ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                                    await ExcludedDev.Lines[0].ArrowToLine();
+                                }
+                            }
+                            else
+                            {
+                                Device.Window.IsEnabledT();
+                            }
+                            if (Device.pegspareelement != null)
+                            {
+                                if (Device.pegspareelement.Lines.Count != 0)
+                                {
+                                    ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
+                                    ExcludedDev.RectBorder = Brushes.Silver;
+                                    ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
+                                    await ExcludedDev.Lines[0].ArrowToLine();
+                                }
+                            }
+                            else
+                            {
+                                Device.Window.IsEnabledT();
+                            }
+                            break;
+                        case Source.PegSpare:
+                            if (Device.pegspareelement != null)
+                            {
+                                CleanUp();
+                                await BrushLineIfSourcePEGorPEGsp(Source.PegSpare);
                                 ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
                                 ExcludedDev.RectBorder = Brushes.Silver;
                                 ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
                                 await ExcludedDev.Lines[0].ArrowToLine();
                             }
-                        }
-                        else
-                        {
-                            Device.Window.IsEnabledT();
-                        }
-                        if (Device.pegsparecount != null)
-                        {
-                            if (Device.pegsparecount.Lines.Count != 0)
+                            else
                             {
-                                ExcludedDev = Device.Vertex.Where(vert => vert.Number == 2).First();
-                                ExcludedDev.RectBorder = Brushes.Silver;
-                                ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                                await ExcludedDev.Lines[0].ArrowToLine();
+                                MessageBox.Show("На схеме нет ПЭГ рез.");
+                                Device.Window.IsEnabledT();
                             }
-                        }
-                        else
-                        {
-                            Device.Window.IsEnabledT();
-                        }
-                        break;
-                    case Source.PegSpare:
-                        if (Device.pegsparecount != null)
-                        {
+                            break;
+                        case Source.GSE:
                             CleanUp();
-                            await BrushLineIfSourcePEGorPEGsp(Source.PegSpare);
-                            ExcludedDev = Device.Vertex.Where(vert => vert.Number == 1).First();
-                            ExcludedDev.RectBorder = Brushes.Silver;
-                            ExcludedDev.Lines[0].ColorConnection = Brushes.Black;
-                            await ExcludedDev.Lines[0].ArrowToLine();
-                        }
-                        else
-                        {
-                            MessageBox.Show("На схеме нет ПЭГ рез.");
-                            Device.Window.IsEnabledT();
-                        }
-                        break;
-                    case Source.GSE:
-                        CleanUp();
-                        await BrushLineIfSourceGSE();
-                        break;
-                    default:
-                        break;
+                            await BrushLineIfSourceGSE();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
+            catch (System.Exception)
+            {
+                MessageBox.Show("Вышла ошибочка!!!");
+            }
+
 
         }
         /// <summary>
